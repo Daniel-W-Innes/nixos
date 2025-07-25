@@ -71,6 +71,7 @@
       waybar
       swaylock
       lynx
+      bitwarden-cli
     ];
   };
 
