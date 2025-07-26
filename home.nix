@@ -71,7 +71,7 @@
   ];
 
   programs = {
-    waybar.enable = true
+    waybar.enable = true;
     git = {
       enable = true;
       userName = "Daniel Innes";
