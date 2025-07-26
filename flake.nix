@@ -23,6 +23,7 @@
         modules = [
           inputs.lanzaboote.nixosModules.lanzaboote
           ./cucamelon/configuration.nix
+          ./generic/configuration.nix
           inputs.home-manager.nixosModules.home-manager
           {
             inputs.home-manager.useGlobalPkgs = true;
