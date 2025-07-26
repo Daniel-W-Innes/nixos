@@ -7,7 +7,7 @@ jobs:
     outputs:
       garnix: ${{ steps.garnix.outputs.status }}
     steps:
-      - uses: actions/checkout@v2.3.2
+      - uses: actions/checkout@v4
       - name: Garnix check status
         id: garnix
         uses: ./.github/actions/garnix-check
@@ -24,10 +24,10 @@ jobs:
         hostname:
           - cucamelon
     steps:
-      - uses: actions/checkout@v2.3.2
-      - uses: wimpysworld/nothing-but-nix@main
-      - uses: cachix/install-nix-action@v30
-      - uses: cachix/cachix-action@v15
+      - uses: actions/checkout@v4
+      - uses: wimpysworld/nothing-but-nix@v6
+      - uses: cachix/install-nix-action@v31
+      - uses: cachix/cachix-action@v16
         with:
           name: gvolpe-nixos
       - name: "Build ${{ matrix.config_name }} NixOS config ❄️"
