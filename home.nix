@@ -86,6 +86,7 @@
         gcloud.disabled = true;
         line_break.disabled = true;
       };
+    };
 
     bash = {
       enable = true;
@@ -96,6 +97,7 @@
       shellAliases = {
         nixr = "nixos-rebuild switch --flake github:Daniel-W-Innes/nixos";
       };
+    };
   };
 
   xdg.configFile = {
