@@ -1,6 +1,5 @@
+name: NixOS Dead code analysis
 on: [push]
-
-name: Dead code analysis
 
 jobs:
   deadnix:
