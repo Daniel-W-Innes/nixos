@@ -16,26 +16,24 @@
     };
   };
 
-  outputs = { self, nixpkgs, lanzaboote, home-manager, ... }@inputs: {
+  outputs = { self, nixpkgs, ... }@inputs: {
     nixosConfigurations = {
       cucamelon = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          lanzaboote.nixosModules.lanzaboote
-          ./configuration.nix
-          home-manager.nixosModules.home-manager
+          inputs.lanzaboote.nixosModules.lanzaboote
+          ./cucamelon/configuration.nix
+          inputs.home-manager.nixosModules.home-manager
           {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.daniel = import ./home.nix;
+            inputs.home-manager.useGlobalPkgs = true;
+            inputs.home-manager.useUserPackages = true;
+            inputs.home-manager.users.daniel = import ./home.nix;
           }
           ({ pkgs, lib, ... }: {
 
             environment.systemPackages = [
-              # For debugging and troubleshooting Secure Boot.
               pkgs.sbctl
             ];
-
             # Lanzaboote currently replaces the systemd-boot module.
             # This setting is usually set to true in configuration.nix
             # generated at installation time. So we force it to false
