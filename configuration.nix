@@ -59,20 +59,6 @@
     isNormalUser = true;
     description = "Daniel Innes";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      firefox
-      podman
-      yazi
-      ffmpeg
-      jq
-      poppler
-      resvg
-      wl-clipboard
-      waybar
-      swaylock
-      lynx
-      bitwarden-cli
-    ];
   };
 
   # Allow unfree packages

@@ -9,15 +9,26 @@
       url = "github:nix-community/lanzaboote/v0.4.2";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    
+    home-manager = {
+      url = "github:nix-community/home-manager/release-25.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, lanzaboote, ... }@inputs: {
+  outputs = { self, nixpkgs, lanzaboote, home-manager, ... }@inputs: {
     nixosConfigurations = {
       cucamelon = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           lanzaboote.nixosModules.lanzaboote
           ./configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.daniel = import ./home.nix;
+          }
           ({ pkgs, lib, ... }: {
 
             environment.systemPackages = [
