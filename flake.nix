@@ -16,19 +16,19 @@
     };
   };
 
-  outputs = { self, nixpkgs, ... }@inputs: {
+  outputs = { self, nixpkgs, lanzaboote, home-manager, ... }@inputs: {
     nixosConfigurations = {
       cucamelon = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          inputs.lanzaboote.nixosModules.lanzaboote
+          lanzaboote.nixosModules.lanzaboote
           ./cucamelon/configuration.nix
           ./generic/configuration.nix
-          inputs.home-manager.nixosModules.home-manager
+          home-manager.nixosModules.home-manager
           {
-            inputs.home-manager.useGlobalPkgs = true;
-            inputs.home-manager.useUserPackages = true;
-            inputs.home-manager.users.daniel = import ./home.nix;
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.daniel = import ./home.nix;
           }
           ({ pkgs, lib, ... }: {
 
