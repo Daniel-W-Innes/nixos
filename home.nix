@@ -122,7 +122,7 @@
       export PATH="$PATH:$HOME/bin:$HOME/.local/bin:$HOME/go/bin"
     '';
     shellAliases = {
-      nixr = "nixos-rebuild --flake ~/.nix switch";
+      nixr = "nixos-rebuild switch --flake github:Daniel-W-Innes/nixos";
     };
   };
 
