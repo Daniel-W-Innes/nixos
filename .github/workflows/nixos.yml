@@ -1,5 +1,8 @@
 name: NixOS check and build
-on: [push]
+
+on:
+  push:
+    branches: [master]
 
 jobs:
   checks:
