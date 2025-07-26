@@ -16,7 +16,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, lanzaboote, home-manager, ... }@inputs: {
+  outputs = { nixpkgs, lanzaboote, home-manager, ... }@inputs: {
     nixosConfigurations = {
       cucamelon = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
