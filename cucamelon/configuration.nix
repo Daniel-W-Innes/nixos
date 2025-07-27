@@ -12,6 +12,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.initrd.luks.devices."luks-a907665e-4d88-43ce-bc1e-4deee8ce9eab".device = "/dev/disk/by-uuid/a907665e-4d88-43ce-bc1e-4deee8ce9eab";
   networking.hostName = "cucamelon"; # Define your hostname.
+  powerManagement.enable = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
