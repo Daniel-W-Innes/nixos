@@ -48,10 +48,6 @@
     gnupg
 
     # nix related
-    #
-    # it provides the command `nom` works just like `nix`
-    # with more details log output
-    nix-output-monitor
     nh
 
     btop # replacement of htop/nmon
