@@ -5,12 +5,12 @@
 { ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  imports = [ # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.initrd.luks.devices."luks-a907665e-4d88-43ce-bc1e-4deee8ce9eab".device = "/dev/disk/by-uuid/a907665e-4d88-43ce-bc1e-4deee8ce9eab";
+  boot.initrd.luks.devices."luks-a907665e-4d88-43ce-bc1e-4deee8ce9eab".device =
+    "/dev/disk/by-uuid/a907665e-4d88-43ce-bc1e-4deee8ce9eab";
   networking.hostName = "cucamelon"; # Define your hostname.
   powerManagement.enable = true;
 

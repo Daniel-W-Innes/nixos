@@ -13,12 +13,12 @@
   };
   programs = {
     sway = {
-        enable = true;
-        wrapperFeatures.gtk = true;
+      enable = true;
+      wrapperFeatures.gtk = true;
     };
     vim = {
-        enable = true;
-        defaultEditor = true;
+      enable = true;
+      defaultEditor = true;
     };
   };
   users.users.daniel = {
@@ -26,10 +26,6 @@
     description = "Daniel Innes";
     extraGroups = [ "networkmanager" "wheel" ];
   };
-  environment.systemPackages = with pkgs; [
-    git
-  ];
-  fonts.packages = with pkgs; [
-    nerd-fonts.roboto-mono
-  ];
+  environment.systemPackages = with pkgs; [ git ];
+  fonts.packages = with pkgs; [ nerd-fonts.roboto-mono ];
 }

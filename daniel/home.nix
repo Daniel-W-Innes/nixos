@@ -29,12 +29,12 @@
     # networking tools
     mtr # A network diagnostic tool
     iperf3
-    dnsutils  # `dig` + `nslookup`
+    dnsutils # `dig` + `nslookup`
     ldns # replacement of `dig`, it provide the command `drill`
     aria2 # A lightweight multi-protocol & multi-source command-line download utility
     socat # replacement of openbsd-netcat
     nmap # A utility for network discovery and security auditing
-    ipcalc  # it is a calculator for the IPv4/v6 addresses
+    ipcalc # it is a calculator for the IPv4/v6 addresses
 
     # misc
     cowsay
@@ -52,8 +52,9 @@
     # it provides the command `nom` works just like `nix`
     # with more details log output
     nix-output-monitor
+    nh
 
-    btop  # replacement of htop/nmon
+    btop # replacement of htop/nmon
     iotop # io monitoring
     iftop # network monitoring
 
@@ -101,14 +102,12 @@
   };
 
   xdg.configFile = {
-    "waybar/config.jsonc".source  = ./waybar/config.jsonc;
+    "waybar/config.jsonc".source = ./waybar/config.jsonc;
     "waybar/style.css".source = ./waybar/style.css;
     "sway/config".source = ./sway/config;
   };
 
-  home.sessionVariables = {
-    SH_AUTH_SOCK = "/run/user/1000/keyring/ssh";
-  };
+  home.sessionVariables = { SH_AUTH_SOCK = "/run/user/1000/keyring/ssh"; };
 
   programs.home-manager.enable = true;
   home.stateVersion = "25.05";

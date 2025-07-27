@@ -4,31 +4,30 @@
 { config, lib, modulesPath, ... }:
 
 {
-  imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
-    ];
+  imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
+  boot.initrd.availableKernelModules =
+    [ "xhci_pci" "ahci" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
-  fileSystems."/" =
-    { device = "/dev/disk/by-uuid/dd92f7d5-2cce-4a87-bea3-6c8f9c966ee3";
-      fsType = "ext4";
-    };
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/dd92f7d5-2cce-4a87-bea3-6c8f9c966ee3";
+    fsType = "ext4";
+  };
 
-  boot.initrd.luks.devices."luks-5b042176-3a76-4ad1-bbc3-6f2a0676e72b".device = "/dev/disk/by-uuid/5b042176-3a76-4ad1-bbc3-6f2a0676e72b";
+  boot.initrd.luks.devices."luks-5b042176-3a76-4ad1-bbc3-6f2a0676e72b".device =
+    "/dev/disk/by-uuid/5b042176-3a76-4ad1-bbc3-6f2a0676e72b";
 
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/6EC4-88F3";
-      fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/6EC4-88F3";
+    fsType = "vfat";
+    options = [ "fmask=0077" "dmask=0077" ];
+  };
 
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/9ef0bddc-24fe-43ab-aeb2-4b124bc36bae"; }
-    ];
+    [{ device = "/dev/disk/by-uuid/9ef0bddc-24fe-43ab-aeb2-4b124bc36bae"; }];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
@@ -39,5 +38,6 @@
   # networking.interfaces.wlp1s0.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.intel.updateMicrocode =
+    lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
