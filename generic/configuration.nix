@@ -7,7 +7,6 @@
   time.timeZone = "America/Toronto";
   i18n.defaultLocale = "en_CA.UTF-8";
   services.gnome.gnome-keyring.enable = true;
-  systemd.user.sessionVariables.SSH_AUTH_SOCK = "/run/user/1000/keyring/ssh";
   services.xserver.xkb = {
     layout = "us";
     variant = "";

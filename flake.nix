@@ -28,7 +28,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.daniel = import ./home.nix;
+            home-manager.users.daniel = import ./daniel/home.nix;
           }
           ({ pkgs, lib, ... }: {
 
