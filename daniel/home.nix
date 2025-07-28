@@ -9,7 +9,6 @@
     nnn # terminal file manager
 
     # sway
-    waybar
     swaylock
     wl-clipboard
 
@@ -68,6 +67,7 @@
   ];
 
   programs = {
+    lazygit.enable = true;
     waybar.enable = true;
     git = {
       enable = true;
