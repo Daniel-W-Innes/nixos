@@ -47,7 +47,6 @@
 
     # nix related
     nh
-    comma
 
     btop # replacement of htop/nmon
     iotop # io monitoring
