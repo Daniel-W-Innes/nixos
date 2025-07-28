@@ -47,6 +47,7 @@
 
     # nix related
     nh
+    comma
 
     btop # replacement of htop/nmon
     iotop # io monitoring
@@ -92,7 +93,7 @@
         export PATH="$PATH:$HOME/bin:$HOME/.local/bin:$HOME/go/bin"
       '';
       shellAliases = {
-        nixr = "nixos-rebuild switch --flake github:Daniel-W-Innes/nixos";
+        nixr = "nh os switch -a github:Daniel-W-Innes/nixos";
       };
     };
   };
