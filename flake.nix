@@ -14,9 +14,14 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    }; 
   };
 
-  outputs = { nixpkgs, lanzaboote, home-manager, ... }: {
+  outputs = { nixpkgs, lanzaboote, home-manager, nix-index-database, ... }: {
     nixosConfigurations = {
       cucamelon = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -44,6 +49,7 @@
               pkiBundle = "/var/lib/sbctl";
             };
           })
+          nix-index-database.nixosModules.nix-index
         ];
       };
     };
