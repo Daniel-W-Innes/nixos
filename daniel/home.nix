@@ -85,14 +85,17 @@
       };
     };
 
-    bash = {
+    zsh = {
       enable = true;
       enableCompletion = true;
-      bashrcExtra = ''
-        export PATH="$PATH:$HOME/bin:$HOME/.local/bin:$HOME/go/bin"
-      '';
+      autosuggestions.enable = true;
+      syntaxHighlighting.enable = true;
       shellAliases = {
         nixr = "nh os switch -a github:Daniel-W-Innes/nixos";
+      };
+      oh-my-zsh = {
+        enable = true;
+        plugins = ["git"];
       };
     };
   };

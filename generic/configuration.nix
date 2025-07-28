@@ -26,6 +26,8 @@
     description = "Daniel Innes";
     extraGroups = [ "networkmanager" "wheel" ];
   };
+  users.defaultUserShell = pkgs.zsh;
+  environment.shells = with pkg; [ zsh ] ;
   environment.systemPackages = with pkgs; [ git ];
   fonts.packages = with pkgs; [ nerd-fonts.roboto-mono ];
 }
