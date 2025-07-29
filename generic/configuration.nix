@@ -20,6 +20,7 @@
       enable = true;
       defaultEditor = true;
     };
+    zsh.enable = true;
   };
   users.users.daniel = {
     isNormalUser = true;

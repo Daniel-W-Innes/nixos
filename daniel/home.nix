@@ -84,18 +84,18 @@
         line_break.disabled = true;
       };
     };
-
+    
     zsh = {
       enable = true;
       enableCompletion = true;
-      autosuggestions.enable = true;
       syntaxHighlighting.enable = true;
       shellAliases = {
         nixr = "nh os switch -a github:Daniel-W-Innes/nixos";
       };
       oh-my-zsh = {
         enable = true;
-        plugins = ["git"];
+        plugins = ["git" "starship" "sudo" "ssh-agent" "podman" "gh"];
+        theme = "random";
       };
     };
   };
