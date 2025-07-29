@@ -67,7 +67,6 @@
 
   programs = {
     swaylock.enable = true;
-    lazygit.enable = true;
     waybar.enable = true;
     git = {
       enable = true;
@@ -85,6 +84,12 @@
       };
     };
     
+    zoxide = {
+      enable = true;
+      enableZshIntegration = true;
+      options = [ "--cmd cd" ];
+    };
+     
     zsh = {
       enable = true;
       enableCompletion = true;
