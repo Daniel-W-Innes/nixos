@@ -5,6 +5,7 @@
   home.homeDirectory = "/home/daniel";
   home.packages = with pkgs; [
     firefox
+    bitwarden
     lynx
     nnn # terminal file manager
 
