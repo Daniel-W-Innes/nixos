@@ -23,6 +23,21 @@
 
   outputs = { nixpkgs, lanzaboote, home-manager, nix-index-database, ... }: {
     nixosConfigurations = {
+      onion = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./onion/configuration.nix
+          ./generic/configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.daniel = import ./daniel/home.nix;
+          }
+          nix-index-database.nixosModules.nix-index
+          { programs.nix-index-database.comma.enable = true;}
+        ];
+      };
       cucamelon = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
