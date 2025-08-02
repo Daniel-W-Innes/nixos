@@ -1,17 +1,9 @@
 { pkgs, ... }:
 
 {
-  home.username = "daniel";
-  home.homeDirectory = "/home/daniel";
   home.packages = with pkgs; [
-    firefox
-    signal-desktop
-    bitwarden
     lynx
     nnn # terminal file manager
-
-    # sway
-    wl-clipboard
 
     # archives
     zip
@@ -68,8 +60,6 @@
   ];
 
   programs = {
-    swaylock.enable = true;
-    waybar.enable = true;
     git = {
       enable = true;
       userName = "Daniel Innes";
@@ -106,15 +96,4 @@
       };
     };
   };
-
-  xdg.configFile = {
-    "waybar/config.jsonc".source = ./waybar/config.jsonc;
-    "waybar/style.css".source = ./waybar/style.css;
-    "sway/config".source = ./sway/config;
-  };
-
-  home.sessionVariables = { SH_AUTH_SOCK = "/run/user/1000/keyring/ssh"; };
-
-  programs.home-manager.enable = true;
-  home.stateVersion = "25.05";
 }
