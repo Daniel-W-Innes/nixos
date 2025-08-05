@@ -4,7 +4,7 @@
   imports = [
     ./base.nix
     ./term.nix
-    ./sway.nix
+    ./hypr.nix
     ./gui.nix
   ];
 }
