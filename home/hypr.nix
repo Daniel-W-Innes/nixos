@@ -3,6 +3,10 @@
 {
   home.packages = with pkgs; [
     wl-clipboard
+    alacritty
+    wofi
+    kdePackages.dolphin
+    kdePackages.qtsvg
   ];
   programs = {
     swaylock.enable = true;
@@ -12,7 +16,7 @@
   xdg.configFile = {
     "waybar/config.jsonc".source = ./waybar/config.jsonc;
     "waybar/style.css".source = ./waybar/style.css;
-    "sway/config".source = ./sway/config;
+    # "sway/config".source = ./sway/config;
+    "hypr/hyprland.conf".source = ./hyprland/hyprland.conf;
   };
 }
-
