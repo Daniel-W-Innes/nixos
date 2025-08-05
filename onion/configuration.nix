@@ -14,6 +14,17 @@
   networking.hostName = "onion"; # Define your hostname.
   nixpkgs.config.allowUnfree = true;
 
+  # nvidia
+  hardware.graphics.enable = true;
+  services.xserver.videoDrivers = ["nvidia"];
+  hardware.nvidia = {
+    modesetting.enable = true;
+    powerManagement.enable = false;
+    powerManagement.finegrained = false;
+    open = false;
+    nvidiaSettings = true;
+  };
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
