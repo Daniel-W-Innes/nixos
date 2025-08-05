@@ -6,6 +6,7 @@
     alacritty
     wofi
     kdePackages.dolphin
+    kdePackages.dolphin-plugins
     kdePackages.qtsvg
   ];
   programs = {
