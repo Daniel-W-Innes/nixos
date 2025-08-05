@@ -12,9 +12,9 @@
     variant = "";
   };
   programs = {
-    sway = {
+    hyprland = {
       enable = true;
-      wrapperFeatures.gtk = true;
+      xwayland.enable = true;
     };
     vim = {
       enable = true;
