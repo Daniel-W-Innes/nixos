@@ -9,6 +9,12 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ];
+  
+  boot.initrd.luks.devices = {
+    lvm1 = "/dev/disk/by-uuid/6fe0ec0f-041e-46e8-bf05-9ddc4a8087bb";
+    lvm2 = "/dev/disk/by-uuid/a0422975-ecec-4d24-a693-d8bee5fac314";
+  };  
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "onion"; # Define your hostname.
