@@ -15,4 +15,3 @@
     "sway/config".source = ./sway/config;
   };
 }
-

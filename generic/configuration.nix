@@ -2,7 +2,10 @@
 
 {
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
   networking.networkmanager.enable = true;
   time.timeZone = "America/Toronto";
   i18n.defaultLocale = "en_CA.UTF-8";
@@ -25,10 +28,13 @@
   users.users.daniel = {
     isNormalUser = true;
     description = "Daniel Innes";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
   };
   users.defaultUserShell = pkgs.zsh;
-  environment.shells = with pkgs; [ zsh ] ;
+  environment.shells = with pkgs; [ zsh ];
   environment.systemPackages = with pkgs; [ git ];
   fonts.packages = with pkgs; [ nerd-fonts.roboto-mono ];
 }

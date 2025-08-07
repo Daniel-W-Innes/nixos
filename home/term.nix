@@ -75,13 +75,13 @@
         line_break.disabled = true;
       };
     };
-    
+
     zoxide = {
       enable = true;
       enableZshIntegration = true;
       options = [ "--cmd cd" ];
     };
-     
+
     zsh = {
       enable = true;
       enableCompletion = true;
@@ -91,7 +91,14 @@
       };
       oh-my-zsh = {
         enable = true;
-        plugins = ["git" "starship" "sudo" "ssh-agent" "podman" "gh"];
+        plugins = [
+          "git"
+          "starship"
+          "sudo"
+          "ssh-agent"
+          "podman"
+          "gh"
+        ];
         theme = "random";
       };
     };

@@ -5,7 +5,8 @@
 { ... }:
 
 {
-  imports = [ # Include the results of the hardware scan.
+  imports = [
+    # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
   boot.loader.efi.canTouchEfiVariables = true;

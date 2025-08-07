@@ -5,15 +5,15 @@
 { config, pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
-  
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
+
   boot.initrd.luks.devices = {
     lvm1.device = "/dev/disk/by-uuid/6fe0ec0f-041e-46e8-bf05-9ddc4a8087bb";
     lvm2.device = "/dev/disk/by-uuid/a0422975-ecec-4d24-a693-d8bee5fac314";
-  };  
+  };
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -22,7 +22,7 @@
 
   # nvidia
   hardware.graphics.enable = true;
-  services.xserver.videoDrivers = ["nvidia"];
+  services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
     modesetting.enable = true;
     powerManagement.enable = false;
@@ -37,7 +37,6 @@
     dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
     localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
   };
-
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
