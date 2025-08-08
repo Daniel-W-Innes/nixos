@@ -30,9 +30,11 @@
     device = "/dev/disk/by-uuid/5113dc4a-5ed5-4688-a991-539bdd9e5ba5";
     fsType = "ext4";
   };
-
-  boot.initrd.luks.devices."luks-cda04856-752e-451d-a132-04620721de59".device =
-    "/dev/disk/by-uuid/cda04856-752e-451d-a132-04620721de59";
+  boot.initrd.luks.devices = {
+    lvm1.device = "/dev/disk/by-uuid/6fe0ec0f-041e-46e8-bf05-9ddc4a8087bb";
+    lvm2.device = "/dev/disk/by-uuid/a0422975-ecec-4d24-a693-d8bee5fac314";
+    "luks-cda04856-752e-451d-a132-04620721de59".device = "/dev/disk/by-uuid/cda04856-752e-451d-a132-04620721de59";
+  };
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/772D-0297";
