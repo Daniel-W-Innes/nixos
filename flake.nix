@@ -19,11 +19,17 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";   
+    };
   };
 
   outputs =
     {
       nixpkgs,
+      sops-nix,
       lanzaboote,
       home-manager,
       nix-index-database,
@@ -35,6 +41,7 @@
         onion = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
+            sops-nix.nixosModules.sops
             ./onion/configuration.nix
             ./generic/configuration.nix
             ./virt/podman.nix
@@ -52,6 +59,7 @@
           system = "x86_64-linux";
           modules = [
             lanzaboote.nixosModules.lanzaboote
+            sops-nix.nixosModules.sops
             ./cucamelon/configuration.nix
             ./generic/configuration.nix
             ./virt/podman.nix
