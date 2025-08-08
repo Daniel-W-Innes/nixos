@@ -15,8 +15,8 @@
   };
 
   xdg.configFile = {
-    "waybar/config.jsonc".source = ./waybar/config.jsonc;
-    "waybar/style.css".source = ./waybar/style.css;
+    "waybar/config.jsonc".source = ./hyprland/waybar/config.jsonc;
+    "waybar/style.css".source = ./hyprland/waybar/style.css;
     # "sway/config".source = ./sway/config;
     "hypr/hyprland.conf".source = ./hyprland/hyprland.conf;
   };
