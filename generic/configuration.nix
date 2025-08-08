@@ -9,10 +9,14 @@
   networking.networkmanager.enable = true;
   time.timeZone = "America/Toronto";
   i18n.defaultLocale = "en_CA.UTF-8";
-  services.gnome.gnome-keyring.enable = true;
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
+  services = {
+    pcscd.enable = true;
+    udev.packages = [ pkgs.yubikey-personalization ];
+    gnome.gnome-keyring.enable = true;
+    xserver.xkb = {
+      layout = "us";
+      variant = "";
+    };
   };
   programs = {
     hyprland = {

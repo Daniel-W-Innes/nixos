@@ -6,5 +6,6 @@
     ./term.nix
     ./hypr.nix
     ./gui.nix
+    ./gpg.nix
   ];
 }
