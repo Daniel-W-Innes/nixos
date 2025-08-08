@@ -37,7 +37,7 @@
           modules = [
             ./onion/configuration.nix
             ./generic/configuration.nix
-            ./generic/podman.nix
+            ./virt/podman.nix
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
@@ -54,7 +54,7 @@
             lanzaboote.nixosModules.lanzaboote
             ./cucamelon/configuration.nix
             ./generic/configuration.nix
-            ./generic/podman.nix
+            ./virt/podman.nix
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
