@@ -24,12 +24,17 @@
     #  url = "github:Mic92/sops-nix";
     #  inputs.nixpkgs.follows = "nixpkgs";
     #};
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
     {
       nixpkgs,
       #sops-nix,
+      agenix,
       lanzaboote,
       home-manager,
       nix-index-database,
@@ -42,6 +47,7 @@
           system = "x86_64-linux";
           modules = [
             #sops-nix.nixosModules.sops
+            agenix.nixosModules.default
             ./onion/configuration.nix
             ./generic/configuration.nix
             ./virt/podman.nix
@@ -60,6 +66,7 @@
           modules = [
             lanzaboote.nixosModules.lanzaboote
             #sops-nix.nixosModules.sops
+            agenix.nixosModules.default
             ./cucamelon/configuration.nix
             ./generic/configuration.nix
             ./virt/podman.nix
