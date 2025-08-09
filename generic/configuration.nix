@@ -10,8 +10,8 @@
   time.timeZone = "America/Toronto";
   i18n.defaultLocale = "en_CA.UTF-8";
   services = {
-    pcscd.enable = true;
-    udev.packages = [ pkgs.yubikey-personalization ];
+    #pcscd.enable = true;
+    #udev.packages = [ pkgs.yubikey-personalization ];
     gnome.gnome-keyring.enable = true;
     xserver.xkb = {
       layout = "us";
