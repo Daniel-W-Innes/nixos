@@ -41,4 +41,9 @@
   environment.shells = with pkgs; [ zsh ];
   environment.systemPackages = with pkgs; [ git ];
   fonts.packages = with pkgs; [ nerd-fonts.roboto-mono ];
+  qt = {
+    enable = true;
+    platformTheme = "gnome";
+    style = "adwaita-dark";
+  };
 }
