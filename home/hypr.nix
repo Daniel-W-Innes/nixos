@@ -10,6 +10,12 @@
     kdePackages.qtsvg
   ];
   programs = {
+    alacritty = {
+      enable = true;
+      settings = {
+        window.opacity = 0.8;
+      };
+    };
     swaylock.enable = true;
     waybar.enable = true;
   };
