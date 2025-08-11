@@ -1,4 +1,4 @@
-{ self, config, ... }:
+{ ... }:
 
 {
   system.autoUpgrade = {
