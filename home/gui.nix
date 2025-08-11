@@ -5,5 +5,6 @@
     firefox
     signal-desktop
     bitwarden
+    protonvpn-gui
   ];
 }
