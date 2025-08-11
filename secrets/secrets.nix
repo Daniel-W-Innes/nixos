@@ -5,7 +5,7 @@ let
   systems = [ ];
 in
 {
-  "main.age" = {
+  "wifi.age" = {
     publicKeys = users ++ systems;
     armor = true;
   };
