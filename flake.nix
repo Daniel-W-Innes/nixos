@@ -51,6 +51,7 @@
             ./onion/configuration.nix
             ./generic/configuration.nix
             ./virt/podman.nix
+            ./generic/autoUpgrade.nix
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
@@ -70,6 +71,7 @@
             ./cucamelon/configuration.nix
             ./generic/configuration.nix
             ./virt/podman.nix
+            ./generic/autoUpgrade.nix
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
