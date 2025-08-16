@@ -4,6 +4,7 @@
   home.packages = with pkgs; [
     lynx
     nnn # terminal file manager
+    pre-commit
 
     # archives
     zip
