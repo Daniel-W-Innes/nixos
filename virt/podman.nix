@@ -11,6 +11,8 @@
     oci-containers.backend = "podman";
   };
 
+  networking.firewall.interfaces."podman+".allowedUDPPorts = [ 53 ];
+
   environment.systemPackages = with pkgs; [
     dive
     podman-tui
