@@ -8,5 +8,6 @@
     ./hypr.nix
     ./gui.nix
     # ./gpg.nix
+    ./nvim.nix
   ];
 }
