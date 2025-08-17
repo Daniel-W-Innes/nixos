@@ -73,6 +73,7 @@
             ./cucamelon/configuration.nix
             ./generic/configuration.nix
             ./virt/podman.nix
+            ./secrets/mount.nix
             ./generic/autoUpgrade.nix
             home-manager.nixosModules.home-manager
             {

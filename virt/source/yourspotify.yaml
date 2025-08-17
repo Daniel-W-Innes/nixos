@@ -1,0 +1,27 @@
+services:
+  mongo:
+    container_name: mongo
+    image: mongo:6
+    restart: always
+    volumes:
+      - /mnt/main/Storage/Apps/YourSpotify/DB:/data/db
+  server:
+    depends_on:
+      - mongo
+    environment:
+      API_ENDPOINT: http://pumpkin.lc.brotherwolf.ca:9990
+      CLIENT_ENDPOINT: http://pumpkin.lc.brotherwolf.ca:8030
+    image: yooooomi/your_spotify_server
+    links:
+      - mongo
+    ports:
+      - '9990:8080'
+    restart: always
+  web:
+    environment:
+      API_ENDPOINT: http://pumpkin.lc.brotherwolf.ca:9990
+    image: yooooomi/your_spotify_client
+    ports:
+      - '8030:3000'
+    restart: always
+
