@@ -42,7 +42,6 @@
 
     # nix related
     nh
-    agenix-cli
 
     btop # replacement of htop/nmon
     iotop # io monitoring
