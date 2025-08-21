@@ -56,4 +56,9 @@
     openFirewall = true;
     firewallFilter = "-i br0 -p tcp -m tcp --dport 9100";
   };
+  services.iperf3 = {
+    enable = true;
+    openFirewall = true;
+    port = 5201;
+  };
 }
