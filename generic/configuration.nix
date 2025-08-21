@@ -6,7 +6,11 @@
     "nix-command"
     "flakes"
   ];
-  networking.networkmanager.enable = true;
+  networking = {
+    networkmanager.enable = true;
+    nftables.enable = true;
+    firewall.enable = true;
+  };
   time.timeZone = "America/Toronto";
   i18n.defaultLocale = "en_CA.UTF-8";
   services = {
