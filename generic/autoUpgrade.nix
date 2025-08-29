@@ -3,7 +3,7 @@
 {
   system.autoUpgrade = {
     enable = true;
-    flake = "/home/daniel/repos/nixos";
+    flake = "github:Daniel-W-Innes/nixos";
     dates = "18:00";
     randomizedDelaySec = "45min";
   };
