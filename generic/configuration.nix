@@ -6,6 +6,7 @@
     "nix-command"
     "flakes"
   ];
+  nix.settings.auto-optimise-store = true;
   networking = {
     networkmanager.enable = true;
     nftables.enable = true;
