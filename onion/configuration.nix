@@ -20,7 +20,6 @@
     devices = [
       {device = "/dev/sda";}
       {device = "/dev/sdb";}
-      {device = "/dev/sdc";}
       {device = "/dev/nvme0n1";}
       {device = "/dev/nvme1n1";}
     ];
