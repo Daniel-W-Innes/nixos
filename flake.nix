@@ -51,7 +51,7 @@
             ./onion/configuration.nix
             ./generic/configuration.nix
             ./virt/podman.nix
-            ./virt/server.nix
+            #./virt/server.nix
             ./generic/autoUpgrade.nix
             home-manager.nixosModules.home-manager
             {
