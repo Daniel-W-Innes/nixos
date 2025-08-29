@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
   imports = [
@@ -32,6 +32,9 @@
     dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
     localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
   };
+
+  hardware.keyboard.zsa.enable = true;
+  environment.systemPackages = with pkgs; [ keymapp ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
