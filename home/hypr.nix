@@ -19,7 +19,6 @@
     swaylock.enable = true;
     waybar.enable = true;
   };
-
   xdg.configFile = {
     "waybar/config.jsonc".source = ./hyprland/waybar/config.jsonc;
     "waybar/style.css".source = ./hyprland/waybar/style.css;

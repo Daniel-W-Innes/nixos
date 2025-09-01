@@ -49,10 +49,8 @@
             #sops-nix.nixosModules.sops
             agenix.nixosModules.default
             ./onion/configuration.nix
-            ./generic/configuration.nix
+            ./generic/all.nix
             ./virt/podman.nix
-            #./virt/server.nix
-            ./generic/autoUpgrade.nix
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
@@ -71,8 +69,8 @@
             agenix.nixosModules.default
             ./cucamelon/configuration.nix
             ./generic/configuration.nix
+            ./generic/displayManager.nix
             ./virt/podman.nix
-            ./generic/autoUpgrade.nix
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
