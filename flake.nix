@@ -68,8 +68,7 @@
             #sops-nix.nixosModules.sops
             agenix.nixosModules.default
             ./cucamelon/configuration.nix
-            ./generic/configuration.nix
-            ./generic/displayManager.nix
+            ./generic/all.nix
             ./virt/podman.nix
             home-manager.nixosModules.home-manager
             {
