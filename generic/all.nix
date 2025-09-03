@@ -2,7 +2,9 @@
 
 {
   imports = [
-    ./configuration.nix
+    ./min.nix
+    ./hypr.nix
+    ./iperf.nix
     ./displayManager.nix
   ];
 }

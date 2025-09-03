@@ -24,10 +24,6 @@
     };
   };
   programs = {
-    hyprland = {
-      enable = true;
-      xwayland.enable = true;
-    };
     vim = {
       enable = true;
       defaultEditor = true;
@@ -46,20 +42,10 @@
   environment.shells = with pkgs; [ zsh ];
   environment.systemPackages = with pkgs; [ git ];
   fonts.packages = with pkgs; [ nerd-fonts.roboto-mono ];
-  qt = {
-    enable = true;
-    platformTheme = "gnome";
-    style = "adwaita-dark";
-  };
   services.prometheus.exporters.node = {
     enable = true;
     port = 9100;
     openFirewall = true;
     firewallFilter = "-i br0 -p tcp -m tcp --dport 9100";
-  };
-  services.iperf3 = {
-    enable = true;
-    openFirewall = true;
-    port = 5201;
   };
 }
