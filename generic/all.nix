@@ -6,5 +6,6 @@
     ./hypr.nix
     ./iperf.nix
     ./displayManager.nix
+    ./prometheus.nix
   ];
 }
