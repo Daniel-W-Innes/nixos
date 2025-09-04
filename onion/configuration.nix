@@ -18,10 +18,10 @@
   services.smartd = {
     enable = true;
     devices = [
-      {device = "/dev/sda";}
-      {device = "/dev/sdb";}
-      {device = "/dev/nvme0n1";}
-      {device = "/dev/nvme1n1";}
+      { device = "/dev/sda"; }
+      { device = "/dev/sdb"; }
+      { device = "/dev/nvme0n1"; }
+      { device = "/dev/nvme1n1"; }
     ];
   };
 
