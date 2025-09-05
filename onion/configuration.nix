@@ -29,6 +29,7 @@
   hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
+    prime.offload.enable = false;
     modesetting.enable = true;
     powerManagement.enable = false;
     powerManagement.finegrained = false;

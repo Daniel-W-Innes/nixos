@@ -54,6 +54,9 @@
           modules = [
             #sops-nix.nixosModules.sops
             agenix.nixosModules.default
+            nixos-hardware.nixosModules.common-pc-ssd
+            nixos-hardware.nixosModules.common-cpu-intel
+            nixos-hardware.nixosModules.common-gpu-nvidia
             ./onion/configuration.nix
             ./generic/all.nix
             ./virt/podman.nix
@@ -74,7 +77,6 @@
             nixos-hardware.nixosModules.common-pc-laptop-ssd
             nixos-hardware.nixosModules.common-cpu-intel
             nixos-hardware.nixosModules.common-gpu-intel
-            #sops-nix.nixosModules.sops
             agenix.nixosModules.default
             ./cucamelon/configuration.nix
             ./generic/all.nix
