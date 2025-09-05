@@ -20,6 +20,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     #sops-nix = {
     #  url = "github:Mic92/sops-nix";
     #  inputs.nixpkgs.follows = "nixpkgs";
@@ -38,6 +43,7 @@
       lanzaboote,
       home-manager,
       nix-index-database,
+      nixos-hardware,
       ...
     }:
     {
@@ -65,6 +71,7 @@
           system = "x86_64-linux";
           modules = [
             lanzaboote.nixosModules.lanzaboote
+            nixos-hardware.nixosModules.common-pc-laptop-ssd
             #sops-nix.nixosModules.sops
             agenix.nixosModules.default
             ./cucamelon/configuration.nix
