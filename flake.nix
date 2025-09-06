@@ -65,14 +65,14 @@
           system = "x86_64-linux";
           modules = [
             disko.nixosModules.disko
-            { disko.devices.disk.disk1.device = "/dev/vda"; }
+            { disko.devices.disk.main.device = "/dev/vda"; }
             ./turnip/configuration.nix
             ./generic/min.nix
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.users.daniel = import ./home/min.nix;
+              home-manager.users.daniel = import ./home/server.nix;
             }
             nix-index-database.nixosModules.nix-index
             { programs.nix-index-database.comma.enable = true; }

@@ -7,16 +7,17 @@
 {
   imports = [
     # Include the results of the hardware scan.
-    ./hardware-configuration.nix
+    ./disko-config.nix
   ];
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "turnip"; # Define your hostname.
 
-  services.smartd = {
-    enable = true;
-    devices = [ { device = "/dev/sda"; } ];
-  };
+  services.openssh.enable = true;
+
+  users.users.daniel.openssh.authorizedKeys.keys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHj7eEivrU4ow1BNNimeqqdTrvvs3S/NBqmqFPF6jnQu daniel@cucamelon"
+  ];
 
   # This value determines the NixOS release fr:om which the default
   # settings for stateful data, like file locations and database versions
