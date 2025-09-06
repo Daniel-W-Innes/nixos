@@ -66,6 +66,8 @@
           modules = [
             disko.nixosModules.disko
             { disko.devices.disk.main.device = "/dev/vda"; }
+            nixos-facter-modules.nixosModules.facter
+            { config.facter.reportPath = ./turnip/facter.json; }
             ./turnip/configuration.nix
             ./generic/min.nix
             home-manager.nixosModules.home-manager
