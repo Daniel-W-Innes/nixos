@@ -25,6 +25,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixos-facter-modules = {
+      url = "github:numtide/nixos-facter-modules";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     #sops-nix = {
     #  url = "github:Mic92/sops-nix";
     #  inputs.nixpkgs.follows = "nixpkgs";
@@ -44,6 +49,7 @@
       home-manager,
       nix-index-database,
       nixos-hardware,
+      nixos-facter-modules,
       ...
     }:
     {
@@ -74,10 +80,9 @@
           system = "x86_64-linux";
           modules = [
             lanzaboote.nixosModules.lanzaboote
-            nixos-hardware.nixosModules.common-pc-laptop-ssd
-            nixos-hardware.nixosModules.common-cpu-intel
-            nixos-hardware.nixosModules.common-gpu-intel
             agenix.nixosModules.default
+            nixos-facter-modules.nixosModules.facter
+            { config.facter.reportPath = ./cucamelon/facter.json; }
             ./cucamelon/configuration.nix
             ./generic/all.nix
             ./virt/podman.nix
