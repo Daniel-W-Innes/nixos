@@ -85,9 +85,8 @@
           modules = [
             #sops-nix.nixosModules.sops
             agenix.nixosModules.default
-            nixos-hardware.nixosModules.common-pc-ssd
-            nixos-hardware.nixosModules.common-cpu-intel
-            nixos-hardware.nixosModules.common-gpu-nvidia
+            nixos-facter-modules.nixosModules.facter
+            { config.facter.reportPath = ./onion/facter.json; }
             ./onion/configuration.nix
             ./generic/all.nix
             ./virt/podman.nix
