@@ -20,11 +20,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixos-hardware = {
-      url = "github:NixOS/nixos-hardware/master";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nixos-facter-modules = {
       url = "github:numtide/nixos-facter-modules";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -53,7 +48,6 @@
       lanzaboote,
       home-manager,
       nix-index-database,
-      nixos-hardware,
       disko,
       nixos-facter-modules,
       ...
