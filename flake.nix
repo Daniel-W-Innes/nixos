@@ -88,7 +88,7 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.users.daniel = import ./home/laptop.nix;
+              home-manager.users.daniel = import ./home/desktop.nix;
             }
             nix-index-database.nixosModules.nix-index
             { programs.nix-index-database.comma.enable = true; }

@@ -8,5 +8,6 @@
     ./term.nix
     ./hypr.nix
     ./gui.nix
+    ./steam.nix
   ];
 }
