@@ -64,6 +64,7 @@
             { config.facter.reportPath = ./turnip/facter.json; }
             ./turnip/configuration.nix
             ./generic/min.nix
+            ./generic/ssh.nix
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;

@@ -7,5 +7,6 @@
     ./iperf.nix
     ./displayManager.nix
     ./prometheus.nix
+    ./ssh.nix
   ];
 }
