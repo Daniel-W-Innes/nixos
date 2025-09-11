@@ -20,6 +20,7 @@
     builder = {
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILIDUFABBp2m+PBPjFLgfxl/wMqJCPFrRo6IdaZBjXak root@cucamelon"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKJ/3supKCAMepABGirEn8gvoJ2Iv/zw/8Bw3oJxydxU root@cucamelon"
       ];
       isNormalUser = true;
       description = "Distributed build";
