@@ -6,6 +6,5 @@
     signal-desktop
     bitwarden
     protonvpn-gui
-    util-linux
   ];
 }
