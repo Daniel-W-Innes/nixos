@@ -6,6 +6,6 @@
     signal-desktop
     bitwarden
     protonvpn-gui
-    partitionmanager
+    kdePackages.partitionmanager
   ];
 }
