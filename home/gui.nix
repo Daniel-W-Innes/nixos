@@ -6,5 +6,6 @@
     signal-desktop
     bitwarden
     protonvpn-gui
+    discord
   ];
 }
