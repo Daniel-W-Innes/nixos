@@ -21,7 +21,7 @@
     "usb_storage"
     "sd_mod"
   ];
-  boot.initrd.kernelModules = [ "dm-snapshot" ];
+  boot.initrd.kernelModules = [ "dm-snapshot" "dm-mirror" ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
@@ -52,6 +52,11 @@
 
   fileSystems."/home/daniel/Documents" = {
     device = "/dev/disk/by-uuid/98732021-a852-4977-9183-e444c6312c18";
+    fsType = "btrfs";
+  };
+
+  fileSystems."/home/daniel" = {
+    device = "/dev/disk/by-uuid/9d67d240-730b-4763-b43e-3f65f4cdf2cd";
     fsType = "btrfs";
   };
 
