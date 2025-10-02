@@ -7,5 +7,6 @@
     bitwarden
     protonvpn-gui
     discord
+    spotify
   ];
 }
