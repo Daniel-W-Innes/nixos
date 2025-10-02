@@ -45,10 +45,10 @@
     ];
   };
 
-  fileSystems."/home/daniel" = {
-    device = "/dev/disk/by-uuid/9d67d240-730b-4763-b43e-3f65f4cdf2cd";
-    fsType = "btrfs";
-  };
+  #fileSystems."/home/daniel" = {
+  #  device = "/dev/disk/by-uuid/9d67d240-730b-4763-b43e-3f65f4cdf2cd";
+  #  fsType = "btrfs";
+  #};
 
   fileSystems."/home/daniel/games" = {
     device = "/dev/disk/by-uuid/92aa571b-c395-4e3b-8370-4a34cde82c16";
