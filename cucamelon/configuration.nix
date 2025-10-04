@@ -14,6 +14,7 @@
   boot.initrd.luks.devices."luks-a907665e-4d88-43ce-bc1e-4deee8ce9eab".device =
     "/dev/disk/by-uuid/a907665e-4d88-43ce-bc1e-4deee8ce9eab";
   networking.hostName = "cucamelon"; # Define your hostname.
+  nixpkgs.config.allowUnfree = true;
   powerManagement.enable = true;
   services.thermald.enable = true;
   services.tlp = {
