@@ -38,6 +38,11 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nvf = {
+      url = "github:NotAShelf/nvf";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -50,6 +55,7 @@
       nix-index-database,
       disko,
       nixos-facter-modules,
+      nvf,
       ...
     }:
     {
@@ -82,6 +88,7 @@
             agenix.nixosModules.default
             nixos-facter-modules.nixosModules.facter
             { config.facter.reportPath = ./onion/facter.json; }
+            nvf.nixosModules.default
             ./onion/configuration.nix
             ./generic/all.nix
             ./virt/podman.nix
@@ -102,6 +109,7 @@
             agenix.nixosModules.default
             nixos-facter-modules.nixosModules.facter
             { config.facter.reportPath = ./cucamelon/facter.json; }
+            nvf.nixosModules.default
             ./cucamelon/configuration.nix
             ./generic/all.nix
             ./virt/podman.nix

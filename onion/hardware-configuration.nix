@@ -21,7 +21,10 @@
     "usb_storage"
     "sd_mod"
   ];
-  boot.initrd.kernelModules = [ "dm-snapshot" "dm-mirror" ];
+  boot.initrd.kernelModules = [
+    "dm-snapshot"
+    "dm-mirror"
+  ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
