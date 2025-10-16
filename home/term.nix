@@ -5,6 +5,7 @@
     lynx
     nnn # terminal file manager
     pre-commit
+    dstask
 
     # archives
     zip
