@@ -84,6 +84,7 @@
             { config.facter.reportPath = ./onion/facter.json; }
             ./onion/configuration.nix
             ./generic/all.nix
+            ./generic/borg.nix
             ./virt/podman.nix
             home-manager.nixosModules.home-manager
             {
