@@ -30,21 +30,23 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    #sops-nix = {
-    #  url = "github:Mic92/sops-nix";
-    #  inputs.nixpkgs.follows = "nixpkgs";
-    #};
     agenix = {
       url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    agenix-rekey = {
+      url = "github:oddlama/agenix-rekey";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
   outputs =
     {
+      self,
       nixpkgs,
-      #sops-nix,
       agenix,
+      agenix-rekey,
       lanzaboote,
       home-manager,
       nix-index-database,
@@ -78,8 +80,8 @@
         onion = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
-            #sops-nix.nixosModules.sops
             agenix.nixosModules.default
+            agenix-rekey.nixosModules.default
             nixos-facter-modules.nixosModules.facter
             { config.facter.reportPath = ./onion/facter.json; }
             ./onion/configuration.nix
@@ -100,6 +102,7 @@
           modules = [
             lanzaboote.nixosModules.lanzaboote
             agenix.nixosModules.default
+            agenix-rekey.nixosModules.default
             nixos-facter-modules.nixosModules.facter
             { config.facter.reportPath = ./cucamelon/facter.json; }
             ./cucamelon/configuration.nix
@@ -132,6 +135,10 @@
             { programs.nix-index-database.comma.enable = true; }
           ];
         };
+      };
+      agenix-rekey = agenix-rekey.configure {
+        userFlake = self;
+        nixosConfigurations = self.nixosConfigurations;
       };
     };
 }
