@@ -32,7 +32,9 @@
     git = {
       enable = true;
       config = {
-        push = { autoSetupRemote = true; };
+        push = {
+          autoSetupRemote = true;
+        };
       };
     };
   };
