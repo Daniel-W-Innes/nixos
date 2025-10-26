@@ -10,9 +10,6 @@
       enable = true;
       userName = "Daniel Innes";
       userEmail = "daniel@brotherwolf.ca";
-      config = {
-        push = { autoSetupRemote = true; };
-      };
     };
 
     starship = {

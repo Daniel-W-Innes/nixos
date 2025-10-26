@@ -29,6 +29,12 @@
       defaultEditor = true;
     };
     zsh.enable = true;
+    git = {
+      enable = true;
+      config = {
+        push = { autoSetupRemote = true; };
+      };
+    };
   };
   users.users.daniel = {
     isNormalUser = true;
