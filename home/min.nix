@@ -26,9 +26,6 @@
       enable = true;
       enableCompletion = true;
       syntaxHighlighting.enable = true;
-      shellAliases = {
-        nixr = "nh os switch -a github:Daniel-W-Innes/nixos";
-      };
       oh-my-zsh = {
         enable = true;
         plugins = [
