@@ -7,7 +7,7 @@
     ];
 
     profiles = {
-      Starlink = {
+      FruitSalad = {
         connection = {
           id = "fruit_salad";
           type = "wifi";
