@@ -104,6 +104,8 @@
             { config.facter.reportPath = ./cucamelon/facter.json; }
             ./cucamelon/configuration.nix
             ./generic/all.nix
+            ./secrets/age.nix
+            ./generic/wifi.nix
             ./virt/podman.nix
             home-manager.nixosModules.home-manager
             {
