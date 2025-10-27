@@ -83,6 +83,7 @@
             nixos-facter-modules.nixosModules.facter
             { config.facter.reportPath = ./onion/facter.json; }
             ./onion/configuration.nix
+            ./secrets/age.nix
             ./generic/all.nix
             ./virt/podman.nix
             home-manager.nixosModules.home-manager
@@ -103,9 +104,8 @@
             nixos-facter-modules.nixosModules.facter
             { config.facter.reportPath = ./cucamelon/facter.json; }
             ./cucamelon/configuration.nix
-            ./generic/all.nix
             ./secrets/age.nix
-            ./generic/wifi.nix
+            ./generic/all.nix
             ./virt/podman.nix
             home-manager.nixosModules.home-manager
             {
