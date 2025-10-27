@@ -8,5 +8,6 @@
     ./displayManager.nix
     ./prometheus.nix
     ./ssh.nix
+    ./wifi.nix
   ];
 }
