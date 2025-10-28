@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -45,6 +45,11 @@
       "networkmanager"
       "wheel"
     ];
+  };
+  users.users.testing = {
+    isNormalUser = true;
+    description = "Testing";
+    hashedPasswordFile = config.age.secrets.user-daniel.path;
   };
   users.defaultUserShell = pkgs.zsh;
   environment.shells = with pkgs; [ zsh ];

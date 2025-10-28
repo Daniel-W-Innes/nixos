@@ -14,4 +14,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "user-daniel.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
