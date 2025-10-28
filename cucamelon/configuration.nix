@@ -9,6 +9,7 @@
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     # ./distributedBuild.nix
+    ./disko-config.nix
   ];
   boot.loader.efi.canTouchEfiVariables = true;
   boot.initrd.luks.devices."luks-a907665e-4d88-43ce-bc1e-4deee8ce9eab".device =

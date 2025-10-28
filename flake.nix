@@ -94,6 +94,8 @@
           system = "x86_64-linux";
           modules = [
             lanzaboote.nixosModules.lanzaboote
+            disko.nixosModules.disko
+            { disko.devices.disk.main.device = "/dev/sda"; }
             agenix.nixosModules.default
             nixos-facter-modules.nixosModules.facter
             { config.facter.reportPath = ./cucamelon/facter.json; }
