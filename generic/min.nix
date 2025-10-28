@@ -39,17 +39,13 @@
     };
   };
   users.users.daniel = {
+    hashedPasswordFile = config.age.secrets.user-daniel.path;
     isNormalUser = true;
     description = "Daniel Innes";
     extraGroups = [
       "networkmanager"
       "wheel"
     ];
-  };
-  users.users.testing = {
-    isNormalUser = true;
-    description = "Testing";
-    hashedPasswordFile = config.age.secrets.user-daniel.path;
   };
   users.defaultUserShell = pkgs.zsh;
   environment.shells = with pkgs; [ zsh ];
