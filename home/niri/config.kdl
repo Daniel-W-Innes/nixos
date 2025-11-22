@@ -31,13 +31,6 @@ layout {
         active-color "#7fc8ff"
         inactive-color "#505050"
     }
-    shadow {
-        off
-        softness 30
-        spread 5
-        offset x=0 y=5
-        color "#0007"
-    }
 }
 spawn-at-startup "mako"
 spawn-at-startup "waybar"
