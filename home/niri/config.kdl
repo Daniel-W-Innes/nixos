@@ -45,6 +45,7 @@ layout {
         color "#0007"
     }
 }
+spawn-at-startup "mako"
 spawn-at-startup "waybar"
 hotkey-overlay {
     skip-at-startup
