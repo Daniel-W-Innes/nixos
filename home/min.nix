@@ -39,4 +39,5 @@
       history.expireDuplicatesFirst = true;
     };
   };
+  services.ssh-agent.enable = true;
 }
