@@ -6,7 +6,7 @@
     ./dark.nix
     ./min.nix
     ./term.nix
-    ./hypr.nix
+    ./niri.nix
     ./gui.nix
     ./steam.nix
   ];

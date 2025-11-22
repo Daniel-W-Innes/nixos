@@ -3,12 +3,10 @@
 {
   home.packages = with pkgs; [
     wl-clipboard
-    alacritty
-    wofi
-    kdePackages.qtsvg
+    swaybg
   ];
   programs = {
-    alacritty = {
+   alacritty = {
       enable = true;
       settings = {
         window.opacity = 0.8;
@@ -16,11 +14,15 @@
     };
     swaylock.enable = true;
     waybar.enable = true;
+    fuzzel.enable = true;
   };
-  services.hyprpolkitagent.enable = true;
+  services = {
+    hyprpolkitagent.enable = true;
+    mako.enable = true;
+  };
   xdg.configFile = {
     "waybar/config.jsonc".source = ./hyprland/waybar/config.jsonc;
     "waybar/style.css".source = ./hyprland/waybar/style.css;
-    "hypr/hyprland.conf".source = ./hyprland/hyprland.conf;
-  };
+    "niri/config.kdl".source = ./niri/config.kdl;
+  }; 
 }
