@@ -31,14 +31,8 @@ layout {
         active-color "#7fc8ff"
         inactive-color "#505050"
     }
-    border {
-        off
-        width 4
-        active-color "#ffc87f"
-        inactive-color "#505050"
-        urgent-color "#9b0000"
-    }
     shadow {
+        off
         softness 30
         spread 5
         offset x=0 y=5
