@@ -14,6 +14,7 @@
 
     starship = {
       enable = true;
+      enableZshIntegration = true;
       settings = {
         add_newline = false;
         aws.disabled = true;
@@ -22,22 +23,20 @@
       };
     };
 
+    zoxide = {
+      enable = true;
+      enableZshIntegration = true;
+      options = [ "--cmd cd" ];
+    };
+
     zsh = {
       enable = true;
       enableCompletion = true;
+      autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
-      oh-my-zsh = {
-        enable = true;
-        plugins = [
-          "git"
-          "starship"
-          "sudo"
-          "ssh-agent"
-          "podman"
-          "gh"
-        ];
-        theme = "random";
-      };
+      history.append = true;
+      history.save = 1000000;
+      history.expireDuplicatesFirst = true;
     };
   };
 }
