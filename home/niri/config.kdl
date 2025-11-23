@@ -13,13 +13,6 @@ cursor {
     hide-after-inactive-ms 1000
 }
 
-/-output "eDP-1" {
-    mode "2560x1440"
-    scale 2
-    transform "normal"
-    position x=1280 y=0
-}
-
 layout {
     gaps 0
     center-focused-column "never"
@@ -38,35 +31,27 @@ layout {
         inactive-color "#505050"
     }
 }
+
 spawn-at-startup "mako"
 spawn-at-startup "waybar"
 spawn-at-startup "swaybg" "-i" "~/.config/wallpapers/forgeworld_by_martechi.png" "-m" "fill"
 spawn-at-startup "xwayland-satellite"
+
 hotkey-overlay {
     skip-at-startup
 }
+
 screenshot-path "~/Pictures/Screenshots/%Y-%m-%d_%H-%M-%S-%f.png"
+
 layer-rule {
     match namespace="^wallpaper$"
     place-within-backdrop true
 }
 window-rule {
-    match app-id=r#"^org\.wezfurlong\.wezterm$"#
-    default-column-width {}
-}
-window-rule {
     match app-id=r#"firefox$"# title="^Picture-in-Picture$"
     open-floating true
 }
-/-window-rule {
-    match app-id=r#"^org\.keepassxc\.KeePassXC$"#
-    match app-id=r#"^org\.gnome\.World\.Secrets$"#
-    block-out-from "screen-capture"
-}
-/-window-rule {
-    geometry-corner-radius 12
-    clip-to-geometry true
-}
+
 binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
     Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
