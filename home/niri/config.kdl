@@ -40,7 +40,7 @@ layout {
 }
 spawn-at-startup "mako"
 spawn-at-startup "waybar"
-spawn-at-startup "swaybg -i ~/.config/wallpapers/forgeworld_by_martechi.png -m fill"
+spawn-at-startup "swaybg" "-i" "~/.config/wallpapers/forgeworld_by_martechi.png" "-m" "fill"
 hotkey-overlay {
     skip-at-startup
 }
