@@ -3,7 +3,9 @@
     "modules-left": [
         "niri/workspaces"
     ],
-    "modules-center": [],
+    "modules-center": [
+        "niri/window"
+    ],
     "modules-right": [
         "pulseaudio",
         "network",
