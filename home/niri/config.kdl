@@ -23,6 +23,7 @@ cursor {
 layout {
     gaps 0
     center-focused-column "never"
+    background-color "transparent"
     preset-column-widths {
         proportion 0.25
         proportion 0.33333
@@ -39,6 +40,7 @@ layout {
 }
 spawn-at-startup "mako"
 spawn-at-startup "waybar"
+spawn-at-startup "swaybg -i ~/.config/wallpapers/forgeworld_by_martechi.png -m fill"
 hotkey-overlay {
     skip-at-startup
 }
