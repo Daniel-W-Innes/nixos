@@ -2,7 +2,7 @@
 
 {
   programs.niri.enable = true;
-  environment.systemPackages = with pkgs; [ 
+  environment.systemPackages = with pkgs; [
     xwayland-satellite
   ];
   qt = {
