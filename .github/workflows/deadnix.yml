@@ -1,14 +1,17 @@
 name: NixOS Dead code analysis
-on: [push]
+on: 
+  push:
+    paths:
+      - '**.nix'
 
 jobs:
   deadnix:
     name: Deadnix
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: cachix/install-nix-action@v31
       - uses: cachix/cachix-action@v16
         with:
           name: deadnix
-      - uses: astro/deadnix-action@main
+      - uses: astro/deadnix-action@v1
