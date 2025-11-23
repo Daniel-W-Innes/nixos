@@ -9,7 +9,7 @@ input {
 }
 
 cursor {
-    xcursor-size 24
+    xcursor-size 12
     hide-after-inactive-ms 1000
 }
 
