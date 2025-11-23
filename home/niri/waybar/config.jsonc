@@ -1,7 +1,7 @@
 {
     "spacing": 2,
     "modules-left": [
-        "wlr/taskbar"
+        "niri/workspaces"
     ],
     "modules-center": [],
     "modules-right": [
