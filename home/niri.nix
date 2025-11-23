@@ -25,5 +25,6 @@
     "waybar/config.jsonc".source = ./hyprland/waybar/config.jsonc;
     "waybar/style.css".source = ./hyprland/waybar/style.css;
     "niri/config.kdl".source = ./niri/config.kdl;
+    "wallpapers/forgeworld_by_martechi.png".source = ./niri/forgeworld_by_martechi.png;
   }; 
 }
