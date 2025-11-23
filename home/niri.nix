@@ -22,8 +22,8 @@
     mako.enable = true;
   };
   xdg.configFile = {
-    "waybar/config.jsonc".source = ./hyprland/waybar/config.jsonc;
-    "waybar/style.css".source = ./hyprland/waybar/style.css;
+    "waybar/config.jsonc".source = ./niri/waybar/config.jsonc;
+    "waybar/style.css".source = ./niri/waybar/style.css;
     "niri/config.kdl".source = ./niri/config.kdl;
     "fuzzel/fuzzel.ini".source = ./niri/fuzzel.ini;
     "wallpapers/forgeworld_by_martechi.png".source = ./niri/forgeworld_by_martechi.png;
