@@ -45,7 +45,7 @@ spawn-at-startup "xwayland-satellite"
 hotkey-overlay {
     skip-at-startup
 }
-screenshot-path "~/Pictures/Screenshots/%Y-%m-%dT%H_%M_%S_%f.png"
+screenshot-path "~/Pictures/Screenshots/%Y-%m-%d_%H-%M-%S-%f.png"
 layer-rule {
     match namespace="^wallpaper$"
     place-within-backdrop true
