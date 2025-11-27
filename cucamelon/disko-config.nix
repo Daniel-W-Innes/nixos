@@ -7,7 +7,7 @@
           type = "gpt";
           partitions = {
             ESP = {
-              size = "10G";
+              size = "1G";
               type = "EF00";
               content = {
                 type = "filesystem";
@@ -21,7 +21,6 @@
               content = {
                 type = "swap";
                 randomEncryption = true;
-                resumeDevice = true;
               };
             };
             luks = {
