@@ -8,6 +8,7 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ./networking.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
