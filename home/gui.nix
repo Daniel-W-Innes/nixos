@@ -4,7 +4,7 @@
   home.packages = with pkgs; [
     firefox
     signal-desktop
-    bitwarden
+    bitwarden-desktop
     protonvpn-gui
     discord
     spotify
