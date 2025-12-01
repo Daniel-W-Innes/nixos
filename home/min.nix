@@ -8,8 +8,10 @@
   programs = {
     git = {
       enable = true;
-      userName = "Daniel Innes";
-      userEmail = "daniel@brotherwolf.ca";
+      settings.user = {
+        name = "Daniel Innes";
+        email = "daniel@brotherwolf.ca";
+      };
     };
 
     starship = {
