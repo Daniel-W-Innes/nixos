@@ -13,4 +13,5 @@
     platformTheme = "gnome";
     style = "adwaita-dark";
   };
+  xdg.portal.enable = false;
 }
