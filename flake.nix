@@ -54,7 +54,13 @@
         hooks = {
           deadnix.enable = true;
           nil.enable = true;
-          statix.enable = true;
+          statix = {
+            enable = true;
+            settings.ignore = [
+              "**/hardware-configuration.nix"
+              "virt/gen"
+            ];
+          };
 
           ripsecrets.enable = true;
           trufflehog.enable = true;
@@ -83,9 +89,11 @@
             ./virt/podman.nix
             home-manager.nixosModules.home-manager
             {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.daniel = import ./home/desktop.nix;
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                users.daniel = import ./home/desktop.nix;
+              };
             }
             nix-index-database.nixosModules.nix-index
             { programs.nix-index-database.comma.enable = true; }
@@ -104,9 +112,11 @@
             ./virt/podman.nix
             home-manager.nixosModules.home-manager
             {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.daniel = import ./home/laptop.nix;
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                users.daniel = import ./home/laptop.nix;
+              };
             }
             (
               { pkgs, lib, ... }:

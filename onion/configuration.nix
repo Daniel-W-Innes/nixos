@@ -25,16 +25,19 @@
     ];
   };
 
-  # nvidia
-  hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
-  hardware.nvidia = {
-    prime.offload.enable = false;
-    modesetting.enable = true;
-    powerManagement.enable = false;
-    powerManagement.finegrained = false;
-    open = false;
-    nvidiaSettings = true;
+
+  hardware = {
+    graphics.enable = true;
+    nvidia = {
+      prime.offload.enable = false;
+      modesetting.enable = true;
+      powerManagement.enable = false;
+      powerManagement.finegrained = false;
+      open = false;
+      nvidiaSettings = true;
+    };
+    keyboard.zsa.enable = true;
   };
 
   programs.steam = {
@@ -44,7 +47,6 @@
     localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
   };
 
-  hardware.keyboard.zsa.enable = true;
   environment.systemPackages = with pkgs; [
     keymapp
     r2modman
