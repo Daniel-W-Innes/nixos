@@ -29,6 +29,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    pre-commit-hooks = {
+      url = "github:cachix/pre-commit-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -37,6 +42,7 @@
 
   outputs =
     {
+      self,
       nixpkgs,
       agenix,
       lanzaboote,
@@ -44,10 +50,17 @@
       nix-index-database,
       disko,
       nixos-facter-modules,
+      pre-commit-hooks,
       ...
     }:
     {
       formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt-tree;
+      checks.x86_64-linux = pre-commit-hooks.lib.x86_64-linux.run {
+        src = self;
+        hooks = {
+          deadnix = true;
+        };
+      };
       nixosConfigurations = {
         turnip = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
