@@ -36,9 +36,11 @@
       enableCompletion = true;
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
-      history.append = true;
-      history.save = 1000000;
-      history.expireDuplicatesFirst = true;
+      history = {
+        append = true;
+        save = 1000000;
+        expireDuplicatesFirst = true;
+      };
     };
   };
   services.ssh-agent.enable = true;
