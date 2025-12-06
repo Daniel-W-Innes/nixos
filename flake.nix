@@ -24,11 +24,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    disko = {
-      url = "github:nix-community/disko";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -48,40 +43,30 @@
       lanzaboote,
       home-manager,
       nix-index-database,
-      disko,
       nixos-facter-modules,
       pre-commit-hooks,
       ...
     }:
     {
       formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt-tree;
-      checks.x86_64-linux = pre-commit-hooks.lib.x86_64-linux.run {
+      checks.x86_64-linux.pre-commit-check = pre-commit-hooks.lib.x86_64-linux.run {
         src = self;
         hooks = {
-          deadnix = true;
+          deadnix.enable = true;
+          ripsecrets.enable = true;
+          trufflehog.enable = true;
+        };
+        package = nixpkgs.legacyPackages.x86_64-linux.prek;
+      };
+      devShells = {
+        x86_64-linux = {
+          default = nixpkgs.legacyPackages.x86_64-linux.mkShell {
+            inherit (self.checks.x86_64-linux.pre-commit-check) shellHook;
+            buildInputs = self.checks.x86_64-linux.pre-commit-check.enabledPackages;
+          };
         };
       };
       nixosConfigurations = {
-        turnip = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          modules = [
-            disko.nixosModules.disko
-            { disko.devices.disk.main.device = "/dev/vda"; }
-            nixos-facter-modules.nixosModules.facter
-            { config.facter.reportPath = ./turnip/facter.json; }
-            ./turnip/configuration.nix
-            ./generic/min.nix
-            ./generic/ssh.nix
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.daniel = import ./home/server.nix;
-            }
-            nix-index-database.nixosModules.nix-index
-            { programs.nix-index-database.comma.enable = true; }
-          ];
-        };
         onion = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
