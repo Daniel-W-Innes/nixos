@@ -53,6 +53,9 @@
         src = self;
         hooks = {
           deadnix.enable = true;
+          nil.enable = true;
+          statix.enable = true;
+
           ripsecrets.enable = true;
           trufflehog.enable = true;
         };
