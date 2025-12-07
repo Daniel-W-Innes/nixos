@@ -7,5 +7,6 @@ _:
       bigclock = true;
       blank_password = true;
     };
+    x11Support = false;
   };
 }
