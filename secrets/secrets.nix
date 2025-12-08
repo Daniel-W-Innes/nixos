@@ -18,4 +18,12 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "copyparty-daniel.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
+  "copyparty-metrics.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
