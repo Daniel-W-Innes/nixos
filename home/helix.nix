@@ -4,6 +4,7 @@
   home.packages = with pkgs; [
     gcc
     go
+    dlv
     gopls
     gofumpt
   ];
