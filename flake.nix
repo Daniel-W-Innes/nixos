@@ -64,7 +64,7 @@
             enable = true;
             settings.ignore = [
               "**/hardware-configuration.nix"
-              "virt/gen"
+              "**/gen"
             ];
           };
 
