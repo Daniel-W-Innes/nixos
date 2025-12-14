@@ -9,5 +9,6 @@
     ./niri.nix
     ./gui.nix
     ./steam.nix
+    ./helix.nix
   ];
 }
