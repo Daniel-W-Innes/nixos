@@ -7,7 +7,7 @@
   ];
   programs.helix = {
     enable = true;
-    theme = "catppuccin_mocha";
+    settings.theme = "catppuccin_mocha";
     languages = {
       language-server = {
         gopls.command = "gopls";
