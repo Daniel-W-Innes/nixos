@@ -34,7 +34,7 @@ layout {
 
 spawn-at-startup "mako"
 spawn-at-startup "waybar"
-spawn-at-startup "swaybg" "-i" "~/.config/wallpapers/forgeworld_by_martechi.png" "-m" "fill"
+spawn-sh-at-startup "swaybg -i ~/.config/wallpapers/forgeworld_by_martechi.png -m fill"
 spawn-at-startup "xwayland-satellite"
 
 hotkey-overlay {
