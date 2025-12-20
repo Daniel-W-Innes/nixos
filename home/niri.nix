@@ -18,7 +18,7 @@
     fuzzel.enable = true;
   };
   services = {
-    hyprpolkitagent.enable = true;
+    lxqt-policykit-agent.enable = true;
     mako.enable = true;
   };
   xdg.configFile = {
