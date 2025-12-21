@@ -8,5 +8,6 @@
     protonvpn-gui
     discord
     spotify
+    jetbrains.clion
   ];
 }
