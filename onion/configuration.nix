@@ -50,6 +50,7 @@
   environment.systemPackages = with pkgs; [
     keymapp
     r2modman
+    protonup-qt
   ];
 
   # This value determines the NixOS release from which the default
