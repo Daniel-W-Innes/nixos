@@ -31,6 +31,11 @@
       options = [ "--cmd cd" ];
     };
 
+    eza = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+
     zsh = {
       enable = true;
       enableCompletion = true;
