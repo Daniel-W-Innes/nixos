@@ -86,7 +86,7 @@
             ./onion/configuration.nix
             ./secrets/age.nix
             ./generic/all.nix
-            ./virt/podman.nix
+            ./generic/zsa.nix
             home-manager.nixosModules.home-manager
             {
               home-manager = {

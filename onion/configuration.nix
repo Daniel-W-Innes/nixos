@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ pkgs, ... }:
+{ ... }:
 
 {
   imports = [
@@ -25,8 +25,6 @@
     ];
   };
 
-  services.xserver.videoDrivers = [ "nvidia" ];
-
   hardware = {
     graphics.enable = true;
     nvidia = {
@@ -37,21 +35,9 @@
       open = false;
       nvidiaSettings = true;
     };
-    keyboard.zsa.enable = true;
   };
 
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
-  };
-
-  environment.systemPackages = with pkgs; [
-    keymapp
-    r2modman
-    protonup-qt
-  ];
+  services.xserver.videoDrivers = [ "nvidia" ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

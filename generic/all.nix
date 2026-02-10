@@ -9,5 +9,6 @@
     ./prometheus.nix
     ./ssh.nix
     ./wifi.nix
+    ./steam.nix
   ];
 }
