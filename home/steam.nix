@@ -6,5 +6,6 @@
     steamcmd
     r2modman
     protonup-qt
+    prismlauncher
   ];
 }
