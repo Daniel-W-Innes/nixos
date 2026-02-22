@@ -30,9 +30,9 @@
     nvidia = {
       prime.offload.enable = false;
       modesetting.enable = true;
-      powerManagement.enable = false;
+      powerManagement.enable = true;
       powerManagement.finegrained = false;
-      open = false;
+      open = true;
       nvidiaSettings = true;
     };
   };
