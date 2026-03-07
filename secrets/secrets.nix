@@ -30,4 +30,12 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "gluetun-wireguard.env.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
+  "qbittorrent-webui-password-pbkdf2.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
