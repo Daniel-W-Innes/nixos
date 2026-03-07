@@ -15,12 +15,15 @@
         VPN_SERVICE_PROVIDER = "protonvpn";
         # Adjust this to the country/server you want.
         SERVER_COUNTRIES = "Canada";
-        FIREWALL_INPUT_PORTS = "8080,6881";
+        PORT_FORWARD_ONLY = "on";
+        VPN_PORT_FORWARDING = "on";
+        VPN_PORT_FORWARDING_PROVIDER = "protonvpn";
+        FIREWALL_INPUT_PORTS = "8080";
+        VPN_PORT_FORWARDING_UP_COMMAND = "/bin/sh -c 'wget -O- -nv --retry-connrefused --post-data \"json={\\\"listen_port\\\":{{PORT}},\\\"current_network_interface\\\":\\\"{{VPN_INTERFACE}}\\\",\\\"random_port\\\":false,\\\"upnp\\\":false}\" http://127.0.0.1:8080/api/v2/app/setPreferences'";
+        VPN_PORT_FORWARDING_DOWN_COMMAND = "/bin/sh -c 'wget -O- -nv --retry-connrefused --post-data \"json={\\\"listen_port\\\":0,\\\"current_network_interface\\\":\\\"lo\\\"}\" http://127.0.0.1:8080/api/v2/app/setPreferences'";
       };
       ports = [
-        "8080:8080/tcp"
-        "6881:6881/tcp"
-        "6881:6881/udp"
+        "127.0.0.1:8080:8080/tcp"
       ];
       devices = [ "/dev/net/tun:/dev/net/tun" ];
       capabilities.NET_ADMIN = true;
