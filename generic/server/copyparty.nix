@@ -1,14 +1,8 @@
 { config, ... }:
 
 {
-  users.users.copyparty = {
-    shell = "/run/current-system/sw/bin/nologin";
-    isNormalUser = false;
-    extraGroups = [ "nas" ];
-  };
   services.copyparty = {
     enable = true;
-    user = "copyparty";
     settings = {
       z = true;
 

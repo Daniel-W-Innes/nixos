@@ -116,7 +116,6 @@
             ./cucamelon/configuration.nix
             ./secrets/age.nix
             ./generic/all.nix
-            ./virt/podman.nix
             {
               environment.systemPackages =
                 self.checks.x86_64-linux.pre-commit-check.enabledPackages
