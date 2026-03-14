@@ -38,4 +38,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "grafana-admin-password.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }

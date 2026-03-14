@@ -1,7 +1,35 @@
 { config, ... }:
 
 {
-  services.grafana.enable = true;
+  environment.etc."grafana/node_exporter.json".source = ./grafana/node_exporter.json;
+
+  services.grafana = {
+    enable = true;
+    settings = {
+      security = {
+        admin_user = "admin";
+        admin_password = "$__file{${config.age.secrets.grafana-admin-password.path}}";
+      };
+    };
+    provision = {
+      enable = true;
+      datasources.settings.datasources = [
+        {
+          name = "Prometheus";
+          type = "prometheus";
+          access = "proxy";
+          url = "http://localhost:9090";
+          isDefault = true;
+        }
+      ];
+      dashboards.settings.providers = [
+        {
+          name = "node-exporter-full";
+          options.path = "/etc/grafana/node_exporter.json";
+        }
+      ];
+    };
+  };
   services.prometheus = {
     enable = true;
     extraFlags = [
@@ -65,18 +93,22 @@
         ];
       }
       {
-        job_name = "onion";
+        job_name = "node_exporter";
         static_configs = [
           {
-            targets = [ "onion.lc.brotherwolf.ca:9100" ];
+            targets = [ 
+              "onion.lc.brotherwolf.ca:9100"
+              "cucamelon.lc.brotherwolf.ca:9100"
+              "pumpkin.lc.brotherwolf.ca:9100"
+            ];
           }
         ];
       }
       {
-        job_name = "cucamelon";
+        job_name = "grafana";
         static_configs = [
           {
-            targets = [ "cucamelon.lc.brotherwolf.ca:9100" ];
+            targets = [ "localhost:3000" ];
           }
         ];
       }
