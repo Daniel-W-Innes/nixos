@@ -65,7 +65,7 @@
           }
           {
             target_label = "__address__";
-            replacement = "pumpkin.lc.brotherwolf.ca:9115";
+            replacement = "localhost:9115";
           }
         ];
       }
@@ -88,7 +88,7 @@
         job_name = "qbittorrent";
         static_configs = [
           {
-            targets = [ "pumpkin.lc.brotherwolf.ca:61429" ];
+            targets = [ "localhost:9177" ];
           }
         ];
       }
@@ -112,6 +112,76 @@
           }
         ];
       }
+      {
+        job_name = "mc-monitor";
+        static_configs = [
+          {
+            targets = [ "localhost:9151" ];
+          }
+        ];
+      }
+      {
+        job_name = "iperf3";
+        metrics_path = "/probe";
+        params.port = ["5201"];
+        static_configs = [
+          {
+            targets = [
+              "onion.lc.brotherwolf.ca"
+              "pumpkin.lc.brotherwolf.ca"
+            ];
+          }
+        ];
+        relabel_configs = [
+          {
+            source_labels = [ "__address__" ];
+            target_label = "__param_target";
+          }
+          {
+            source_labels = [ "__param_target" ];
+            target_label = "instance";
+          }
+          {
+            target_label = "__address__";
+            replacement = "localhost:9579";
+          }
+        ];
+      }
     ];
+  };
+  virtualisation.oci-containers.containers = {
+    mc-monitor-exporter = {
+      image = "docker.io/itzg/mc-monitor:latest";
+      environment = {
+        EXPORT_SERVERS = "173.33.65.81";
+      };
+      ports = [
+        "127.0.0.1:9151:8080/tcp"
+      ];
+    };
+    blackbox-exporter = {
+      image = "quay.io/prometheus/blackbox-exporter:latest";
+      ports = [
+        "127.0.0.1:9115:9115/tcp"
+      ];
+    };
+    iperf3-exporter = {
+      image = "ghcr.io/edgard/iperf3_exporter:latest";
+      ports = [
+        "127.0.0.1:9579:9579/tcp"
+      ];
+    };
+    qbittorrent-exporter = {
+      image = "esanchezm/prometheus-qbittorrent-exporter:latest";
+      environmentFiles = [ config.age.secrets.qbittorrent-webui-password.path ];
+      environment = {
+        QBITTORRENT_PORT = "24682";
+        QBITTORRENT_HOST = "localhost";
+        QBITTORRENT_USER = "admin";
+      };
+      ports = [
+        "127.0.0.1:9177:8000/tcp"
+      ];
+    };
   };
 }

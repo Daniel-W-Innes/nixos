@@ -52,5 +52,12 @@ _:
     #   group = "root";
     #   mode = "0400";
     # };
+
+    qbittorrent-webui-password = {
+      file = ./qbittorrent-webui-password.env.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
   };
 }
