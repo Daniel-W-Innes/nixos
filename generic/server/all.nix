@@ -2,7 +2,7 @@ _:
 
 {
   imports = [
-    # ./podman.nix
+    ./podman.nix
     ./visibility.nix
     # ./arr.nix
     # ./copyparty.nix
