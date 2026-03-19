@@ -38,6 +38,10 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "qbittorrent-webui-password.env.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
   "grafana-admin-password.age" = {
     publicKeys = users ++ systems;
     armor = true;
