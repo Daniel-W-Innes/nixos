@@ -67,14 +67,6 @@
         };
         package = nixpkgs.legacyPackages.x86_64-linux.prek;
       };
-      devShells = {
-        x86_64-linux = {
-          default = nixpkgs.legacyPackages.x86_64-linux.mkShell {
-            inherit (self.checks.x86_64-linux.pre-commit-check) shellHook;
-            buildInputs = self.checks.x86_64-linux.pre-commit-check.enabledPackages;
-          };
-        };
-      };
       nixosConfigurations = {
         onion = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
@@ -87,6 +79,7 @@
             ./secrets/age.nix
             ./generic/all.nix
             ./generic/zsa.nix
+            { environment.systemPackages = self.checks.x86_64-linux.pre-commit-check.enabledPackages; }
             home-manager.nixosModules.home-manager
             {
               home-manager = {
@@ -110,6 +103,7 @@
             ./secrets/age.nix
             ./generic/all.nix
             ./virt/podman.nix
+            { environment.systemPackages = self.checks.x86_64-linux.pre-commit-check.enabledPackages; }
             home-manager.nixosModules.home-manager
             {
               home-manager = {
