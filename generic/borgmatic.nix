@@ -23,6 +23,7 @@ _:
       exclude_patterns = [
         "/home/*/.cache"
         "*/steamapps"
+        "/nix/store"
       ];
       exclude_caches = true;
 
