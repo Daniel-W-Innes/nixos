@@ -6,8 +6,7 @@ _:
 <service-group>
   <name replace-wildcards="yes">Iperf3 on %h</name>
   <service>
-    <type>_http._tcp</type>
-    <subtype>_iperf3._sub._http._tcp</subtype>
+    <type>_iperf3._tcp</type>
     <port>5201</port>
   </service>
 </service-group>
