@@ -78,6 +78,7 @@
             ./onion/configuration.nix
             ./secrets/age.nix
             ./generic/all.nix
+            ./generic/borgmatic.nix
             ./generic/zsa.nix
             { environment.systemPackages = self.checks.x86_64-linux.pre-commit-check.enabledPackages; }
             home-manager.nixosModules.home-manager

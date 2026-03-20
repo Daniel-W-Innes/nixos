@@ -37,6 +37,7 @@
     lvm2.device = "/dev/disk/by-uuid/a0422975-ecec-4d24-a693-d8bee5fac314";
     "luks-cda04856-752e-451d-a132-04620721de59".device =
       "/dev/disk/by-uuid/cda04856-752e-451d-a132-04620721de59";
+    backup.device = "/dev/disk/by-uuid/991c203d-3eea-4079-99be-55df59cfba36";
   };
 
   fileSystems."/boot" = {
@@ -60,6 +61,11 @@
 
   fileSystems."/home/daniel/Documents" = {
     device = "/dev/disk/by-uuid/98732021-a852-4977-9183-e444c6312c18";
+    fsType = "btrfs";
+  };
+
+  fileSystems."/run/media/daniel/stb" = {
+    device = "/dev/disk/by-uuid/1a8ce06e-21f7-45ac-9253-85330d0f5b4f";
     fsType = "btrfs";
   };
 
