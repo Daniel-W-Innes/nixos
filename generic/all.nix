@@ -10,5 +10,6 @@
     ./ssh.nix
     ./wifi.nix
     ./steam.nix
+    ./avahi.nix
   ];
 }
