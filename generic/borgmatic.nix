@@ -45,13 +45,13 @@ _:
           name = "repository";
           frequency = "2 weeks";
         }
-        {
-          name = "spot";
-          count_tolerance_percentage = 0.1;
-          data_sample_percentage = 5;
-          data_tolerance_percentage = 1;
-          frequency = "1 month";
-        }
+        # {
+        #   name = "spot";
+        #   count_tolerance_percentage = 0.1;
+        #   data_sample_percentage = 5;
+        #   data_tolerance_percentage = 1;
+        #   frequency = "1 month";
+        # }
       ];
     };
   };
