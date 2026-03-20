@@ -33,10 +33,6 @@
         CPU_MAX_PERF_ON_BAT = 20;
       };
     };
-    smartd = {
-      enable = true;
-      devices = [ { device = "/dev/sda"; } ];
-    };
   };
 
   # This value determines the NixOS release from which the default

@@ -15,16 +15,6 @@
   networking.hostName = "onion"; # Define your hostname.
   nixpkgs.config.allowUnfree = true;
 
-  services.smartd = {
-    enable = true;
-    devices = [
-      { device = "/dev/sda"; }
-      { device = "/dev/sdb"; }
-      { device = "/dev/nvme0n1"; }
-      { device = "/dev/nvme1n1"; }
-    ];
-  };
-
   hardware = {
     graphics.enable = true;
     nvidia = {

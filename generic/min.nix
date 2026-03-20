@@ -19,6 +19,7 @@
   services = {
     #pcscd.enable = true;
     #udev.packages = [ pkgs.yubikey-personalization ];
+    smartd.enable = true;
     gnome.gnome-keyring.enable = true;
     xserver.xkb = {
       layout = "us";
