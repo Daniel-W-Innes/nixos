@@ -5,7 +5,7 @@ _:
     ./visibility.nix
     # ./arr.nix
     # ./copyparty.nix
-    # ./immich.nix
+    ./immich.nix
     # ./calibre.nix
   ];
 }
