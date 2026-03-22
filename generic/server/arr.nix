@@ -1,8 +1,6 @@
 { config, ... }:
 
 {
-  imports = [ ./podman.nix ];
-
   environment.etc."qbittorrent/qBittorrent.conf".source = ./qbittorrent/qBittorrent.conf;
 
   virtualisation.oci-containers.containers = {
@@ -39,7 +37,7 @@
       };
       volumes = [
         "/var/lib/qbittorrent:/config"
-        # "/mnt/main/downloads:/downloads"
+        "/mnt/main/downloads:/downloads"
       ];
       extraOptions = [ "--network=container:gluetun" ];
     };
