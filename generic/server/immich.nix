@@ -11,5 +11,8 @@ _:
       };
       reverseGeocoding.enabled = true;
     };
+    environment = {
+      IMMICH_TELEMETRY_INCLUDE = "all";
+    };
   };
 }
