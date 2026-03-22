@@ -46,4 +46,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "unpoller.env.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }

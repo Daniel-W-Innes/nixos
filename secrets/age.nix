@@ -59,5 +59,12 @@ _:
       group = "root";
       mode = "0400";
     };
+
+    unpoller-env = {
+      file = ./unpoller.env.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
   };
 }
