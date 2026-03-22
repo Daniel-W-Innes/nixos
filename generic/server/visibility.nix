@@ -7,231 +7,240 @@
     "grafana/SMARTctl_exporter.json".source = ./grafana/SMARTctl_exporter.json;
     "grafana/systemd_exporter.json".source = ./grafana/systemd_exporter.json;
   };
-
-  services.grafana = {
-    enable = true;
-    settings = {
-      security = {
-        admin_user = "admin";
-        admin_password = "$__file{${config.age.secrets.grafana-admin-password.path}}";
+  services = {
+    grafana = {
+      enable = true;
+      settings = {
+        security = {
+          admin_user = "admin";
+          admin_password = "$__file{${config.age.secrets.grafana-admin-password.path}}";
+        };
+      };
+      provision = {
+        enable = true;
+        datasources.settings.datasources = [
+          {
+            name = "Prometheus";
+            type = "prometheus";
+            access = "proxy";
+            url = "http://localhost:9090";
+            isDefault = true;
+          }
+        ];
+        dashboards.settings.providers = [
+          {
+            name = "cadvisor-exporter";
+            options.path = "/etc/grafana/cadvisor_exporter.json";
+          }
+          {
+            name = "node-exporter-full";
+            options.path = "/etc/grafana/node_exporter.json";
+          }
+          {
+            name = "SMARTctl-exporter";
+            options.path = "/etc/grafana/SMARTctl_exporter.json";
+          }
+          {
+            name = "systemd-exporter";
+            options.path = "/etc/grafana/systemd_exporter.json";
+          }
+        ];
       };
     };
-    provision = {
+    prometheus = {
       enable = true;
-      datasources.settings.datasources = [
-        {
-          name = "Prometheus";
-          type = "prometheus";
-          access = "proxy";
-          url = "http://localhost:9090";
-          isDefault = true;
-        }
+      extraFlags = [
+        "--storage.tsdb.retention.size=1TB"
       ];
-      dashboards.settings.providers = [
+      globalConfig.scrape_interval = "10s"; # "1m"
+      scrapeConfigs = [
         {
-          name = "cadvisor-exporter";
-          options.path = "/etc/grafana/cadvisor_exporter.json";
+          job_name = "prometheus";
+          static_configs = [
+            {
+              targets = [ "localhost:9100" ];
+            }
+          ];
         }
         {
-          name = "node-exporter-full";
-          options.path = "/etc/grafana/node_exporter.json";
+          job_name = "blackbox";
+          metrics_path = "/probe";
+          params.module = [
+            "icmp"
+            "dns"
+            "http"
+          ];
+          static_configs = [
+            {
+              targets = [
+                "onion.lc.brotherwolf.ca"
+                "google.com"
+                "radish.lc.brotherwolf.ca"
+              ];
+            }
+          ];
+          relabel_configs = [
+            {
+              source_labels = [ "__address__" ];
+              target_label = "__param_target";
+            }
+            {
+              source_labels = [ "__param_target" ];
+              target_label = "instance";
+            }
+            {
+              target_label = "__address__";
+              replacement = "localhost:9115";
+            }
+          ];
         }
         {
-          name = "SMARTctl-exporter";
-          options.path = "/etc/grafana/SMARTctl_exporter.json";
+          job_name = "copyparty";
+          scheme = "https";
+          metrics_path = "/.cpr/metrics";
+          tls_config.insecure_skip_verify = false;
+          basic_auth = {
+            username = "metrics";
+            password_file = config.age.secrets.prom-copyparty-metrics.path;
+          };
+          static_configs = [
+            {
+              targets = [ "localhost:3923" ];
+            }
+          ];
         }
         {
-          name = "systemd-exporter";
-          options.path = "/etc/grafana/systemd_exporter.json";
+          job_name = "qbittorrent";
+          static_configs = [
+            {
+              targets = [ "localhost:9177" ];
+            }
+          ];
+        }
+        {
+          job_name = "node_exporter";
+          static_configs = [
+            {
+              targets = [ 
+                "onion.lc.brotherwolf.ca:9100"
+                "cucamelon.lc.brotherwolf.ca:9100"
+                "pumpkin.lc.brotherwolf.ca:9100"
+              ];
+            }
+          ];
+        }
+        {
+          job_name = "smartctl_exporter";
+          static_configs = [
+            {
+              targets = [ 
+                "onion.lc.brotherwolf.ca:9633"
+                "cucamelon.lc.brotherwolf.ca:9633"
+                "pumpkin.lc.brotherwolf.ca:9633"
+              ];
+            }
+          ];
+        }
+        {
+          job_name = "cadvisor_exporter";
+          static_configs = [
+            {
+              targets = [ 
+                "onion.lc.brotherwolf.ca:9580"
+                "cucamelon.lc.brotherwolf.ca:9580"
+                "pumpkin.lc.brotherwolf.ca:9580"
+              ];
+            }
+          ];
+        }
+        {
+          job_name = "systemd_exporter";
+          static_configs = [
+            {
+              targets = [ 
+                "onion.lc.brotherwolf.ca:9558"
+                "cucamelon.lc.brotherwolf.ca:9558"
+                "pumpkin.lc.brotherwolf.ca:9558"
+              ];
+            }
+          ];
+        }
+        {
+          job_name = "grafana";
+          static_configs = [
+            {
+              targets = [ "localhost:3000" ];
+            }
+          ];
+        }
+        {
+          job_name = "unpoller";
+          metrics_path = "/scrape";
+          static_configs = [
+            {
+              targets = [ "https://radish.lc.brotherwolf.ca" ];
+            }
+          ];
+          relabel_configs = [
+            {
+              source_labels = [ "__address__" ];
+              target_label = "__param_target";
+            }
+            {
+              source_labels = [ "__param_target" ];
+              target_label = "instance";
+            }
+            {
+              target_label = "__address__";
+              replacement = "localhost:9130";
+            }
+          ];
+        }
+        {
+          job_name = "mc-monitor";
+          static_configs = [
+            {
+              targets = [ "localhost:9151" ];
+            }
+          ];
+        }
+        {
+          job_name = "iperf3";
+          metrics_path = "/probe";
+          params.port = ["5201"];
+          static_configs = [
+            {
+              targets = [
+                "onion.lc.brotherwolf.ca"
+                "pumpkin.lc.brotherwolf.ca"
+              ];
+            }
+          ];
+          relabel_configs = [
+            {
+              source_labels = [ "__address__" ];
+              target_label = "__param_target";
+            }
+            {
+              source_labels = [ "__param_target" ];
+              target_label = "instance";
+            }
+            {
+              target_label = "__address__";
+              replacement = "localhost:9579";
+            }
+          ];
+        }
+        {
+          job_name = "immich";
+          static_configs = [
+            {
+              targets = [ "localhost:8082" ];
+            }
+          ];
         }
       ];
     };
-  };
-  services.prometheus = {
-    enable = true;
-    extraFlags = [
-      "--storage.tsdb.retention.size=1TB"
-    ];
-    globalConfig.scrape_interval = "10s"; # "1m"
-    scrapeConfigs = [
-      {
-        job_name = "prometheus";
-        static_configs = [
-          {
-            targets = [ "localhost:9100" ];
-          }
-        ];
-      }
-      {
-        job_name = "blackbox";
-        metrics_path = "/probe";
-        params.module = [
-          "icmp"
-          "dns"
-          "http"
-        ];
-        static_configs = [
-          {
-            targets = [
-              "onion.lc.brotherwolf.ca"
-              "google.com"
-              "radish.lc.brotherwolf.ca"
-            ];
-          }
-        ];
-        relabel_configs = [
-          {
-            source_labels = [ "__address__" ];
-            target_label = "__param_target";
-          }
-          {
-            source_labels = [ "__param_target" ];
-            target_label = "instance";
-          }
-          {
-            target_label = "__address__";
-            replacement = "localhost:9115";
-          }
-        ];
-      }
-      {
-        job_name = "copyparty";
-        scheme = "https";
-        metrics_path = "/.cpr/metrics";
-        tls_config.insecure_skip_verify = false;
-        basic_auth = {
-          username = "metrics";
-          password_file = config.age.secrets.prom-copyparty-metrics.path;
-        };
-        static_configs = [
-          {
-            targets = [ "localhost:3923" ];
-          }
-        ];
-      }
-      {
-        job_name = "qbittorrent";
-        static_configs = [
-          {
-            targets = [ "localhost:9177" ];
-          }
-        ];
-      }
-      {
-        job_name = "node_exporter";
-        static_configs = [
-          {
-            targets = [ 
-              "onion.lc.brotherwolf.ca:9100"
-              "cucamelon.lc.brotherwolf.ca:9100"
-              "pumpkin.lc.brotherwolf.ca:9100"
-            ];
-          }
-        ];
-      }
-      {
-        job_name = "smartctl_exporter";
-        static_configs = [
-          {
-            targets = [ 
-              "onion.lc.brotherwolf.ca:9633"
-              "cucamelon.lc.brotherwolf.ca:9633"
-              "pumpkin.lc.brotherwolf.ca:9633"
-            ];
-          }
-        ];
-      }
-      {
-        job_name = "cadvisor_exporter";
-        static_configs = [
-          {
-            targets = [ 
-              "onion.lc.brotherwolf.ca:9580"
-              "cucamelon.lc.brotherwolf.ca:9580"
-              "pumpkin.lc.brotherwolf.ca:9580"
-            ];
-          }
-        ];
-      }
-      {
-        job_name = "systemd_exporter";
-        static_configs = [
-          {
-            targets = [ 
-              "onion.lc.brotherwolf.ca:9558"
-              "cucamelon.lc.brotherwolf.ca:9558"
-              "pumpkin.lc.brotherwolf.ca:9558"
-            ];
-          }
-        ];
-      }
-      {
-        job_name = "grafana";
-        static_configs = [
-          {
-            targets = [ "localhost:3000" ];
-          }
-        ];
-      }
-      {
-        job_name = "unpoller";
-        metrics_path = "/scrape";
-        static_configs = [
-          {
-            targets = [ "https://radish.lc.brotherwolf.ca" ];
-          }
-        ];
-        relabel_configs = [
-          {
-            source_labels = [ "__address__" ];
-            target_label = "__param_target";
-          }
-          {
-            source_labels = [ "__param_target" ];
-            target_label = "instance";
-          }
-          {
-            target_label = "__address__";
-            replacement = "localhost:9130";
-          }
-        ];
-      }
-      {
-        job_name = "mc-monitor";
-        static_configs = [
-          {
-            targets = [ "localhost:9151" ];
-          }
-        ];
-      }
-      {
-        job_name = "iperf3";
-        metrics_path = "/probe";
-        params.port = ["5201"];
-        static_configs = [
-          {
-            targets = [
-              "onion.lc.brotherwolf.ca"
-              "pumpkin.lc.brotherwolf.ca"
-            ];
-          }
-        ];
-        relabel_configs = [
-          {
-            source_labels = [ "__address__" ];
-            target_label = "__param_target";
-          }
-          {
-            source_labels = [ "__param_target" ];
-            target_label = "instance";
-          }
-          {
-            target_label = "__address__";
-            replacement = "localhost:9579";
-          }
-        ];
-      }
-    ];
   };
   virtualisation.oci-containers.containers = {
     mc-monitor-exporter = {
