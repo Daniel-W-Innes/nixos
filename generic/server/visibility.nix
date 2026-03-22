@@ -158,6 +158,9 @@
       ports = [
         "127.0.0.1:9151:8080/tcp"
       ];
+      cmd = [
+        "export-for-prometheus"
+      ];
     };
     blackbox-exporter = {
       image = "quay.io/prometheus/blackbox-exporter:latest";
