@@ -1,7 +1,12 @@
 { config, ... }:
 
 {
-  environment.etc."grafana/node_exporter.json".source = ./grafana/node_exporter.json;
+  environment.etc = {
+    "grafana/cadvisor_exporter.json".source = ./grafana/cadvisor_exporter.json;
+    "grafana/node_exporter.json".source = ./grafana/node_exporter.json;
+    "grafana/SMARTctl_exporter.json".source = ./grafana/SMARTctl_exporter.json;
+    "grafana/systemd_exporter.json".source = ./grafana/systemd_exporter.json;
+  };
 
   services.grafana = {
     enable = true;
@@ -24,8 +29,20 @@
       ];
       dashboards.settings.providers = [
         {
+          name = "cadvisor-exporter";
+          options.path = "/etc/grafana/cadvisor_exporter.json";
+        }
+        {
           name = "node-exporter-full";
           options.path = "/etc/grafana/node_exporter.json";
+        }
+        {
+          name = "SMARTctl-exporter";
+          options.path = "/etc/grafana/SMARTctl_exporter.json";
+        }
+        {
+          name = "systemd-exporter";
+          options.path = "/etc/grafana/systemd_exporter.json";
         }
       ];
     };
@@ -37,6 +54,14 @@
     ];
     globalConfig.scrape_interval = "10s"; # "1m"
     scrapeConfigs = [
+      {
+        job_name = "prometheus";
+        static_configs = [
+          {
+            targets = [ "localhost:9100" ];
+          }
+        ];
+      }
       {
         job_name = "blackbox";
         metrics_path = "/probe";
@@ -100,6 +125,42 @@
               "onion.lc.brotherwolf.ca:9100"
               "cucamelon.lc.brotherwolf.ca:9100"
               "pumpkin.lc.brotherwolf.ca:9100"
+            ];
+          }
+        ];
+      }
+      {
+        job_name = "smartctl_exporter";
+        static_configs = [
+          {
+            targets = [ 
+              "onion.lc.brotherwolf.ca:9633"
+              "cucamelon.lc.brotherwolf.ca:9633"
+              "pumpkin.lc.brotherwolf.ca:9633"
+            ];
+          }
+        ];
+      }
+      {
+        job_name = "cadvisor_exporter";
+        static_configs = [
+          {
+            targets = [ 
+              "onion.lc.brotherwolf.ca:9580"
+              "cucamelon.lc.brotherwolf.ca:9580"
+              "pumpkin.lc.brotherwolf.ca:9580"
+            ];
+          }
+        ];
+      }
+      {
+        job_name = "systemd_exporter";
+        static_configs = [
+          {
+            targets = [ 
+              "onion.lc.brotherwolf.ca:9558"
+              "cucamelon.lc.brotherwolf.ca:9558"
+              "pumpkin.lc.brotherwolf.ca:9558"
             ];
           }
         ];
