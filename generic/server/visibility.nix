@@ -174,6 +174,29 @@
         ];
       }
       {
+        job_name = "unpoller";
+        metrics_path = "/scrape";
+        static_configs = [
+          {
+            targets = [ "https://radish.lc.brotherwolf.ca" ];
+          }
+        ];
+        relabel_configs = [
+          {
+            source_labels = [ "__address__" ];
+            target_label = "__param_target";
+          }
+          {
+            source_labels = [ "__param_target" ];
+            target_label = "instance";
+          }
+          {
+            target_label = "__address__";
+            replacement = "localhost:9130";
+          }
+        ];
+      }
+      {
         job_name = "mc-monitor";
         static_configs = [
           {
@@ -245,6 +268,16 @@
       };
       ports = [
         "127.0.0.1:9177:8000/tcp"
+      ];
+    };
+    unpoller = {
+      image = "ghcr.io/unpoller/unpoller:latest";
+      environmentFiles = [ config.age.secrets.unpoller-env.path ];
+      environment = {
+        UP_INFLUXDB_DISABLE = "true";
+      };
+      ports = [
+        "127.0.0.1:9130:9130/tcp"
       ];
     };
   };
