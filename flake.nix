@@ -80,7 +80,11 @@
             ./generic/all.nix
             ./generic/borgmatic.nix
             ./generic/zsa.nix
-            { environment.systemPackages = self.checks.x86_64-linux.pre-commit-check.enabledPackages; }
+            {
+              environment.systemPackages =
+                self.checks.x86_64-linux.pre-commit-check.enabledPackages
+                ++ [ nixpkgs.legacyPackages.x86_64-linux.prek ];
+            }
             home-manager.nixosModules.home-manager
             {
               home-manager = {
@@ -104,7 +108,11 @@
             ./secrets/age.nix
             ./generic/all.nix
             ./virt/podman.nix
-            { environment.systemPackages = self.checks.x86_64-linux.pre-commit-check.enabledPackages; }
+            {
+              environment.systemPackages =
+                self.checks.x86_64-linux.pre-commit-check.enabledPackages
+                ++ [ nixpkgs.legacyPackages.x86_64-linux.prek ];
+            }
             home-manager.nixosModules.home-manager
             {
               home-manager = {
