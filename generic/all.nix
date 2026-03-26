@@ -11,5 +11,6 @@
     ./wifi.nix
     ./steam.nix
     ./avahi.nix
+    ./podman.nix
   ];
 }
