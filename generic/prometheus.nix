@@ -52,46 +52,51 @@ _:
     '';
   };
   networking.firewall.interfaces."br0".allowedTCPPorts = [
-    8080
-    9558
-    9633
+    9580
   ];
-  services.prometheus.exporters.node = {
-    enable = true;
-    port = 9100;
-    openFirewall = true;
-    firewallFilter = "-i br0 -p tcp -m tcp --dport 9100";
-  };
-  virtualisation.oci-containers.containers = {
-    smartctl-exporter = {
-      image = "prometheuscommunity/smartctl-exporter:latest";
-      privileged = true;
-      user = "root";
-      ports = [
-        "0.0.0.0:9633:9633/tcp"
-      ];
+  services = {
+    prometheus.exporters = {
+      node = {
+        enable = true;
+        port = 9100;
+        openFirewall = true;
+        firewallFilter = "-i br0 -p tcp -m tcp --dport 9100";
+      };
+      process = {
+        enable = true;
+        port = 9256;
+        openFirewall = true;
+        firewallFilter = "-i br0 -p tcp -m tcp --dport 9256";
+      };
+      smartctl = {
+        enable = true;
+        port = 9633;
+        openFirewall = true;
+        firewallFilter = "-i br0 -p tcp -m tcp --dport 9633";
+      };
+      nvidia-gpu = {
+        enable = true;
+        port = 9835;
+        openFirewall = true;
+        firewallFilter = "-i br0 -p tcp -m tcp --dport 9835";
+      };
+      # systemd = {
+      #   enable = true;
+      #   port = 9558;
+      #   openFirewall = true;
+      #   firewallFilter = "-i br0 -p tcp -m tcp --dport 9558";
+      # };
+      # borgmatic = {
+      #   enable = true;
+      #   port = 9996;
+      #   openFirewall = true;
+      #   user = "root";
+      #   firewallFilter = "-i br0 -p tcp -m tcp --dport 9996";
+      # };
     };
     cadvisor = {
-      image = "gcr.io/cadvisor/cadvisor:latest";
-      privileged = true;
-      ports = [
-        "0.0.0.0:9580:8080/tcp"
-      ];
-      volumes = [
-        "/:/rootfs:ro"
-        "/var/run:/var/run:ro"
-        "/sys:/sys:ro"
-        "/var/lib/containers:/var/lib/containers:ro"
-      ];
-    };
-    systemd-exporter = {
-      image = "quay.io/prometheuscommunity/systemd-exporter:latest";
-      ports = [
-        "0.0.0.0:9558:9558/tcp"
-      ];
-      volumes = [
-        "/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket:ro"
-      ];
+      enable = true;
+      port = 9580;
     };
   };
 }
