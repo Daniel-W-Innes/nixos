@@ -142,25 +142,25 @@
           ];
         }
         {
-          job_name = "cadvisor_exporter";
+          job_name = "process_exporter";
           static_configs = [
             {
               targets = [ 
-                "onion.lc.brotherwolf.ca:9580"
-                "cucamelon.lc.brotherwolf.ca:9580"
-                "pumpkin.lc.brotherwolf.ca:9580"
+                "onion.lc.brotherwolf.ca:9256"
+                "cucamelon.lc.brotherwolf.ca:9256"
+                "pumpkin.lc.brotherwolf.ca:9256"
               ];
             }
           ];
         }
         {
-          job_name = "systemd_exporter";
+          job_name = "nvidia_exporter";
           static_configs = [
             {
               targets = [ 
-                "onion.lc.brotherwolf.ca:9558"
-                "cucamelon.lc.brotherwolf.ca:9558"
-                "pumpkin.lc.brotherwolf.ca:9558"
+                "onion.lc.brotherwolf.ca:9835"
+                "cucamelon.lc.brotherwolf.ca:9835"
+                "pumpkin.lc.brotherwolf.ca:9835"
               ];
             }
           ];
@@ -240,6 +240,26 @@
           ];
         }
       ];
+      exporters = {
+        unpoller = {
+          enable = true;
+          port = 9130;
+          controllers = [
+            {
+              url = "https://radish.lc.brotherwolf.ca";
+              user = "unpoller";
+              pass = config.age.secrets.unpoller-password.path;
+              save_ids = true;
+              save_events = true;
+              save_alarms = true;
+              save_anomalies = true;
+              save_dpi = true;
+              save_sites = true;
+              verify_ssl = false;
+            }
+          ];
+        };
+      };
     };
   };
   virtualisation.oci-containers.containers = {
@@ -279,15 +299,15 @@
         "127.0.0.1:9177:8000/tcp"
       ];
     };
-    unpoller = {
-      image = "ghcr.io/unpoller/unpoller:latest";
-      environmentFiles = [ config.age.secrets.unpoller-env.path ];
-      environment = {
-        UP_INFLUXDB_DISABLE = "true";
-      };
-      ports = [
-        "127.0.0.1:9130:9130/tcp"
-      ];
-    };
+    # unpoller = {
+    #   image = "ghcr.io/unpoller/unpoller:latest";
+    #   environmentFiles = [ config.age.secrets.unpoller-env.path ];
+    #   environment = {
+    #     UP_INFLUXDB_DISABLE = "true";
+    #   };
+    #   ports = [
+    #     "127.0.0.1:9130:9130/tcp"
+    #   ];
+    # };
   };
 }

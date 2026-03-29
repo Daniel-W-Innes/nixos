@@ -60,10 +60,10 @@ _:
       mode = "0400";
     };
 
-    unpoller-env = {
-      file = ./unpoller.env.age;
-      owner = "root";
-      group = "root";
+    unpoller-password = {
+      file = ./unpoller-password.age;
+      owner = "unpoller-exporter";
+      group = "unpoller-exporter";
       mode = "0400";
     };
   };
