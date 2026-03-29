@@ -239,8 +239,39 @@
             }
           ];
         }
+        {
+          job_name = "domain";
+          metrics_path = "/probe";
+          static_configs = [
+            {
+              targets = [
+                "brotherwolf.ca"
+                "dwinnes.ca"
+                "dwinnes.com"
+              ];
+            }
+          ];
+          relabel_configs = [
+            {
+              source_labels = [ "__address__" ];
+              target_label = "__param_target";
+            }
+            {
+              source_labels = [ "__param_target" ];
+              target_label = "instance";
+            }
+            {
+              target_label = "__address__";
+              replacement = "localhost:9222";
+            }
+          ];
+        }
       ];
       exporters = {
+        domain = {
+          enable = true;
+          port = 9222;
+        };
         unpoller = {
           enable = true;
           port = 9130;
@@ -299,15 +330,5 @@
         "127.0.0.1:9177:8000/tcp"
       ];
     };
-    # unpoller = {
-    #   image = "ghcr.io/unpoller/unpoller:latest";
-    #   environmentFiles = [ config.age.secrets.unpoller-env.path ];
-    #   environment = {
-    #     UP_INFLUXDB_DISABLE = "true";
-    #   };
-    #   ports = [
-    #     "127.0.0.1:9130:9130/tcp"
-    #   ];
-    # };
   };
 }
