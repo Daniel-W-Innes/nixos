@@ -63,38 +63,6 @@
           ];
         }
         {
-          job_name = "blackbox";
-          metrics_path = "/probe";
-          params.module = [
-            "icmp"
-            "dns"
-            "http"
-          ];
-          static_configs = [
-            {
-              targets = [
-                "onion.lc.brotherwolf.ca"
-                "google.com"
-                "radish.lc.brotherwolf.ca"
-              ];
-            }
-          ];
-          relabel_configs = [
-            {
-              source_labels = [ "__address__" ];
-              target_label = "__param_target";
-            }
-            {
-              source_labels = [ "__param_target" ];
-              target_label = "instance";
-            }
-            {
-              target_label = "__address__";
-              replacement = "localhost:9115";
-            }
-          ];
-        }
-        {
           job_name = "copyparty";
           scheme = "https";
           metrics_path = "/.cpr/metrics";
@@ -157,7 +125,7 @@
           job_name = "nvidia_exporter";
           static_configs = [
             {
-              targets = [ 
+              targets = [
                 "onion.lc.brotherwolf.ca:9835"
                 "cucamelon.lc.brotherwolf.ca:9835"
                 "pumpkin.lc.brotherwolf.ca:9835"
@@ -266,8 +234,29 @@
             }
           ];
         }
+        {
+          job_name = "smokeping";
+          static_configs = [
+            {
+              targets = [ "localhost:9374" ];
+            }
+          ];
+        }
       ];
       exporters = {
+        smokeping = {
+          enable = true;
+          port = 9374;
+          hosts = [
+            "1.1.1.1"
+            "8.8.8.8"
+            "onion.lc.brotherwolf.ca"
+            "cucamelon.lc.brotherwolf.ca"
+            "pumpkin.lc.brotherwolf.ca"
+            "www.google.com"
+            "github.com"
+          ];
+        };
         domain = {
           enable = true;
           port = 9222;
@@ -304,12 +293,6 @@
       ];
       cmd = [
         "export-for-prometheus"
-      ];
-    };
-    blackbox-exporter = {
-      image = "quay.io/prometheus/blackbox-exporter:latest";
-      ports = [
-        "127.0.0.1:9115:9115/tcp"
       ];
     };
     iperf3-exporter = {
