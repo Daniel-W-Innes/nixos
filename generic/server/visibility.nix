@@ -2,10 +2,15 @@
 
 {
   environment.etc = {
-    "grafana/cadvisor_exporter.json".source = ./grafana/cadvisor_exporter.json;
     "grafana/node_exporter.json".source = ./grafana/node_exporter.json;
     "grafana/SMARTctl_exporter.json".source = ./grafana/SMARTctl_exporter.json;
-    "grafana/systemd_exporter.json".source = ./grafana/systemd_exporter.json;
+    "grafana/unpoller_exporter_network.json".source = ./grafana/unpoller_exporter_network.json;
+    "grafana/unpoller_exporter_uap.json".source = ./grafana/unpoller_exporter_uap.json;
+    "grafana/unpoller_exporter_clients.json".source = ./grafana/unpoller_exporter_clients.json;
+    "grafana/unpoller_exporter_dpi.json".source = ./grafana/unpoller_exporter_dpi.json;
+    "grafana/unpoller_exporter_usw.json".source = ./grafana/unpoller_exporter_usw.json;
+    "grafana/unpoller_exporter_pdu.json".source = ./grafana/unpoller_exporter_pdu.json;
+    "grafana/unpoller_exporter_usg.json".source = ./grafana/unpoller_exporter_usg.json;
   };
   services = {
     grafana = {
@@ -29,10 +34,6 @@
         ];
         dashboards.settings.providers = [
           {
-            name = "cadvisor-exporter";
-            options.path = "/etc/grafana/cadvisor_exporter.json";
-          }
-          {
             name = "node-exporter-full";
             options.path = "/etc/grafana/node_exporter.json";
           }
@@ -41,8 +42,32 @@
             options.path = "/etc/grafana/SMARTctl_exporter.json";
           }
           {
-            name = "systemd-exporter";
-            options.path = "/etc/grafana/systemd_exporter.json";
+            name = "unpoller-exporter-network";
+            options.path = "/etc/grafana/unpoller_exporter_network.json";
+          }
+          {
+            name = "unpoller-exporter-uap";
+            options.path = "/etc/grafana/unpoller_exporter_uap.json";
+          }
+          {
+            name = "unpoller-exporter-clients";
+            options.path = "/etc/grafana/unpoller_exporter_clients.json";
+          }
+          {
+            name = "unpoller-exporter-dpi";
+            options.path = "/etc/grafana/unpoller_exporter_dpi.json";
+          }
+          {
+            name = "unpoller-exporter-usw";
+            options.path = "/etc/grafana/unpoller_exporter_usw.json";
+          }
+          {
+            name = "unpoller-exporter-pdu";
+            options.path = "/etc/grafana/unpoller_exporter_pdu.json";
+          }
+          {
+            name = "unpoller-exporter-usg";
+            options.path = "/etc/grafana/unpoller_exporter_usg.json";
           }
         ];
       };
