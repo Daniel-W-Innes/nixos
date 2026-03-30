@@ -11,6 +11,7 @@
     "grafana/unpoller_exporter_usw.json".source = ./grafana/unpoller_exporter_usw.json;
     "grafana/unpoller_exporter_pdu.json".source = ./grafana/unpoller_exporter_pdu.json;
     "grafana/unpoller_exporter_usg.json".source = ./grafana/unpoller_exporter_usg.json;
+    "grafana/smokeping_exporter.json".source = ./grafana/smokeping_exporter.json;
   };
   services = {
     grafana = {
@@ -68,6 +69,10 @@
           {
             name = "unpoller-exporter-usg";
             options.path = "/etc/grafana/unpoller_exporter_usg.json";
+          }
+          {
+            name = "smokeping";
+            options.path = "/etc/grafana/smokeping_exporter.json";
           }
         ];
       };
