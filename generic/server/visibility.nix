@@ -12,6 +12,7 @@
     "grafana/unpoller_exporter_pdu.json".source = ./grafana/unpoller_exporter_pdu.json;
     "grafana/unpoller_exporter_usg.json".source = ./grafana/unpoller_exporter_usg.json;
     "grafana/smokeping_exporter.json".source = ./grafana/smokeping_exporter.json;
+    "grafana/qbittorrent_exporter.json".source = ./grafana/qbittorrent_exporter.json;
   };
   services = {
     grafana = {
@@ -73,6 +74,10 @@
           {
             name = "smokeping";
             options.path = "/etc/grafana/smokeping_exporter.json";
+          }
+          {
+            name = "qbittorrent";
+            options.path = "/etc/grafana/qbittorrent_exporter.json";
           }
         ];
       };
