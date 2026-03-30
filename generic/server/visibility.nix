@@ -13,6 +13,7 @@
     "grafana/unpoller_exporter_usg.json".source = ./grafana/unpoller_exporter_usg.json;
     "grafana/smokeping_exporter.json".source = ./grafana/smokeping_exporter.json;
     "grafana/qbittorrent_exporter.json".source = ./grafana/qbittorrent_exporter.json;
+    "grafana/nvidia_gpu_exporter.json".source = ./grafana/nvidia_gpu_exporter.json;
   };
   services = {
     grafana = {
@@ -78,6 +79,10 @@
           {
             name = "qbittorrent";
             options.path = "/etc/grafana/qbittorrent_exporter.json";
+          }
+          {
+            name = "nvidia-gpu-exporter";
+            options.path = "/etc/grafana/nvidia_gpu_exporter.json";
           }
         ];
       };
