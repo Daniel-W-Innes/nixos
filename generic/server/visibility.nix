@@ -288,6 +288,7 @@
           enable = true;
           port = 9374;
           hosts = [
+            "173.33.65.81"
             "1.1.1.1"
             "8.8.8.8"
             "onion.lc.brotherwolf.ca"
