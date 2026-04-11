@@ -1,0 +1,5 @@
+_:
+
+{
+  smartd.enable = true;
+}

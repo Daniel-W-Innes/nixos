@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   # TODO set kernel to latest after the nvidia update to 585+ is available
@@ -19,7 +19,6 @@
   services = {
     #pcscd.enable = true;
     #udev.packages = [ pkgs.yubikey-personalization ];
-    smartd.enable = true;
     gnome.gnome-keyring.enable = true;
     xserver.xkb = {
       layout = "us";
@@ -42,7 +41,6 @@
     };
   };
   users.users.daniel = {
-    hashedPasswordFile = config.age.secrets.user-daniel.path;
     isNormalUser = true;
     description = "Daniel Innes";
     extraGroups = [
