@@ -117,7 +117,7 @@
           };
           static_configs = [
             {
-              targets = [ "localhost:3923" ];
+              targets = [ "pumpkin.lc.brotherwolf.ca:3923" ];
             }
           ];
         }
@@ -135,8 +135,6 @@
             {
               targets = [ 
                 "onion.lc.brotherwolf.ca:9100"
-                "cucamelon.lc.brotherwolf.ca:9100"
-                "pumpkin.lc.brotherwolf.ca:9100"
                 "localhost:9100"
               ];
             }
@@ -148,9 +146,6 @@
             {
               targets = [ 
                 "onion.lc.brotherwolf.ca:9633"
-                "cucamelon.lc.brotherwolf.ca:9633"
-                "pumpkin.lc.brotherwolf.ca:9633"
-                "localhost:9633"
               ];
             }
           ];
@@ -161,8 +156,6 @@
             {
               targets = [ 
                 "onion.lc.brotherwolf.ca:9256"
-                "cucamelon.lc.brotherwolf.ca:9256"
-                "pumpkin.lc.brotherwolf.ca:9256"
                 "localhost:9256"
               ];
             }
@@ -248,7 +241,7 @@
           job_name = "immich";
           static_configs = [
             {
-              targets = [ "localhost:8082" ];
+              targets = [ "pumpkin.lc.brotherwolf.ca:8082" ];
             }
           ];
         }
@@ -352,7 +345,7 @@
       environmentFiles = [ config.age.secrets.qbittorrent-webui-password.path ];
       environment = {
         QBITTORRENT_PORT = "24682";
-        QBITTORRENT_HOST = "localhost";
+        QBITTORRENT_HOST = "pumpkin.lc.brotherwolf.ca";
         QBITTORRENT_USER = "admin";
       };
       ports = [
