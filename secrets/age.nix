@@ -1,8 +1,8 @@
-_:
+{ lib, config, ... }:
 
 {
   age.secrets = {
-    wifi = {
+    wifi = lib.mkIf config.networking.networkmanager.enable {
       file = ./wifi.age;
       owner = "root";
       group = "root";
@@ -14,53 +14,27 @@ _:
       group = "root";
     };
 
-    # copyparty-daniel = {
-    #   file = ./copyparty-daniel.age;
-    #   owner = "copyparty";
-    #   group = "copyparty";
-    # };
-
-    # copyparty-metrics = {
-    #   file = ./copyparty-metrics.age;
-    #   owner = "copyparty";
-    #   group = "copyparty";
-    # };
-
-    prom-copyparty-metrics = {
+    prom-copyparty-metrics = lib.mkIf config.services.prometheus.enable {
       file = ./copyparty-metrics.age;
       owner = "prometheus";
       group = "prometheus";
     };
 
-    grafana-admin-password = {
+    grafana-admin-password = lib.mkIf config.services.grafana.enable {
       file = ./grafana-admin-password.age;
       owner = "grafana";
       group = "grafana";
       mode = "0400";
     };
 
-    gluetun-wireguard = {
-      file = ./gluetun-wireguard.env.age;
-      owner = "root";
-      group = "root";
-      mode = "0400";
-    };
-
-    qbittorrent-webui-password-pbkdf2 = {
-      file = ./qbittorrent-webui-password-pbkdf2.age;
-      owner = "root";
-      group = "root";
-      mode = "0400";
-    };
-
-    qbittorrent-webui-password = {
+    qbittorrent-webui-password = lib.mkIf config.services.prometheus.enable {
       file = ./qbittorrent-webui-password.env.age;
       owner = "root";
       group = "root";
       mode = "0400";
     };
 
-    unpoller-password = {
+    unpoller-password = lib.mkIf config.services.prometheus.exporters.unpoller.enable {
       file = ./unpoller-password.age;
       owner = "unpoller-exporter";
       group = "unpoller-exporter";
