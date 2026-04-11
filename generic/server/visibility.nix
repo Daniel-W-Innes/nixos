@@ -241,7 +241,10 @@
           job_name = "immich";
           static_configs = [
             {
-              targets = [ "pumpkin.lc.brotherwolf.ca:30041" ];
+              targets = [
+                "pumpkin.lc.brotherwolf.ca:30363"
+                "pumpkin.lc.brotherwolf.ca:30364"
+              ];
             }
           ];
         }
