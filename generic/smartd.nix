@@ -1,5 +1,5 @@
 _:
 
 {
-  smartd.enable = true;
+  services.smartd.enable = true;
 }
