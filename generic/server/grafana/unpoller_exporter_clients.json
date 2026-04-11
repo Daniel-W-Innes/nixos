@@ -3041,9 +3041,9 @@
         "allValue": null,
         "current": {},
         "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+          "type": "prometheus",
+          "uid": "${ds_prometheus}"
+        },
         "definition": "label_values(unpoller_client_uptime_seconds,source)",
         "hide": 2,
         "includeAll": true,
@@ -3066,9 +3066,9 @@
         "allValue": ".*",
         "current": {},
         "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+          "type": "prometheus",
+          "uid": "${ds_prometheus}"
+        },
         "definition": "label_values(unpoller_client_uptime_seconds{source=~\"$Controller\"},site_name)",
         "hide": 0,
         "includeAll": true,
@@ -3091,9 +3091,9 @@
         "allValue": "",
         "current": {},
         "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+          "type": "prometheus",
+          "uid": "${ds_prometheus}"
+        },
         "definition": "label_values(unpoller_client_uptime_seconds{site_name=~\"$Site\"},ap_name)",
         "hide": 0,
         "includeAll": true,
@@ -3116,9 +3116,9 @@
         "allValue": "",
         "current": {},
         "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+          "type": "prometheus",
+          "uid": "${ds_prometheus}"
+        },
         "definition": "label_values(unpoller_client_uptime_seconds{site_name=~\"$Site\"},sw_name)",
         "hide": 0,
         "includeAll": true,
@@ -3141,9 +3141,9 @@
         "allValue": ".*",
         "current": {},
         "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+          "type": "prometheus",
+          "uid": "${ds_prometheus}"
+        },
         "definition": "label_values(unpoller_client_uptime_seconds{site_name=~\"$Site\", ap_name=~\"$AP\", wired=\"false\"},name)",
         "hide": 0,
         "includeAll": true,
@@ -3166,9 +3166,9 @@
         "allValue": ".*",
         "current": {},
         "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+          "type": "prometheus",
+          "uid": "${ds_prometheus}"
+        },
         "definition": "label_values(unpoller_client_uptime_seconds{site_name=~\"$Site\", sw_name=~\"$Switch\", wired=\"true\"},name)",
         "hide": 0,
         "includeAll": true,

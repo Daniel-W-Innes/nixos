@@ -732,9 +732,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -845,9 +845,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -960,9 +960,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -1075,9 +1075,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -1190,9 +1190,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -1305,9 +1305,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -1420,9 +1420,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -1535,9 +1535,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -1650,9 +1650,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -1765,9 +1765,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -1880,9 +1880,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -1995,9 +1995,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -2110,9 +2110,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -2225,9 +2225,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -2340,9 +2340,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -2455,9 +2455,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -2570,9 +2570,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -2685,9 +2685,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -2800,9 +2800,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -2915,9 +2915,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -3030,9 +3030,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -3145,9 +3145,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -3260,9 +3260,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -3375,9 +3375,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -3490,9 +3490,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -3605,9 +3605,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -3720,9 +3720,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -3835,9 +3835,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -3950,9 +3950,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -4065,9 +4065,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -4180,9 +4180,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -4295,9 +4295,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -4410,9 +4410,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -4525,9 +4525,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -4640,9 +4640,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -4755,9 +4755,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -4870,9 +4870,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -4985,9 +4985,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -5100,9 +5100,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -5215,9 +5215,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -5330,9 +5330,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -5445,9 +5445,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -5560,9 +5560,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -5675,9 +5675,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -5790,9 +5790,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -5905,9 +5905,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -6020,9 +6020,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -6135,9 +6135,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -6250,9 +6250,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -6365,9 +6365,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -6480,9 +6480,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -6595,9 +6595,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -6710,9 +6710,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -6825,9 +6825,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -6940,9 +6940,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -7055,9 +7055,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -7170,9 +7170,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -7285,9 +7285,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -7400,9 +7400,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -7515,9 +7515,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -7630,9 +7630,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -7745,9 +7745,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -7860,9 +7860,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -7975,9 +7975,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -8090,9 +8090,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -8205,9 +8205,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -8320,9 +8320,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -8435,9 +8435,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -8550,9 +8550,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -8665,9 +8665,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -8780,9 +8780,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -8913,9 +8913,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -9026,9 +9026,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -9141,9 +9141,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -9256,9 +9256,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -9371,9 +9371,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -9486,9 +9486,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -9601,9 +9601,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -9716,9 +9716,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -9831,9 +9831,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -9946,9 +9946,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -10061,9 +10061,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -10176,9 +10176,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -10291,9 +10291,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -10406,9 +10406,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -10521,9 +10521,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -10636,9 +10636,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -10751,9 +10751,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -10866,9 +10866,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -10981,9 +10981,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -11096,9 +11096,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -11211,9 +11211,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -11326,9 +11326,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -11441,9 +11441,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -11556,9 +11556,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -11671,9 +11671,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -11786,9 +11786,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -11901,9 +11901,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -12016,9 +12016,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -12131,9 +12131,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -12246,9 +12246,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -12361,9 +12361,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -12476,9 +12476,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -12591,9 +12591,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -12706,9 +12706,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -12821,9 +12821,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -12936,9 +12936,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -13051,9 +13051,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -13166,9 +13166,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -13281,9 +13281,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -13396,9 +13396,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -13511,9 +13511,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -13626,9 +13626,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -13741,9 +13741,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -13856,9 +13856,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -13971,9 +13971,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -14086,9 +14086,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -14201,9 +14201,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -14316,9 +14316,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -14431,9 +14431,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -14546,9 +14546,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -14661,9 +14661,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -14776,9 +14776,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -14891,9 +14891,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -15006,9 +15006,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -15121,9 +15121,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -15236,9 +15236,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -15351,9 +15351,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -15466,9 +15466,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -15581,9 +15581,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -15696,9 +15696,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -15811,9 +15811,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -15926,9 +15926,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -16041,9 +16041,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -16174,9 +16174,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -16287,9 +16287,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -16402,9 +16402,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -16517,9 +16517,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -16632,9 +16632,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -16747,9 +16747,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -16862,9 +16862,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -16977,9 +16977,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -17092,9 +17092,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -17207,9 +17207,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -17322,9 +17322,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -17437,9 +17437,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -17552,9 +17552,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -17667,9 +17667,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -17782,9 +17782,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -17897,9 +17897,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -18012,9 +18012,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -18127,9 +18127,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -18242,9 +18242,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -18357,9 +18357,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -18472,9 +18472,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -18587,9 +18587,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -18702,9 +18702,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -18817,9 +18817,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -18932,9 +18932,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -19047,9 +19047,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -19162,9 +19162,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -19277,9 +19277,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -19392,9 +19392,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -19507,9 +19507,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -19622,9 +19622,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -19737,9 +19737,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -19852,9 +19852,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -19967,9 +19967,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -20082,9 +20082,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -20197,9 +20197,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -20312,9 +20312,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -20427,9 +20427,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -20542,9 +20542,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -20657,9 +20657,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -20772,9 +20772,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -20887,9 +20887,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -21002,9 +21002,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -21117,9 +21117,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -21232,9 +21232,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -21347,9 +21347,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -21462,9 +21462,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -21577,9 +21577,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -21692,9 +21692,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -21807,9 +21807,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -21922,9 +21922,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -22037,9 +22037,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -22152,9 +22152,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -22267,9 +22267,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -22382,9 +22382,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -22497,9 +22497,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -22612,9 +22612,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -22727,9 +22727,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -22842,9 +22842,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -22957,9 +22957,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -23072,9 +23072,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -23187,9 +23187,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -23302,9 +23302,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -23435,9 +23435,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -23549,9 +23549,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -23665,9 +23665,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -23781,9 +23781,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -23897,9 +23897,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -24013,9 +24013,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -24129,9 +24129,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -24245,9 +24245,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -24361,9 +24361,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -24477,9 +24477,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -24593,9 +24593,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -24709,9 +24709,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -24825,9 +24825,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -24941,9 +24941,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -25057,9 +25057,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -25173,9 +25173,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -25289,9 +25289,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -25405,9 +25405,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -25521,9 +25521,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -25637,9 +25637,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -25753,9 +25753,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -25869,9 +25869,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -25985,9 +25985,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -26101,9 +26101,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -26217,9 +26217,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -26333,9 +26333,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -26449,9 +26449,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -26565,9 +26565,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -26681,9 +26681,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -26797,9 +26797,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -26913,9 +26913,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -27029,9 +27029,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -27145,9 +27145,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -27261,9 +27261,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -27377,9 +27377,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -27493,9 +27493,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -27609,9 +27609,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -27725,9 +27725,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -27841,9 +27841,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -27957,9 +27957,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -28073,9 +28073,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -28189,9 +28189,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -28305,9 +28305,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -28421,9 +28421,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -28537,9 +28537,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -28653,9 +28653,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -28769,9 +28769,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -28885,9 +28885,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -29001,9 +29001,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -29117,9 +29117,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -29233,9 +29233,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -29349,9 +29349,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -29465,9 +29465,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -29581,9 +29581,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -29697,9 +29697,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -29813,9 +29813,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -29929,9 +29929,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -30045,9 +30045,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -30161,9 +30161,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -30277,9 +30277,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -30393,9 +30393,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -30509,9 +30509,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -30625,9 +30625,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Application for $Client",
           "fieldConfig": {
             "defaults": {
@@ -30760,9 +30760,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Bytes per Client / Application",
           "fieldConfig": {
             "defaults": {
@@ -30871,9 +30871,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Bytes per Client / Application",
           "fieldConfig": {
             "defaults": {
@@ -30981,9 +30981,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Receive Packets per Client / Application",
           "fieldConfig": {
             "defaults": {
@@ -31092,9 +31092,9 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "description": "Transmit Packets per Client / Application",
           "fieldConfig": {
             "defaults": {
@@ -31226,9 +31226,9 @@
         "allValaue": ".*",
         "current": {},
         "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+          "type": "prometheus",
+          "uid": "${ds_prometheus}"
+        },
         "definition": "label_values(source)",
         "hide": 2,
         "includeAll": true,
@@ -31251,9 +31251,9 @@
         "allValue": "",
         "current": {},
         "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+          "type": "prometheus",
+          "uid": "${ds_prometheus}"
+        },
         "definition": "label_values(unpoller_client_uptime_seconds{source=~\"$Controller\"},site_name)",
         "hide": 0,
         "includeAll": false,
@@ -31305,9 +31305,9 @@
         "allValue": "",
         "current": {},
         "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+          "type": "prometheus",
+          "uid": "${ds_prometheus}"
+        },
         "definition": "label_values(unpoller_client_dpi_transmit_bytes{site_name=~\"$Site\"},[[Identifier]])",
         "hide": 0,
         "includeAll": true,
@@ -31330,9 +31330,9 @@
         "allValue": ".*",
         "current": {},
         "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
+          "type": "prometheus",
+          "uid": "${ds_prometheus}"
+        },
         "definition": "label_values(unpoller_client_dpi_transmit_bytes{site_name=~\"$Site\"},category)",
         "hide": 0,
         "includeAll": true,
