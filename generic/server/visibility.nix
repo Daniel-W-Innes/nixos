@@ -241,7 +241,7 @@
           job_name = "immich";
           static_configs = [
             {
-              targets = [ "http://pumpkin.lc.brotherwolf.ca:30041" ];
+              targets = [ "pumpkin.lc.brotherwolf.ca:30041" ];
             }
           ];
         }
