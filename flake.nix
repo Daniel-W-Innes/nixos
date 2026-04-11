@@ -81,6 +81,7 @@
             ./secrets/age.nix
             ./generic/min.nix
             ./generic/ssh.nix
+            ./generic/prometheus.nix
             ./generic/server/all.nix
             {
               environment.systemPackages =
