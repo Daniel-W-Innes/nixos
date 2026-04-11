@@ -9,7 +9,8 @@ _:
       "editor.inlineSuggest.enabled" = true;
       "merge-conflict.autoNavigateNextConflict.enabled" = true;
       "git.autofetch" = true;
-      "git.confirmSync" = true;
+      "git.confirmSync" = false;
+      "git.suggestSmartCommit" = false;
     };
   };
 }
