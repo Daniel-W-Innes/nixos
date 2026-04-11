@@ -1159,7 +1159,11 @@
     }
   ],
   "schemaVersion": 40,
-  "tags": [],
+  "tags": [
+    "prometheus",
+    "smokeping",
+    "smokeping_exporter"
+  ],
   "templating": {
     "list": [
       {
@@ -1226,12 +1230,35 @@
     "from": "now-6h",
     "to": "now"
   },
-  "timepicker": {},
+  "timepicker": {
+    "nowDelay": "",
+    "refresh_intervals": [
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
   "timezone": "browser",
   "title": "SmokePing",
   "uid": "8b07053a-a56b-4803-8190-e142bf484bb6",
   "version": 6,
   "weekStart": "",
   "gnetId": 22471,
-  "description": "Show host status, avg. latency, avg. jittering, and packet loss based on SmokePing (https://github.com/SuperQ/smokeping_prober)."
+  "description": "Show host status, avg. latency, avg. jittering, and packet loss based on SmokePing (https://github.com/SuperQ/smokeping_prober).",
+  "refresh": "1m"
 }

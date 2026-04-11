@@ -957,7 +957,11 @@
   "refresh": "10s",
   "revision": 1,
   "schemaVersion": 39,
-  "tags": [],
+  "tags": [
+    "prometheus",
+    "qbittorrent",
+    "qbittorrent_exporter"
+  ],
   "templating": {
     "list": [
       {
@@ -1052,8 +1056,30 @@
     "from": "now-30m",
     "to": "now"
   },
-  "timepicker": {},
-  "timezone": "",
+  "timepicker": {
+    "nowDelay": "",
+    "refresh_intervals": [
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "browser",
   "title": "Qbittorrent",
   "uid": "eKyTETFMk",
   "version": 58,
