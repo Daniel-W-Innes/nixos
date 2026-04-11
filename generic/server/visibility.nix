@@ -14,6 +14,7 @@
     "grafana/smokeping_exporter.json".source = ./grafana/smokeping_exporter.json;
     "grafana/qbittorrent_exporter.json".source = ./grafana/qbittorrent_exporter.json;
     "grafana/nvidia_gpu_exporter.json".source = ./grafana/nvidia_gpu_exporter.json;
+    "grafana/iperf3_exporter.json".source = ./grafana/iperf3_exporter.json;
   };
   networking.firewall.allowedTCPPorts = [
     config.services.grafana.settings.server.http_port
@@ -88,6 +89,10 @@
           {
             name = "nvidia-gpu-exporter";
             options.path = "/etc/grafana/nvidia_gpu_exporter.json";
+          }
+          {
+            name = "iperf3-exporter";
+            options.path = "/etc/grafana/iperf3_exporter.json";
           }
         ];
       };
