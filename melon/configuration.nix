@@ -2,33 +2,17 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, ... }:
+{ ... }:
 
 {
   imports = [
-    # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  networking.hostName = "onion"; # Define your hostname.
+  networking.hostName = "melon";
   nixpkgs.config.allowUnfree = true;
-
-  hardware = {
-    graphics.enable = true;
-    nvidia = {
-      prime.offload.enable = false;
-      modesetting.enable = true;
-      powerManagement.enable = true;
-      powerManagement.finegrained = false;
-      open = true;
-      nvidiaSettings = true;
-    };
-  };
-
-  services.xserver.videoDrivers = [ "nvidia" ];
-  users.users.daniel.hashedPasswordFile = config.age.secrets.user-daniel.path;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -36,5 +20,5 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.05"; # Did you read the comment?
+  system.stateVersion = "25.11"; # Did you read the comment?
 }

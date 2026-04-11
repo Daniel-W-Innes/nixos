@@ -73,6 +73,30 @@
         package = nixpkgs.legacyPackages.x86_64-linux.prek;
       };
       nixosConfigurations = {
+        melon = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./melon/configuration.nix
+            ./generic/min.nix
+            ./generic/ssh.nix
+            {
+              environment.systemPackages =
+                self.checks.x86_64-linux.pre-commit-check.enabledPackages
+                ++ [ nixpkgs.legacyPackages.x86_64-linux.prek ];
+            }
+            home-manager.nixosModules.home-manager
+            {
+              nixpkgs.overlays = [ copyparty.overlays.default ];
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                users.daniel = import ./home/server.nix;
+              };
+            }
+            nix-index-database.nixosModules.nix-index
+            { programs.nix-index-database.comma.enable = true; }
+          ];
+        };
         onion = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
