@@ -133,6 +133,7 @@
                 "onion.lc.brotherwolf.ca:9100"
                 "cucamelon.lc.brotherwolf.ca:9100"
                 "pumpkin.lc.brotherwolf.ca:9100"
+                "localhost:9100"
               ];
             }
           ];
@@ -145,6 +146,7 @@
                 "onion.lc.brotherwolf.ca:9633"
                 "cucamelon.lc.brotherwolf.ca:9633"
                 "pumpkin.lc.brotherwolf.ca:9633"
+                "localhost:9633"
               ];
             }
           ];
@@ -157,6 +159,7 @@
                 "onion.lc.brotherwolf.ca:9256"
                 "cucamelon.lc.brotherwolf.ca:9256"
                 "pumpkin.lc.brotherwolf.ca:9256"
+                "localhost:9256"
               ];
             }
           ];
@@ -167,8 +170,6 @@
             {
               targets = [
                 "onion.lc.brotherwolf.ca:9835"
-                "cucamelon.lc.brotherwolf.ca:9835"
-                "pumpkin.lc.brotherwolf.ca:9835"
               ];
             }
           ];
