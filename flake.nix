@@ -33,11 +33,6 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    copyparty = {
-      url = "github:9001/copyparty";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
@@ -50,7 +45,6 @@
       nix-index-database,
       nixos-facter-modules,
       pre-commit-hooks,
-      copyparty,
       ...
     }:
     {
@@ -91,7 +85,6 @@
             }
             home-manager.nixosModules.home-manager
             {
-              nixpkgs.overlays = [ copyparty.overlays.default ];
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
@@ -119,9 +112,7 @@
                 ++ [ nixpkgs.legacyPackages.x86_64-linux.prek ];
             }
             home-manager.nixosModules.home-manager
-            copyparty.nixosModules.default
             {
-              nixpkgs.overlays = [ copyparty.overlays.default ];
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
