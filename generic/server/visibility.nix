@@ -24,6 +24,7 @@
       enable = true;
       settings = {
         security = {
+          http_addr = "0.0.0.0";
           admin_user = "admin";
           admin_password = "$__file{${config.age.secrets.grafana-admin-password.path}}";
         };
