@@ -1,7 +1,7 @@
-{ config, ... }:
+{ lib, config, ... }:
 
 {
-  networking.networkmanager.ensureProfiles = {
+  networking.networkmanager.ensureProfiles = lib.mkIf config.networking.networkmanager.enable {
     environmentFiles = [
       config.age.secrets.wifi.path
     ];

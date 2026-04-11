@@ -22,19 +22,7 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
-  "copyparty-daniel.age" = {
-    publicKeys = users ++ systems;
-    armor = true;
-  };
   "copyparty-metrics.age" = {
-    publicKeys = users ++ systems;
-    armor = true;
-  };
-  "gluetun-wireguard.env.age" = {
-    publicKeys = users ++ systems;
-    armor = true;
-  };
-  "qbittorrent-webui-password-pbkdf2.age" = {
     publicKeys = users ++ systems;
     armor = true;
   };
@@ -43,10 +31,6 @@ in
     armor = true;
   };
   "grafana-admin-password.age" = {
-    publicKeys = users ++ systems;
-    armor = true;
-  };
-  "unpoller.env.age" = {
     publicKeys = users ++ systems;
     armor = true;
   };
