@@ -109,6 +109,7 @@
             { config.facter.reportPath = ./onion/facter.json; }
             ./onion/configuration.nix
             ./secrets/age.nix
+            ./generic/avahi.nix
             ./generic/all.nix
             ./generic/borgmatic.nix
             ./generic/zsa.nix
