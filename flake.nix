@@ -71,7 +71,6 @@
         onion = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
-            #sops-nix.nixosModules.sops
             agenix.nixosModules.default
             nixos-facter-modules.nixosModules.facter
             { config.facter.reportPath = ./onion/facter.json; }

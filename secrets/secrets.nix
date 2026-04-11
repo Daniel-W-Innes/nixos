@@ -1,11 +1,15 @@
 let
-  danielAtOnion = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIPYmrcC2u9UBj5i9l7aPu7AJJRto0+0jBbDc3TXzUSv";
-  users = [ danielAtOnion ];
+  danielAtOnion = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOhOXM61fK+PiqPSD8eZ+cW0ACcl8IeBJO14odVsmVU";
+  danielAtMelon = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID8N4zSVA9MvNfdBlloRyFCazPH09qlkyCZ+6xTe2Cce";
+  users = [
+    danielAtOnion
+    danielAtMelon
+  ];
 
-  cucamelon = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMIUPc/wkbTHq5ZdkX6YzG3qrFchIF6TB2ikBNWGYrGq";
+  melon = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGfXv9Rj3ehko7lxuR5FEVfp6muQgeVD3s9O5SP3JHDk";
   onion = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIBpuKeJyjChW46/PGlgXdvAV/suVKaDkWbPEV7SzDDt";
   systems = [
-    cucamelon
+    melon
     onion
   ];
 in
