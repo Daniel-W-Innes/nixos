@@ -76,6 +76,7 @@
         melon = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
+            agenix.nixosModules.default
             ./melon/configuration.nix
             ./generic/min.nix
             ./generic/ssh.nix
