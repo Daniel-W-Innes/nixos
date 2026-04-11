@@ -81,6 +81,7 @@
             ./secrets/age.nix
             ./generic/min.nix
             ./generic/ssh.nix
+            ./generic/server/all.nix
             {
               environment.systemPackages =
                 self.checks.x86_64-linux.pre-commit-check.enabledPackages
