@@ -78,6 +78,7 @@
           modules = [
             agenix.nixosModules.default
             ./melon/configuration.nix
+            ./secrets/age.nix
             ./generic/min.nix
             ./generic/ssh.nix
             {
