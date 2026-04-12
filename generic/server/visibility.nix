@@ -223,6 +223,7 @@
         }
         {
           job_name = "iperf3";
+          scrape_interval = "1h";
           metrics_path = "/probe";
           params.port = ["5201"];
           static_configs = [
