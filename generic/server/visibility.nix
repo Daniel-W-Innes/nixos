@@ -16,7 +16,6 @@
     "grafana/nvidia_gpu_exporter.json".source = ./grafana/nvidia_gpu_exporter.json;
     "grafana/iperf3_exporter.json".source = ./grafana/iperf3_exporter.json;
     "grafana/mc_monitor_exporter.json".source = ./grafana/mc_monitor_exporter.json;
-    "grafana/immich_exporter.json".source = ./grafana/immich_exporter.json;
   };
   networking.firewall.allowedTCPPorts = [
     config.services.grafana.settings.server.http_port
@@ -99,10 +98,6 @@
           {
             name = "mc-monitor-exporter";
             options.path = "/etc/grafana/mc_monitor_exporter.json";
-          }
-          {
-            name = "immich-exporter";
-            options.path = "/etc/grafana/immich_exporter.json";
           }
         ];
       };
