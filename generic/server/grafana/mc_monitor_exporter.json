@@ -72,6 +72,9 @@
       },
       "fieldConfig": {
         "defaults": {
+          "custom": {
+            "axisSoftMax": 1
+          },
           "mappings": [
             {
               "options": {
@@ -145,7 +148,7 @@
             "uid": "${ds_prometheus}"
           },
           "editorMode": "code",
-          "expr": "iperf3_up{target=\"$target\",port=\"$port\"}",
+          "expr": "minecraft_status_healthy{server_host=\"$server_host\",server_port=\"$server_port\",server_edition=\"$server_edition\"}",
           "format": "time_series",
           "instant": false,
           "legendFormat": "",
@@ -153,7 +156,7 @@
           "refId": "A"
         }
       ],
-      "title": "Probe Status",
+      "title": "Server Health",
       "type": "stat"
     },
     {
@@ -198,7 +201,7 @@
             "uid": "${ds_prometheus}"
           },
           "editorMode": "code",
-          "expr": "iperf3_retransmits{target=\"$target\",port=\"$port\"}",
+          "expr": "minecraft_status_players_online_count{server_host=\"$server_host\",server_port=\"$server_port\",server_edition=\"$server_edition\"}",
           "format": "time_series",
           "instant": false,
           "legendFormat": "",
@@ -206,7 +209,7 @@
           "refId": "A"
         }
       ],
-      "title": "Retransmits",
+      "title": "Players Online",
       "type": "stat"
     },
     {
@@ -216,8 +219,8 @@
       },
       "fieldConfig": {
         "defaults": {
-          "decimals": 2,
-          "unit": "bytes"
+          "decimals": 0,
+          "unit": "none"
         },
         "overrides": []
       },
@@ -251,7 +254,7 @@
             "uid": "${ds_prometheus}"
           },
           "editorMode": "code",
-          "expr": "iperf3_sent_bytes{target=\"$target\",port=\"$port\"}",
+          "expr": "minecraft_status_players_max_count{server_host=\"$server_host\",server_port=\"$server_port\",server_edition=\"$server_edition\"}",
           "format": "time_series",
           "instant": false,
           "legendFormat": "",
@@ -259,7 +262,7 @@
           "refId": "A"
         }
       ],
-      "title": "Sent Bytes",
+      "title": "Max Players",
       "type": "stat"
     },
     {
@@ -269,8 +272,8 @@
       },
       "fieldConfig": {
         "defaults": {
-          "decimals": 2,
-          "unit": "bytes"
+          "decimals": 3,
+          "unit": "s"
         },
         "overrides": []
       },
@@ -304,7 +307,7 @@
             "uid": "${ds_prometheus}"
           },
           "editorMode": "code",
-          "expr": "iperf3_received_bytes{target=\"$target\",port=\"$port\"}",
+          "expr": "minecraft_status_response_time_seconds{server_host=\"$server_host\",server_port=\"$server_port\",server_edition=\"$server_edition\"}",
           "format": "time_series",
           "instant": false,
           "legendFormat": "",
@@ -312,232 +315,8 @@
           "refId": "A"
         }
       ],
-      "title": "Received Bytes",
+      "title": "Response Time",
       "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "decimals": 2,
-          "unit": "s"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 16,
-        "y": 0
-      },
-      "id": 5,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.6.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${ds_prometheus}"
-          },
-          "editorMode": "code",
-          "expr": "iperf3_sent_seconds{target=\"$target\",port=\"$port\"}",
-          "format": "time_series",
-          "instant": false,
-          "legendFormat": "",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Sent Duration",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "decimals": 2,
-          "unit": "s"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 20,
-        "y": 0
-      },
-      "id": 6,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.6.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${ds_prometheus}"
-          },
-          "editorMode": "code",
-          "expr": "iperf3_received_seconds{target=\"$target\",port=\"$port\"}",
-          "format": "time_series",
-          "instant": false,
-          "legendFormat": "",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Received Duration",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "decimals": 2,
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 4
-      },
-      "id": 7,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.6.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${ds_prometheus}"
-          },
-          "editorMode": "code",
-          "expr": "iperf3_sent_bytes{target=\"$target\",port=\"$port\"}",
-          "legendFormat": "Sent",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${ds_prometheus}"
-          },
-          "editorMode": "code",
-          "expr": "iperf3_received_bytes{target=\"$target\",port=\"$port\"}",
-          "legendFormat": "Received",
-          "range": true,
-          "refId": "B"
-        }
-      ],
-      "title": "Bytes Per Test",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${ds_prometheus}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "decimals": 2,
-          "unit": "s"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 4
-      },
-      "id": 8,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.6.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${ds_prometheus}"
-          },
-          "editorMode": "code",
-          "expr": "iperf3_sent_seconds{target=\"$target\",port=\"$port\"}",
-          "legendFormat": "Sent",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${ds_prometheus}"
-          },
-          "editorMode": "code",
-          "expr": "iperf3_received_seconds{target=\"$target\",port=\"$port\"}",
-          "legendFormat": "Received",
-          "range": true,
-          "refId": "B"
-        }
-      ],
-      "title": "Duration Per Test",
-      "type": "timeseries"
     },
     {
       "datasource": {
@@ -552,18 +331,18 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 6,
+        "h": 8,
         "w": 12,
         "x": 0,
-        "y": 12
+        "y": 4
       },
-      "id": 9,
+      "id": 5,
       "options": {
         "legend": {
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": false
+          "showLegend": true
         },
         "tooltip": {
           "mode": "single",
@@ -578,13 +357,24 @@
             "uid": "${ds_prometheus}"
           },
           "editorMode": "code",
-          "expr": "iperf3_retransmits{target=\"$target\",port=\"$port\"}",
-          "legendFormat": "Retransmits",
+          "expr": "minecraft_status_players_online_count{server_host=\"$server_host\",server_port=\"$server_port\",server_edition=\"$server_edition\"}",
+          "legendFormat": "Online",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
+          "editorMode": "code",
+          "expr": "minecraft_status_players_max_count{server_host=\"$server_host\",server_port=\"$server_port\",server_edition=\"$server_edition\"}",
+          "legendFormat": "Max",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "Retransmits Over Time",
+      "title": "Players Over Time",
       "type": "timeseries"
     },
     {
@@ -594,9 +384,54 @@
       },
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "axisSoftMax": 1
+          "decimals": 3,
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 4
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.6.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
           },
+          "editorMode": "code",
+          "expr": "minecraft_status_response_time_seconds{server_host=\"$server_host\",server_port=\"$server_port\",server_edition=\"$server_edition\"}",
+          "legendFormat": "Response Time",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Response Time Over Time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds_prometheus}"
+      },
+      "fieldConfig": {
+        "defaults": {
           "decimals": 0,
           "mappings": [
             {
@@ -635,10 +470,10 @@
       "gridPos": {
         "h": 6,
         "w": 12,
-        "x": 12,
+        "x": 0,
         "y": 12
       },
-      "id": 10,
+      "id": 7,
       "options": {
         "legend": {
           "calcs": [],
@@ -659,13 +494,13 @@
             "uid": "${ds_prometheus}"
           },
           "editorMode": "code",
-          "expr": "iperf3_up{target=\"$target\",port=\"$port\"}",
-          "legendFormat": "Up",
+          "expr": "minecraft_status_healthy{server_host=\"$server_host\",server_port=\"$server_port\",server_edition=\"$server_edition\"}",
+          "legendFormat": "Healthy",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Probe Status Over Time",
+      "title": "Health Over Time",
       "type": "timeseries"
     }
   ],
@@ -674,8 +509,8 @@
   "schemaVersion": 39,
   "tags": [
     "prometheus",
-    "iperf3",
-    "iperf3_exporter"
+    "minecraft",
+    "mc_monitor"
   ],
   "templating": {
     "list": [
@@ -697,16 +532,16 @@
           "type": "prometheus",
           "uid": "${ds_prometheus}"
         },
-        "definition": "label_values(iperf3_up, target)",
+        "definition": "label_values(minecraft_status_healthy, server_edition)",
         "description": "",
         "includeAll": false,
-        "label": "Target",
-        "name": "target",
+        "label": "Edition",
+        "name": "server_edition",
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values(iperf3_up, target)",
-          "refId": "PrometheusVariableQueryEditor-target"
+          "query": "label_values(minecraft_status_healthy, server_edition)",
+          "refId": "PrometheusVariableQueryEditor-edition"
         },
         "refresh": 2,
         "regex": "",
@@ -720,15 +555,38 @@
           "type": "prometheus",
           "uid": "${ds_prometheus}"
         },
-        "definition": "label_values(iperf3_up{target=\"$target\"}, port)",
+        "definition": "label_values(minecraft_status_healthy{server_edition=\"$server_edition\"}, server_host)",
         "description": "",
         "includeAll": false,
-        "label": "Port",
-        "name": "port",
+        "label": "Host",
+        "name": "server_host",
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values(iperf3_up{target=\"$target\"}, port)",
+          "query": "label_values(minecraft_status_healthy{server_edition=\"$server_edition\"}, server_host)",
+          "refId": "PrometheusVariableQueryEditor-host"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allowCustomValue": false,
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${ds_prometheus}"
+        },
+        "definition": "label_values(minecraft_status_healthy{server_edition=\"$server_edition\",server_host=\"$server_host\"}, server_port)",
+        "description": "",
+        "includeAll": false,
+        "label": "Port",
+        "name": "server_port",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(minecraft_status_healthy{server_edition=\"$server_edition\",server_host=\"$server_host\"}, server_port)",
           "refId": "PrometheusVariableQueryEditor-port"
         },
         "refresh": 2,
@@ -766,8 +624,8 @@
     ]
   },
   "timezone": "browser",
-  "title": "iperf3 Exporter",
-  "uid": "iperf3-exporter",
+  "title": "Minecraft Monitor",
+  "uid": "mc-monitor",
   "version": 1,
   "weekStart": ""
 }
