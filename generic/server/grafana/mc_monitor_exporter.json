@@ -72,9 +72,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "axisSoftMax": 1
-          },
           "mappings": [
             {
               "options": {
@@ -120,7 +117,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
+        "w": 6,
         "x": 0,
         "y": 0
       },
@@ -173,7 +170,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
+        "w": 6,
         "x": 4,
         "y": 0
       },
@@ -226,7 +223,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
+        "w": 6,
         "x": 8,
         "y": 0
       },
@@ -279,7 +276,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
+        "w": 6,
         "x": 12,
         "y": 0
       },
@@ -432,6 +429,9 @@
       },
       "fieldConfig": {
         "defaults": {
+          "custom": {
+            "axisSoftMax": 1
+          },
           "decimals": 0,
           "mappings": [
             {
@@ -469,7 +469,7 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 12,
+        "w": 24,
         "x": 0,
         "y": 12
       },
