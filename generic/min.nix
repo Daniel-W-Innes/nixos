@@ -1,9 +1,7 @@
 { pkgs, ... }:
 
 {
-  # TODO set kernel to latest after the nvidia update to 585+ is available
-  # boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelPackages = pkgs.linuxPackages_6_18;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
