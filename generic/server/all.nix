@@ -2,7 +2,9 @@ _:
 
 {
   imports = [
-    ./visibility.nix
     ../podman.nix
+    ./visibility.nix
+    ./smb.nix
+    ./jellyfin.nix
   ];
 }
