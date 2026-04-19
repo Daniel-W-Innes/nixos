@@ -38,4 +38,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "pumpkin-smb-credentials.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
