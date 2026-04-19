@@ -106,6 +106,8 @@
             ./generic/all.nix
             ./generic/borgmatic.nix
             ./generic/zsa.nix
+            # ./generic/server/smb.nix
+            ./generic/server/immich.nix
             {
               environment.systemPackages =
                 self.checks.x86_64-linux.pre-commit-check.enabledPackages

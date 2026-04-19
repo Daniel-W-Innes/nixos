@@ -40,5 +40,12 @@
       group = "unpoller-exporter";
       mode = "0400";
     };
+
+    immich-smb-credentials = lib.mkIf config.services.immich.enable {
+      file = ./immich-smb-credentials.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
   };
 }

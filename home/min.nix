@@ -55,6 +55,7 @@
 
         g = "git";
         ga = "git add";
+        gaa = "git add --all";
         gc = "git commit";
         gca = "git commit --amend";
         gp = "git push";
