@@ -3,17 +3,19 @@
 {
   programs.vscode = {
     enable = true;
-    profiles.default.userSettings = {
-      "workbench.colorTheme" = "IntelliJ IDEA Islands Dark";
-      "chat.agent.enabled" = false;
-      "editor.inlineSuggest.enabled" = true;
-      "merge-conflict.autoNavigateNextConflict.enabled" = true;
-      "git.autofetch" = true;
-      "git.confirmSync" = false;
-      "git.suggestSmartCommit" = false;
+    profiles.default = {
+      userSettings = {
+        "workbench.colorTheme" = "IntelliJ IDEA Islands Dark";
+        "chat.agent.enabled" = false;
+        "editor.inlineSuggest.enabled" = true;
+        "merge-conflict.autoNavigateNextConflict.enabled" = true;
+        "git.autofetch" = true;
+        "git.confirmSync" = false;
+        "git.suggestSmartCommit" = false;
+      };
+      extensions = with pkgs.vscode-extensions; [
+        elijah-potter.harper
+      ];
     };
-    extensions = with pkgs.vscode-extensions; [
-      elijah-potter.harper
-    ];
   };
 }

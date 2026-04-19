@@ -40,5 +40,12 @@
       group = "unpoller-exporter";
       mode = "0400";
     };
+    
+    pumpkin-smb-credentials = {
+      file = ./pumpkin-smb-credentials.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
   };
 }
