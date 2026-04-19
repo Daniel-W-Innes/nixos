@@ -110,6 +110,14 @@
       globalConfig.scrape_interval = "10s"; # "1m"
       scrapeConfigs = [
         {
+          job_name = "jellyfin";
+          static_configs = [
+            {
+              targets = [ "localhost:8096" ];
+            }
+          ];
+        }
+        {
           job_name = "prometheus";
           static_configs = [
             {
