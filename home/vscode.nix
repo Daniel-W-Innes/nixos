@@ -1,4 +1,4 @@
-_:
+{ pkgs, ... }:
 
 {
   programs.vscode = {
@@ -12,5 +12,8 @@ _:
       "git.confirmSync" = false;
       "git.suggestSmartCommit" = false;
     };
+    extensions = with pkgs.vscode-extensions; [
+      elijah-potter.harper
+    ];
   };
 }
