@@ -50,4 +50,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "cloudflared-cert.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }

@@ -61,5 +61,12 @@
       group = "root";
       mode = "0400";
     };
+
+    cloudflared-cert = lib.mkIf config.services.cloudflared.enable {
+      file = ./cloudflared-cert.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
   };
 }

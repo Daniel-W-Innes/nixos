@@ -1,6 +1,8 @@
 { config, ... }:
 
 {
+  environment.etc."cloudflared/cert.pem".source = config.age.secrets.cloudflared-cert.path;
+
   services.cloudflared = {
     enable = true;
     tunnels = {
