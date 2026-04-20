@@ -57,8 +57,8 @@
 
     cloudflared-tunnel = lib.mkIf config.services.cloudflared.enable {
       file = ./cloudflared-tunnel.age;
-      owner = "cloudflared";
-      group = "cloudflared";
+      owner = "root";
+      group = "root";
       mode = "0400";
     };
   };

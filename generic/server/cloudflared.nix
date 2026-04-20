@@ -1,4 +1,3 @@
-# /home/daniel/repos/nixos/generic/server/cloudflared.nix
 { config, ... }:
 
 {
