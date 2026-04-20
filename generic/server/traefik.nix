@@ -43,9 +43,10 @@
         };
       };
 
-      api.dashboard = true;
-      # Access the Traefik dashboard on <Traefik IP>:8080 of your server
-      api.insecure = true;
+      api = {
+        dashboard = true;
+        insecure = true;
+      };
       metrics.prometheus = {};
     };
 
