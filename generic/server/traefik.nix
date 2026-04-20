@@ -7,6 +7,10 @@
       config.age.secrets.traefik-env.path
     ];
     staticConfigOptions = {
+      global = {
+        checkNewVersion = false;
+        sendAnonymousUsage = true;
+      };
       entryPoints = {
         web = {
           address = ":80";
