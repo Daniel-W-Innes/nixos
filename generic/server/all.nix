@@ -8,5 +8,6 @@ _:
     ./jellyfin.nix
     ./calibre.nix
     ./traefik.nix
+    ./cloudflared.nix
   ];
 }
