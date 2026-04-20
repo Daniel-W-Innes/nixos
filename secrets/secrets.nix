@@ -46,4 +46,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "cloudflared-tunnel.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }

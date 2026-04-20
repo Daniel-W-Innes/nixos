@@ -54,5 +54,12 @@
       group = "traefik";
       mode = "0400";
     };
+
+    cloudflared-tunnel = lib.mkIf config.services.cloudflared.enable {
+      file = ./cloudflared-tunnel.age;
+      owner = "cloudflared";
+      group = "cloudflared";
+      mode = "0400";
+    };
   };
 }
