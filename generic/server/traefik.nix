@@ -46,33 +46,22 @@
     };
 
     dynamicConfigOptions.http = {
-      middlewares = {
-        stripprefix = {
-          stripPrefix = {
-            prefixes = [ "/calibre" "/jellyfin" "/prometheus" "/grafana" ];
-          };
-        };
-      };
       routers = {
         calibre = lib.mkIf config.services.calibre-web.enable {
-          rule = "PathPrefix(`/calibre`)";
+          rule = "Host(`calibre.brotherwolf.ca`) || Host(`calibre.lc.brotherwolf.ca`)";
           service = "calibre";
-          middlewares = [ "stripprefix" ];
         };
         jellyfin = lib.mkIf config.services.jellyfin.enable {
-          rule = "PathPrefix(`/jellyfin`)";
+          rule = "Host(`jellyfin.brotherwolf.ca`) || Host(`jellyfin.lc.brotherwolf.ca`)";
           service = "jellyfin";
-          middlewares = [ "stripprefix" ];
         };
         prometheus = lib.mkIf config.services.prometheus.enable {
-          rule = "PathPrefix(`/prometheus`)";
+          rule = "Host(`prometheus.brotherwolf.ca`) || Host(`prometheus.lc.brotherwolf.ca`)";
           service = "prometheus";
-          middlewares = [ "stripprefix" ];
         };
         grafana = lib.mkIf config.services.grafana.enable {
-          rule = "PathPrefix(`/grafana`)";
+          rule = "Host(`grafana.brotherwolf.ca`) || Host(`grafana.lc.brotherwolf.ca`)";
           service = "grafana";
-          middlewares = [ "stripprefix" ];
         };
       };
       services = {
