@@ -42,4 +42,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "traefik-env.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
