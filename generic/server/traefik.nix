@@ -45,26 +45,37 @@
       metrics.prometheus = {};
     };
 
-    dynamicConfigOptions = {
-      http.routers = {
+    dynamicConfigOptions.http = {
+      middlewares = {
+        stripprefix = {
+          stripPrefix = {
+            prefixes = [ "/calibre" "/jellyfin" "/prometheus" "/grafana" ];
+          };
+        };
+      };
+      routers = {
         calibre = lib.mkIf config.services.calibre-web.enable {
           rule = "PathPrefix(`/calibre`)";
           service = "calibre";
+          middlewares = [ "stripprefix" ];
         };
         jellyfin = lib.mkIf config.services.jellyfin.enable {
           rule = "PathPrefix(`/jellyfin`)";
           service = "jellyfin";
+          middlewares = [ "stripprefix" ];
         };
         prometheus = lib.mkIf config.services.prometheus.enable {
           rule = "PathPrefix(`/prometheus`)";
           service = "prometheus";
+          middlewares = [ "stripprefix" ];
         };
         grafana = lib.mkIf config.services.grafana.enable {
           rule = "PathPrefix(`/grafana`)";
           service = "grafana";
+          middlewares = [ "stripprefix" ];
         };
       };
-      http.services = {
+      services = {
         calibre.loadBalancer = lib.mkIf config.services.calibre-web.enable {
           servers = [
             { url = "http://localhost:8083"; }
