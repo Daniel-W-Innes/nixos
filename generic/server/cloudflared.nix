@@ -11,9 +11,9 @@
         default = "http_status:404";
         ingress = {
           "calibre.brotherwolf.ca".service = "https://localhost";
-          "jellyfin.brotherwolf.ca".service = "https://localhost";
-          "prometheus.brotherwolf.ca".service = "https://localhost";
-          "grafana.brotherwolf.ca".service = "https://localhost";
+          # "jellyfin.brotherwolf.ca".service = "https://localhost";
+          # "prometheus.brotherwolf.ca".service = "https://localhost";
+          # "grafana.brotherwolf.ca".service = "https://localhost";
         };
       };
     };
