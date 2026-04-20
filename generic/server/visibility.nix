@@ -126,6 +126,14 @@
           ];
         }
         {
+          job_name = "traefik";
+          static_configs = [
+            {
+              targets = [ "localhost:8080" ];
+            }
+          ];
+        }
+        {
           job_name = "copyparty";
           scheme = "https";
           metrics_path = "/.cpr/metrics";

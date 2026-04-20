@@ -47,5 +47,12 @@
       group = "root";
       mode = "0400";
     };
+
+    traefik-env = lib.mkIf config.services.traefik.enable {
+      file = ./traefik-env.age;
+      owner = "traefik";
+      group = "traefik";
+      mode = "0400";
+    };
   };
 }

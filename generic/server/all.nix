@@ -7,5 +7,6 @@ _:
     ./smb.nix
     ./jellyfin.nix
     ./calibre.nix
+    ./traefik.nix
   ];
 }
