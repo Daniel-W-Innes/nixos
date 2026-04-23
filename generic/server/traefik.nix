@@ -68,6 +68,10 @@
           rule = "Host(`grafana.brotherwolf.ca`) || Host(`grafana.lc.brotherwolf.ca`)";
           service = "grafana";
         };
+        dawarich = lib.mkIf config.services.dawarich.enable {
+          rule = "Host(`dawarich.brotherwolf.ca`) || Host(`dawarich.lc.brotherwolf.ca`)";
+          service = "dawarich";
+        };
       };
       services = {
         calibre.loadBalancer = lib.mkIf config.services.calibre-web.enable {
@@ -105,6 +109,11 @@
             path = "/-/ready";
             interval = "10s"; 
           };
+        };
+        dawarich.loadBalancer = lib.mkIf config.services.dawarich.enable {
+          servers = [
+            { url = "http://localhost:3080"; }
+          ];
         };
       };
     };
