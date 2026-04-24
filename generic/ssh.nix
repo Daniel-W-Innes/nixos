@@ -1,16 +1,17 @@
 _:
 
 {
-  environment.etc."avahi/services/ssh.service".text = ''<?xml version="1.0" standalone='no'?>
-<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
-<service-group>
-  <name replace-wildcards="yes">%h</name>
-  <service>
-    <type>_ssh._tcp</type>
-    <port>22</port>
-  </service>
-</service-group>
-'';
+  environment.etc."avahi/services/ssh.service".text = ''
+    <?xml version="1.0" standalone='no'?>
+    <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+    <service-group>
+      <name replace-wildcards="yes">%h</name>
+      <service>
+        <type>_ssh._tcp</type>
+        <port>22</port>
+      </service>
+    </service-group>
+  '';
   services = {
     openssh = {
       enable = true;

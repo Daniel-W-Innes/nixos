@@ -79,9 +79,9 @@
             ./generic/prometheus.nix
             ./generic/server/all.nix
             {
-              environment.systemPackages =
-                self.checks.x86_64-linux.pre-commit-check.enabledPackages
-                ++ [ nixpkgs.legacyPackages.x86_64-linux.prek ];
+              environment.systemPackages = self.checks.x86_64-linux.pre-commit-check.enabledPackages ++ [
+                nixpkgs.legacyPackages.x86_64-linux.prek
+              ];
             }
             home-manager.nixosModules.home-manager
             {
@@ -107,9 +107,9 @@
             ./generic/borgmatic.nix
             ./generic/zsa.nix
             {
-              environment.systemPackages =
-                self.checks.x86_64-linux.pre-commit-check.enabledPackages
-                ++ [ nixpkgs.legacyPackages.x86_64-linux.prek ];
+              environment.systemPackages = self.checks.x86_64-linux.pre-commit-check.enabledPackages ++ [
+                nixpkgs.legacyPackages.x86_64-linux.prek
+              ];
             }
             home-manager.nixosModules.home-manager
             {
@@ -134,9 +134,9 @@
             ./secrets/age.nix
             ./generic/all.nix
             {
-              environment.systemPackages =
-                self.checks.x86_64-linux.pre-commit-check.enabledPackages
-                ++ [ nixpkgs.legacyPackages.x86_64-linux.prek ];
+              environment.systemPackages = self.checks.x86_64-linux.pre-commit-check.enabledPackages ++ [
+                nixpkgs.legacyPackages.x86_64-linux.prek
+              ];
             }
             home-manager.nixosModules.home-manager
             {

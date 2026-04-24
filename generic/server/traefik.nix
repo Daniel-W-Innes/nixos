@@ -38,7 +38,10 @@
         storage = "${config.services.traefik.dataDir}/acme.json";
         dnsChallenge = {
           provider = "cloudflare";
-          resolvers = [ "1.1.1.1:53" "8.8.8.8:53" ];
+          resolvers = [
+            "1.1.1.1:53"
+            "8.8.8.8:53"
+          ];
           propagation.delayBeforeChecks = 5;
         };
       };
@@ -47,7 +50,7 @@
         dashboard = true;
         insecure = true;
       };
-      metrics.prometheus = {};
+      metrics.prometheus = { };
     };
 
     dynamicConfigOptions.http = {
@@ -107,7 +110,7 @@
           ];
           healthCheck = {
             path = "/-/ready";
-            interval = "10s"; 
+            interval = "10s";
           };
         };
         dawarich.loadBalancer = lib.mkIf config.services.dawarich.enable {
@@ -119,5 +122,9 @@
     };
   };
 
-  networking.firewall.allowedTCPPorts = [ 80 443 8080 ];
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+    8080
+  ];
 }

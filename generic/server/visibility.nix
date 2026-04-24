@@ -160,7 +160,7 @@
           job_name = "node_exporter";
           static_configs = [
             {
-              targets = [ 
+              targets = [
                 "onion.lc.brotherwolf.ca:9100"
                 "localhost:9100"
               ];
@@ -171,7 +171,7 @@
           job_name = "smartctl_exporter";
           static_configs = [
             {
-              targets = [ 
+              targets = [
                 "onion.lc.brotherwolf.ca:9633"
               ];
             }
@@ -181,7 +181,7 @@
           job_name = "process_exporter";
           static_configs = [
             {
-              targets = [ 
+              targets = [
                 "onion.lc.brotherwolf.ca:9256"
                 "localhost:9256"
               ];
@@ -241,7 +241,7 @@
           job_name = "iperf3";
           scrape_interval = "1h";
           metrics_path = "/probe";
-          params.port = ["5201"];
+          params.port = [ "5201" ];
           static_configs = [
             {
               targets = [
