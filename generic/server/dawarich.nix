@@ -23,6 +23,7 @@ _:
       };
     };
     nginx.defaultSSLListenPort = 4443;
+    nginx.defaultHTTPListenPort = 4080;
   };
   networking.firewall.allowedTCPPorts = [ 4443 ];
   security.acme = {
