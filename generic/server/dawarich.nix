@@ -15,7 +15,7 @@ _:
   systemd.tmpfiles.rules = [
     "d /var/lib/dawarich-photon/data 0755 root root -"
   ];
-   virtualisation.oci-containers.containers = {
+  virtualisation.oci-containers.containers = {
     dawarich-photon = {
       image = "rtuszik/photon-docker:latest";
       environment = {
