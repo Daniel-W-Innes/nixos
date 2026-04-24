@@ -12,6 +12,9 @@ _:
           TIME_ZONE = "America/Toronto";
       };
     };
-    nominatim.enable = true;
+    nominatim = {
+      enable = true;
+      hostName = "nominatim.lc.brotherwolf.ca";
+    };
   };
 }
