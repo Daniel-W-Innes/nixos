@@ -12,6 +12,9 @@ _:
       PHOTON_API_HOST = "http://localhost:2322";
     };
   };
+  systemd.tmpfiles.rules = [
+    "d /var/lib/dawarich-photon/data 0755 root root -"
+  ];
    virtualisation.oci-containers.containers = {
     dawarich-photon = {
       image = "rtuszik/photon-docker:latest";
