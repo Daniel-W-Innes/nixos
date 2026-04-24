@@ -4,27 +4,38 @@
 { lib, modulesPath, ... }:
 
 {
-  imports =
-    [ (modulesPath + "/profiles/qemu-guest.nix")
-    ];
+  imports = [
+    (modulesPath + "/profiles/qemu-guest.nix")
+  ];
 
-  boot.initrd.availableKernelModules = [ "ata_piix" "xhci_pci" "ahci" "virtio_pci" "sr_mod" "virtio_blk" ];
+  boot.initrd.availableKernelModules = [
+    "ata_piix"
+    "xhci_pci"
+    "ahci"
+    "virtio_pci"
+    "sr_mod"
+    "virtio_blk"
+  ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
-  fileSystems."/" =
-    { device = "/dev/mapper/luks-1021daf9-b360-4497-a85d-c2b893abe079";
-      fsType = "ext4";
-    };
+  fileSystems."/" = {
+    device = "/dev/mapper/luks-1021daf9-b360-4497-a85d-c2b893abe079";
+    fsType = "ext4";
+  };
 
-  boot.initrd.luks.devices."luks-1021daf9-b360-4497-a85d-c2b893abe079".device = "/dev/disk/by-uuid/1021daf9-b360-4497-a85d-c2b893abe079";
+  boot.initrd.luks.devices."luks-1021daf9-b360-4497-a85d-c2b893abe079".device =
+    "/dev/disk/by-uuid/1021daf9-b360-4497-a85d-c2b893abe079";
 
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/17C7-0592";
-      fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/17C7-0592";
+    fsType = "vfat";
+    options = [
+      "fmask=0077"
+      "dmask=0077"
+    ];
+  };
 
   swapDevices = [ ];
 
