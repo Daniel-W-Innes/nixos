@@ -75,6 +75,10 @@
           rule = "Host(`dawarich.brotherwolf.ca`) || Host(`dawarich.lc.brotherwolf.ca`)";
           service = "dawarich";
         };
+        photon = lib.mkIf config.services.dawarich.enable {
+          rule = "Host(`photon.brotherwolf.ca`) || Host(`photon.lc.brotherwolf.ca`)";
+          service = "photon";
+        };
       };
       services = {
         calibre.loadBalancer = lib.mkIf config.services.calibre-web.enable {
@@ -116,6 +120,11 @@
         dawarich.loadBalancer = lib.mkIf config.services.dawarich.enable {
           servers = [
             { url = "http://localhost:3080"; }
+          ];
+        };
+        photon.loadBalancer = lib.mkIf config.services.dawarich.enable {
+          servers = [
+            { url = "http://localhost:2322"; }
           ];
         };
       };
