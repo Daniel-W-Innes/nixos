@@ -1,35 +1,31 @@
 _:
 
 {
-  services = {
-    dawarich = {
-      enable = true;
-      localDomain = "dawarich.lc.brotherwolf.ca";
-      configureNginx = false;
-      webPort = 3080;
-      environment = {
-        STORE_GEODATA = "true";
-        TIME_ZONE = "America/Toronto";
-        NOMINATIM_API_HOST = "nominatim.lc.brotherwolf.ca:4443";
-        NOMINATIM_API_USE_HTTPS = "true";
-      };
+  services.dawarich = {
+    enable = true;
+    localDomain = "dawarich.lc.brotherwolf.ca";
+    configureNginx = false;
+    webPort = 3080;
+    environment = {
+      STORE_GEODATA = "true";
+      TIME_ZONE = "America/Toronto";
+      PHOTON_API_HOST = "http://localhost:2322";
     };
-    nominatim = {
-      enable = true;
-      hostName = "nominatim.lc.brotherwolf.ca";
-      ui = {
-        config = ''
-          Nominatim_Config.Page_Title='Nominatim instance';
-          Nominatim_Config.Nominatim_API_Endpoint='https://nominatim.lc.brotherwolf.ca:4443/';
-        '';
-      };
-    };
-    nginx.defaultSSLListenPort = 4443;
-    nginx.defaultHTTPListenPort = 4080;
   };
-  networking.firewall.allowedTCPPorts = [ 4443 ];
-  security.acme = {
-    defaults.email = "companies+letsencrypt@brotherwolf.ca";
-    acceptTerms = true;
+   virtualisation.oci-containers.containers = {
+    dawarich-photon = {
+      image = "rtuszik/photon-docker:latest";
+      environment = {
+        UPDATE_STRATEGY = "PARALLEL";
+        ENABLE_METRICS = "true";
+        REGION = "ca"; # TODO: This should be removed once there is more storage available for geodata.
+      };
+      ports = [
+        "127.0.0.1:2322:2322/tcp"
+      ];
+      volumes = [
+        "/var/lib/dawarich-photon/data:/photon/data"
+      ];
+    };
   };
 }
