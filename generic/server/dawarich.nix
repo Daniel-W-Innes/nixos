@@ -18,7 +18,7 @@ _:
       ui = {
         config = ''
           Nominatim_Config.Page_Title='Nominatim instance';
-          Nominatim_Config.Nominatim_API_Endpoint='https://localhost:4443/';
+          Nominatim_Config.Nominatim_API_Endpoint='https://melon.local:4443/';
         '';
       };
     };
