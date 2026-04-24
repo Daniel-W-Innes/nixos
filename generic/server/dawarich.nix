@@ -16,5 +16,6 @@ _:
       enable = true;
       hostName = "nominatim.lc.brotherwolf.ca";
     };
+    security.acme.defaults.email = "companies+letsencrypt@brotherwolf.ca";
   };
 }
