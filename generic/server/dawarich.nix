@@ -10,6 +10,8 @@ _:
       environment = {
         STORE_GEODATA = "true";
         TIME_ZONE = "America/Toronto";
+        NOMINATIM_API_HOST = "nominatim.lc.brotherwolf.ca:4443";
+        NOMINATIM_API_USE_HTTPS = "true";
       };
     };
     nominatim = {
@@ -18,7 +20,7 @@ _:
       ui = {
         config = ''
           Nominatim_Config.Page_Title='Nominatim instance';
-          Nominatim_Config.Nominatim_API_Endpoint='https://melon.local:4443/';
+          Nominatim_Config.Nominatim_API_Endpoint='https://nominatim.lc.brotherwolf.ca:4443/';
         '';
       };
     };
