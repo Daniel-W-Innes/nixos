@@ -9,7 +9,7 @@ _:
     environment = {
       STORE_GEODATA = "true";
       TIME_ZONE = "America/Toronto";
-      PHOTON_API_HOST = "http://localhost:2322";
+      PHOTON_API_HOST = "localhost:2322";
       PHOTON_API_USE_HTTPS = "false";
     };
   };
