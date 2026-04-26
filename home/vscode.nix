@@ -12,6 +12,7 @@
         "git.autofetch" = true;
         "git.confirmSync" = false;
         "git.suggestSmartCommit" = false;
+        "harper.dialect" = "Canadian";
       };
       extensions = with pkgs.vscode-extensions; [
         elijah-potter.harper
