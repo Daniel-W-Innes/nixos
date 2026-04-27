@@ -9,6 +9,7 @@
       "127.0.0.1/32"
     ];
     portMappings = [  { from = 9091; to = 9091; } ];
+    openVPNPorts = [ { port = config.services.transmission.settings.peer-port; protocol = "both"; } ];
   };
 
   systemd.services.transmission.vpnConfinement = {
@@ -46,6 +47,9 @@
       rpc-whitelist = "192.168.15.5";
       rpc-whitelist-enabled = true;
       rpc-host-whitelist = "transmission.brotherwolf.ca,transmission.lc.brotherwolf.ca";
+      lpd-enabled = true;
+      peer-port = 51413;
+      port-forwarding-enabled = true;
     };
   };
 }
