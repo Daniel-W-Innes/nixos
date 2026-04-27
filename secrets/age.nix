@@ -69,7 +69,7 @@
       mode = "0400";
     };
 
-    proton-vpn = lib.mkIf config.vpnNamespaces.proton.enable {
+    proton-vpn = lib.mkIf config.services.transmission.enable {
       file = ./proton-vpn.age;
       owner = "root";
       group = "root";
