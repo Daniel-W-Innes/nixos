@@ -58,7 +58,7 @@
     transmission = lib.mkIf config.services.transmission.enable {
       file = ./transmission.credentialsFile.age;
       owner = "transmission";
-      group = "transmission";
+      group = "media";
       mode = "0400";
     };
 
