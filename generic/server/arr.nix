@@ -22,6 +22,7 @@
       download-dir = "/mnt/media/downloads";
       incomplete-dir = "/mnt/media/downloads/incomplete";
       incomplete-dir-enabled = true;
+      download-queue-enabled = false;
     };
   };
 }
