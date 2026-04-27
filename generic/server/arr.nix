@@ -5,6 +5,7 @@
     enable = true;
     wireguardConfigFile = config.age.secrets.proton-vpn.path;
     accessibleFrom = [
+      "10.8.8.0/24"
       "127.0.0.1/32"
     ];
     portMappings = [  { from = 9091; to = 9091; } ];
@@ -41,7 +42,10 @@
       incomplete-dir = "/mnt/media/downloads/incomplete";
       incomplete-dir-enabled = true;
       download-queue-enabled = false;
-      rpc-whitelist = "127.0.0.1";
+      rpc-bind-address = "192.168.15.1";
+      rpc-whitelist = "127.0.0.1,10.8.8.*,192.168.15.*,localhost,::1,*.local";
+      rpc-whitelist-enabled = true;
+      rpc-host-whitelist = "*";
     };
   };
 }
