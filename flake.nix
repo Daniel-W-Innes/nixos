@@ -49,7 +49,7 @@
       home-manager,
       nix-index-database,
       nixos-facter-modules,
-      pre-commit-hooks, 
+      pre-commit-hooks,
       vpn-confinement,
       ...
     }:
