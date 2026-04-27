@@ -42,7 +42,7 @@
 
           if [ ! -e "$queue_json" ]; then
             printf '[]\n' |
-              install -D -m 600 -o transmission -g transmission /dev/stdin "$queue_json"
+              install -D -m 600 -o transmission -g media /dev/stdin "$queue_json"
           fi
         ''
       )
@@ -53,6 +53,7 @@
     enable = true;
     package = pkgs.transmission_4;
     credentialsFile = config.age.secrets.transmission.path;
+    group = "media";
     settings = {
       message-level = 3;
       encryption = 1;
