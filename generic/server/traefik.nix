@@ -124,7 +124,7 @@
         };
         transmission.loadBalancer = lib.mkIf config.services.transmission.enable {
           servers = [
-            { url = "http://localhost:9091"; }
+            { url = "http://192.168.15.1:9091"; }
           ];
         };
       };
