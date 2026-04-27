@@ -17,7 +17,7 @@
 
   services.transmission = {
     enable = true;
-    credentialsFile = config.age.secrets.transmission.path;
+    # credentialsFile = config.age.secrets.transmission.path;
     settings = {
       download-dir = "/mnt/media/downloads";
       incomplete-dir = "/mnt/media/downloads/incomplete";
