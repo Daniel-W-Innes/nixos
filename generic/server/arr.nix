@@ -1,19 +1,19 @@
 { config, ... }:
 
 {
-  # vpnNamespaces.proton = {
-  #   enable = true;
-  #   wireguardConfigFile = config.age.secrets.proton-vpn.path;
-  #   accessibleFrom = [
-  #     "10.8.8.0/24"
-  #   ];
-  #   portMappings = [  { from = 9091; to = 9091; } ];
-  # };
+  vpnNamespaces.proton = {
+    enable = true;
+    wireguardConfigFile = config.age.secrets.proton-vpn.path;
+    accessibleFrom = [
+      "10.8.8.0/24"
+    ];
+    portMappings = [  { from = 9091; to = 9091; } ];
+  };
 
-  # systemd.services.transmission.vpnConfinement = {
-  #   enable = true;
-  #   vpnNamespace = "proton";
-  # };
+  systemd.services.transmission.vpnConfinement = {
+    enable = true;
+    vpnNamespace = "proton";
+  };
 
   services.transmission = {
     enable = true;
