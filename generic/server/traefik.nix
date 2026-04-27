@@ -75,6 +75,10 @@
           rule = "Host(`dawarich.brotherwolf.ca`) || Host(`dawarich.lc.brotherwolf.ca`)";
           service = "dawarich";
         };
+        transmission = lib.mkIf config.services.transmission.enable {
+          rule = "Host(`transmission.brotherwolf.ca`) || Host(`transmission.lc.brotherwolf.ca`)";
+          service = "transmission";
+        };
       };
       services = {
         calibre.loadBalancer = lib.mkIf config.services.calibre-web.enable {
@@ -116,6 +120,11 @@
         dawarich.loadBalancer = lib.mkIf config.services.dawarich.enable {
           servers = [
             { url = "http://localhost:3080"; }
+          ];
+        };
+        transmission.loadBalancer = lib.mkIf config.services.transmission.enable {
+          servers = [
+            { url = "http://localhost:9091"; }
           ];
         };
       };
