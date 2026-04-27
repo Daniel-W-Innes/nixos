@@ -27,13 +27,6 @@
       mode = "0400";
     };
 
-    openvpn = {
-      file = ./openvpn.env.age;
-      owner = "root";
-      group = "root";
-      mode = "0400";
-    };
-
     qbittorrent-webui-password = lib.mkIf config.services.prometheus.enable {
       file = ./qbittorrent-webui-password.env.age;
       owner = "root";
