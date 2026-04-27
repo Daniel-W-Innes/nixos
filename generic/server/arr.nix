@@ -1,6 +1,11 @@
 { config, ... }:
 
 {
+  systemd.tmpfiles.rules = [
+    "d /var/lib/gluetun 0755 root root -"
+    "d /var/lib/nzbget 0755 root root -"
+    "d /var/lib/qbittorrent 0755 root root -"
+  ];
   virtualisation.oci-containers.containers = {
     "arr-gluetun" = {
       image = "qmcgaw/gluetun:latest";
