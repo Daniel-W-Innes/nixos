@@ -21,6 +21,9 @@
         "--health-start-period=20s"
         "--health-timeout=10s"
       ];
+      volumes = [
+        "/var/lib/gluetun:/gluetun"
+      ];
       podman.sdnotify = "healthy";
     };
 
@@ -29,6 +32,7 @@
       dependsOn = [ "arr-gluetun" ];
       volumes = [
         "/mnt/media/downloads:/downloads"
+        "/var/lib/nzbget:/config"
       ];
       extraOptions = [
         "--network=container:arr-gluetun"
@@ -43,6 +47,7 @@
       };
       volumes = [
         "/mnt/media/downloads:/downloads"
+        "/var/lib/qbittorrent:/config"
       ];
       extraOptions = [
         "--network=container:arr-gluetun"
