@@ -17,15 +17,10 @@
     "grafana/iperf3_exporter.json".source = ./grafana/iperf3_exporter.json;
     "grafana/mc_monitor_exporter.json".source = ./grafana/mc_monitor_exporter.json;
   };
-  networking.firewall.allowedTCPPorts = [
-    config.services.grafana.settings.server.http_port
-    config.services.prometheus.port
-  ];
   services = {
     grafana = {
       enable = true;
       settings = {
-        server.http_addr = "0.0.0.0";
         security = {
           admin_user = "admin";
           admin_password = "$__file{${config.age.secrets.grafana-admin-password.path}}";
