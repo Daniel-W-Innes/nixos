@@ -5,7 +5,7 @@
     enable = true;
     wireguardConfigFile = config.age.secrets.proton-vpn.path;
     accessibleFrom = [
-      "127.0.0.1/32"
+      "0.0.0.0"
     ];
     portMappings = [  { from = 9091; to = 9091; } ];
   };
@@ -15,6 +15,7 @@
     vpnNamespace = "proton";
   };
 
+  # This is a hack to ensure the queue.json file exists before transmission starts, as it doesn't create it on its own and fails if it doesn't exist.
   systemd.services.transmission.serviceConfig.ExecStartPre = lib.mkAfter [
     (
       "+"
