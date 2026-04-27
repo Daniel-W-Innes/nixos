@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
   vpnNamespaces.proton = {
@@ -17,7 +17,8 @@
 
   services.transmission = {
     enable = true;
-    # credentialsFile = config.age.secrets.transmission.path;
+    package = pkgs.transmission_4;
+    credentialsFile = config.age.secrets.transmission.path;
     settings = {
       download-dir = "/mnt/media/downloads";
       incomplete-dir = "/mnt/media/downloads/incomplete";
