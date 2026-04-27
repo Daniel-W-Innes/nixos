@@ -61,5 +61,19 @@
       group = "traefik";
       mode = "0400";
     };
+
+    transmission = lib.mkIf config.services.transmission.enable {
+      file = ./transmission.credentialsFile.age;
+      owner = "transmission";
+      group = "transmission";
+      mode = "0400";
+    };
+
+    proton-vpn = lib.mkIf config.vpnNamespaces.proton.enable {
+      file = ./proton-vpn.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
   };
 }

@@ -33,6 +33,11 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    vpn-confinement = {
+      url = "github:Maroka-chan/VPN-Confinement";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -44,7 +49,8 @@
       home-manager,
       nix-index-database,
       nixos-facter-modules,
-      pre-commit-hooks,
+      pre-commit-hooks, 
+      vpn-confinement,
       ...
     }:
     {
@@ -71,6 +77,7 @@
           system = "x86_64-linux";
           modules = [
             agenix.nixosModules.default
+            vpn-confinement.nixosModules.default
             ./melon/configuration.nix
             ./secrets/age.nix
             ./generic/avahi.nix
