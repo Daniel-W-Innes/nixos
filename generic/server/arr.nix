@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   vpnNamespaces.proton = {
@@ -8,29 +13,41 @@
       "10.8.8.0/24"
       "127.0.0.1/32"
     ];
-    portMappings = [  { from = 9091; to = 9091; } ];
-    openVPNPorts = [ { port = config.services.transmission.settings.peer-port; protocol = "both"; } ];
+    portMappings = [
+      {
+        from = 9091;
+        to = 9091;
+      }
+    ];
+    openVPNPorts = [
+      {
+        port = config.services.transmission.settings.peer-port;
+        protocol = "both";
+      }
+    ];
   };
 
-  systemd.services.transmission.vpnConfinement = {
-    enable = true;
-    vpnNamespace = "proton";
+  systemd.services.transmission = {
+    vpnConfinement = {
+      enable = true;
+      vpnNamespace = "proton";
+    };
+
+    # This is a hack to ensure the queue.json file exists before transmission starts, as it doesn't create it on its own and fails if it doesn't exist.
+    serviceConfig.ExecStartPre = lib.mkAfter [
+      (
+        "+"
+        + pkgs.writeShellScript "transmission-create-queue-json" ''
+          queue_json='/var/lib/transmission/.config/transmission-daemon/queue.json'
+
+          if [ ! -e "$queue_json" ]; then
+            printf '[]\n' |
+              install -D -m 600 -o transmission -g transmission /dev/stdin "$queue_json"
+          fi
+        ''
+      )
+    ];
   };
-
-  # This is a hack to ensure the queue.json file exists before transmission starts, as it doesn't create it on its own and fails if it doesn't exist.
-  systemd.services.transmission.serviceConfig.ExecStartPre = lib.mkAfter [
-    (
-      "+"
-      + pkgs.writeShellScript "transmission-create-queue-json" ''
-        queue_json='/var/lib/transmission/.config/transmission-daemon/queue.json'
-
-        if [ ! -e "$queue_json" ]; then
-          printf '[]\n' |
-            install -D -m 600 -o transmission -g transmission /dev/stdin "$queue_json"
-        fi
-      ''
-    )
-  ];
 
   services.transmission = {
     enable = true;
