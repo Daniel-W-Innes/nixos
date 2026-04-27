@@ -50,4 +50,12 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "transmission.credentialsFile.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
+  "proton-vpn.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
