@@ -69,7 +69,7 @@
       mode = "0400";
     };
 
-    scraparr = lib.mkIf config.services.scraparr.enable {
+    scraparr = lib.mkIf config.services.prometheus.enable {
       file = ./scraparr.env.age;
       owner = "root";
       group = "root";
