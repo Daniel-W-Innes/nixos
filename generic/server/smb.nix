@@ -19,8 +19,8 @@
         "nofail"
         "uid=media"
         "gid=media"
-        "file_mode=0640"
-        "dir_mode=0750"
+        "file_mode=0660"
+        "dir_mode=0770"
       ];
     };
     "/mnt/references" = {
@@ -33,8 +33,8 @@
         "nofail"
         "uid=media"
         "gid=media"
-        "file_mode=0640"
-        "dir_mode=0750"
+        "file_mode=0660"
+        "dir_mode=0770"
       ];
     };
   };
