@@ -75,7 +75,7 @@ in
         rpc-whitelist-enabled = true;
         rpc-host-whitelist = "transmission.brotherwolf.ca,transmission.lc.brotherwolf.ca";
         lpd-enabled = true;
-        peer-port = 51413;
+        peer-port = 51820;
         port-forwarding-enabled = true;
         idle_seeding_limit_enabled = true;
         idle_seeding_limit = 10080;
