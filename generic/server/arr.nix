@@ -49,25 +49,29 @@
     ];
   };
 
-  services.transmission = {
-    enable = true;
-    package = pkgs.transmission_4;
-    credentialsFile = config.age.secrets.transmission.path;
-    group = "media";
-    settings = {
-      message-level = 3;
-      encryption = 1;
-      download-dir = "/mnt/media/downloads";
-      incomplete-dir = "/mnt/media/downloads/incomplete";
-      incomplete-dir-enabled = true;
-      download-queue-enabled = false;
-      rpc-bind-address = "192.168.15.1";
-      rpc-whitelist = "192.168.15.5";
-      rpc-whitelist-enabled = true;
-      rpc-host-whitelist = "transmission.brotherwolf.ca,transmission.lc.brotherwolf.ca";
-      lpd-enabled = true;
-      peer-port = 51413;
-      port-forwarding-enabled = true;
+  services = {
+    transmission = {
+      enable = true;
+      package = pkgs.transmission_4;
+      credentialsFile = config.age.secrets.transmission.path;
+      group = "media";
+      settings = {
+        message-level = 3;
+        encryption = 1;
+        download-dir = "/mnt/media/downloads";
+        incomplete-dir = "/mnt/media/downloads/incomplete";
+        incomplete-dir-enabled = true;
+        download-queue-enabled = false;
+        rpc-bind-address = "192.168.15.1";
+        rpc-whitelist = "192.168.15.5";
+        rpc-whitelist-enabled = true;
+        rpc-host-whitelist = "transmission.brotherwolf.ca,transmission.lc.brotherwolf.ca";
+        lpd-enabled = true;
+        peer-port = 51413;
+        port-forwarding-enabled = true;
+      };
     };
+    flaresolverr.enable = true;
+    prowlarr.enable = true;
   };
 }
