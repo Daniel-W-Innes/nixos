@@ -74,7 +74,14 @@
     flaresolverr.enable = true;
     prowlarr = {
       enable = true;
-      settings.log.analyticsEnabled = true;
+      environmentFiles = [ config.age.secrets.prowlarr.path ];
+      settings = {
+        log.analyticsEnabled = true;
+        auth = {
+          method = "Forms";
+          required = true;
+        };
+      };
     };
   };
 }

@@ -54,4 +54,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "prowlarr.env.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
