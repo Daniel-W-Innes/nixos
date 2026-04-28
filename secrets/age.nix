@@ -68,5 +68,12 @@
       group = "root";
       mode = "0400";
     };
+
+    prowlarr = lib.mkIf config.services.prowlarr.enable {
+      file = ./prowlarr.env.age;
+      owner = "prowlarr";
+      group = "prowlarr";
+      mode = "0400";
+    };
   };
 }
