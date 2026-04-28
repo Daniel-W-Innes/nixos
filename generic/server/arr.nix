@@ -74,7 +74,6 @@
     flaresolverr.enable = true;
     prowlarr = {
       enable = true;
-      environmentFiles = [ config.age.secrets.prowlarr.path ];
       settings = {
         log.analyticsEnabled = true;
       };
