@@ -103,4 +103,26 @@
       };
     };
   };
+  users.users = {
+    radarr = {
+      isSystemUser = true;
+      description = "Radarr";
+      extraGroups = [ "media" "radarr" ];
+    };
+    sonarr = {
+      isSystemUser = true;
+      description = "Sonarr";
+      extraGroups = [ "media" "sonarr" ];
+    };
+    lidarr = {
+      isSystemUser = true;
+      description = "Lidarr";
+      extraGroups = [ "media" "lidarr" ];
+    };
+    readarr = {
+      isSystemUser = true;
+      description = "Readarr";
+      extraGroups = [ "media" "readarr" ];
+    };
+  };
 }
