@@ -46,10 +46,6 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
-  "openvpn.env.age" = {
-    publicKeys = users ++ systems;
-    armor = true;
-  };
   "transmission.credentialsFile.age" = {
     publicKeys = users ++ systems;
     armor = true;
