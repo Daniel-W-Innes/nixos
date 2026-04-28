@@ -5,6 +5,14 @@
   ...
 }:
 
+let
+  arrSettings = {
+    enable = true;
+    settings = {
+      log.analyticsEnabled = true;
+    };
+  };
+in
 {
   vpnNamespaces.proton = {
     enable = true;
@@ -72,53 +80,32 @@
       };
     };
     flaresolverr.enable = true;
-    prowlarr = {
-      enable = true;
-      settings = {
-        log.analyticsEnabled = true;
-      };
-    };
-    radarr = {
-      enable = true;
-      settings = {
-        log.analyticsEnabled = true;
-      };
-    };
-    sonarr = {
-      enable = true;
-      settings = {
-        log.analyticsEnabled = true;
-      };
-    };
-    lidarr = {
-      enable = true;
-      settings = {
-        log.analyticsEnabled = true;
-      };
-    };
-    readarr = {
-      enable = true;
-      settings = {
-        log.analyticsEnabled = true;
-      };
-    };
+    prowlarr = arrSettings;
+    radarr = arrSettings;
+    sonarr = arrSettings;
+    lidarr = arrSettings;
+    readarr = arrSettings;
   };
   users.users = {
     radarr = {
       isSystemUser = true;
-      extraGroups = [ "media" "radarr" ];
+      group = "radarr";
+      extraGroups = [ "media" ];
     };
     sonarr = {
       isSystemUser = true;
-      extraGroups = [ "media" "sonarr" ];
+      group = "sonarr";
+      extraGroups = [ "media" ];
     };
     lidarr = {
       isSystemUser = true;
-      extraGroups = [ "media" "lidarr" ];
+      group = "lidarr";
+      extraGroups = [ "media" ];
     };
     readarr = {
       isSystemUser = true;
-      extraGroups = [ "media" "readarr" ];
+      group = "readarr";
+      extraGroups = [ "media" ];
     };
   };
 }
