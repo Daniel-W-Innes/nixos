@@ -151,46 +151,26 @@
           servers = [
             { url = "http://localhost:9696"; }
           ];
-          healthCheck = {
-            path = "/api/v1/health";
-            interval = "10s";
-          };
         };
         radarr.loadBalancer = lib.mkIf config.services.radarr.enable {
           servers = [
             { url = "http://localhost:7878"; }
           ];
-          healthCheck = {
-            path = "/api/v1/health";
-            interval = "10s";
-          };
         };
         sonarr.loadBalancer = lib.mkIf config.services.sonarr.enable {
           servers = [
             { url = "http://localhost:8989"; }
           ];
-          healthCheck = {
-            path = "/api/v1/health";
-            interval = "10s";
-          };
         };
         lidarr.loadBalancer = lib.mkIf config.services.lidarr.enable {
           servers = [
             { url = "http://localhost:8686"; }
           ];
-          healthCheck = {
-            path = "/api/v1/health";
-            interval = "10s";
-          };
         };
         readarr.loadBalancer = lib.mkIf config.services.readarr.enable {
           servers = [
             { url = "http://localhost:8787"; }
           ];
-          healthCheck = {
-            path = "/api/v1/health";
-            interval = "10s";
-          };
         };
       };
     };
