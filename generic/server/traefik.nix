@@ -135,10 +135,6 @@
           servers = [
             { url = "http://localhost:9696"; }
           ];
-          healthCheck = {
-            path = "/api/v1/health";
-            interval = "10s";
-          };
         };
       };
     };
