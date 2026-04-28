@@ -77,6 +77,10 @@ in
         lpd-enabled = true;
         peer-port = 51413;
         port-forwarding-enabled = true;
+        idle_seeding_limit_enabled = true;
+        idle_seeding_limit = 10080;
+        ratio_limit = 5.0;
+        ratio_limit_enabled = true;
       };
     };
     flaresolverr.enable = true;
