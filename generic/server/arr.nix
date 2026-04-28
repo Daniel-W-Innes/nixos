@@ -89,7 +89,6 @@ in
     sonarr = arrSettings;
     lidarr = arrSettings;
     readarr = arrSettings;
-    seerr.enable = true;
   };
   users.users = {
     radarr = {
