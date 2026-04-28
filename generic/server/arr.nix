@@ -77,10 +77,6 @@
       environmentFiles = [ config.age.secrets.prowlarr.path ];
       settings = {
         log.analyticsEnabled = true;
-        auth = {
-          method = "Forms";
-          required = true;
-        };
       };
     };
   };
