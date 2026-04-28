@@ -16,6 +16,7 @@
     "grafana/nvidia_gpu_exporter.json".source = ./grafana/nvidia_gpu_exporter.json;
     "grafana/iperf3_exporter.json".source = ./grafana/iperf3_exporter.json;
     "grafana/mc_monitor_exporter.json".source = ./grafana/mc_monitor_exporter.json;
+    "grafana/scraparr_exporter.json".source = ./grafana/scraparr_exporter.json;
   };
   services = {
     grafana = {
@@ -93,6 +94,10 @@
           {
             name = "mc-monitor-exporter";
             options.path = "/etc/grafana/mc_monitor_exporter.json";
+          }
+          {
+            name = "scraparr-exporter";
+            options.path = "/etc/grafana/scraparr_exporter.json";
           }
         ];
       };
@@ -386,7 +391,7 @@
         "127.0.0.1:9177:8000/tcp"
       ];
     };
-    scraparr = {
+    scraparr-exporter = {
       image = "ghcr.io/thecfu/scraparr:latest";
       environmentFiles = [ config.age.secrets.scraparr.path ];
       environment = {
