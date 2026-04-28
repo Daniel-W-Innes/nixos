@@ -99,6 +99,10 @@
           rule = "Host(`readarr.brotherwolf.ca`) || Host(`readarr.lc.brotherwolf.ca`)";
           service = "readarr";
         };
+        seerr = lib.mkIf config.services.seerr.enable {
+          rule = "Host(`seerr.brotherwolf.ca`) || Host(`seerr.lc.brotherwolf.ca`)";
+          service = "seerr";
+        };
       };
       services = {
         calibre.loadBalancer = lib.mkIf config.services.calibre-web.enable {
@@ -191,6 +195,11 @@
             path = "/ping";
             interval = "10s";
           };
+        };
+        seerr.loadBalancer = lib.mkIf config.services.seerr.enable {
+          servers = [
+            { url = "http://localhost:5055"; }
+          ];
         };
       };
     };
