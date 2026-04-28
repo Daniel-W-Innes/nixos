@@ -79,6 +79,10 @@
           rule = "Host(`transmission.brotherwolf.ca`) || Host(`transmission.lc.brotherwolf.ca`)";
           service = "transmission";
         };
+        prowlarr = lib.mkIf config.services.prowlarr.enable {
+          rule = "Host(`prowlarr.brotherwolf.ca`) || Host(`prowlarr.lc.brotherwolf.ca`)";
+          service = "prowlarr";
+        };
       };
       services = {
         calibre.loadBalancer = lib.mkIf config.services.calibre-web.enable {
@@ -126,6 +130,15 @@
           servers = [
             { url = "http://192.168.15.1:9091"; }
           ];
+        };
+        prowlarr.loadBalancer = lib.mkIf config.services.prowlarr.enable {
+          servers = [
+            { url = "http://localhost:9696"; }
+          ];
+          healthCheck = {
+            path = "/api/v1/health";
+            interval = "10s";
+          };
         };
       };
     };
