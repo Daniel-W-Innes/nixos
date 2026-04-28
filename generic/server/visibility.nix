@@ -306,6 +306,14 @@
             }
           ];
         }
+        {
+          job_name = "scraparr";
+          static_configs = [
+            {
+              targets = [ "localhost:7100" ];
+            }
+          ];
+        }
       ];
       exporters = {
         smokeping = {
@@ -376,6 +384,19 @@
       };
       ports = [
         "127.0.0.1:9177:8000/tcp"
+      ];
+    };
+    scraparr = {
+      image = "ghcr.io/thecfu/scraparr:latest";
+      environmentFiles = [ config.age.secrets.scraparr.path ];
+      environment = {
+        SONARR_URL = "http://localhost:8989";
+        RADARR_URL = "http://localhost:7878";
+        READARR_URL = "http://localhost:8787";
+        PROWLARR_URL = "http://localhost:9696";
+      };
+      ports = [
+        "127.0.0.1:7100:7100/tcp"
       ];
     };
   };

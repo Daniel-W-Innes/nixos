@@ -68,5 +68,12 @@
       group = "root";
       mode = "0400";
     };
+
+    scraparr = lib.mkIf config.services.scraparr.enable {
+      file = ./scraparr.env.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
   };
 }
