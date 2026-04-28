@@ -12,7 +12,6 @@
     "grafana/unpoller_exporter_pdu.json".source = ./grafana/unpoller_exporter_pdu.json;
     "grafana/unpoller_exporter_usg.json".source = ./grafana/unpoller_exporter_usg.json;
     "grafana/smokeping_exporter.json".source = ./grafana/smokeping_exporter.json;
-    "grafana/qbittorrent_exporter.json".source = ./grafana/qbittorrent_exporter.json;
     "grafana/nvidia_gpu_exporter.json".source = ./grafana/nvidia_gpu_exporter.json;
     "grafana/iperf3_exporter.json".source = ./grafana/iperf3_exporter.json;
     "grafana/mc_monitor_exporter.json".source = ./grafana/mc_monitor_exporter.json;
@@ -79,10 +78,6 @@
             options.path = "/etc/grafana/smokeping_exporter.json";
           }
           {
-            name = "qbittorrent";
-            options.path = "/etc/grafana/qbittorrent_exporter.json";
-          }
-          {
             name = "nvidia-gpu-exporter";
             options.path = "/etc/grafana/nvidia_gpu_exporter.json";
           }
@@ -140,14 +135,6 @@
           static_configs = [
             {
               targets = [ "pumpkin.lc.brotherwolf.ca:30266" ];
-            }
-          ];
-        }
-        {
-          job_name = "qbittorrent";
-          static_configs = [
-            {
-              targets = [ "localhost:9177" ];
             }
           ];
         }
@@ -364,18 +351,6 @@
       image = "ghcr.io/edgard/iperf3_exporter:latest";
       ports = [
         "127.0.0.1:9579:9579/tcp"
-      ];
-    };
-    qbittorrent-exporter = {
-      image = "esanchezm/prometheus-qbittorrent-exporter:latest";
-      environmentFiles = [ config.age.secrets.qbittorrent-webui-password.path ];
-      environment = {
-        QBITTORRENT_PORT = "24682";
-        QBITTORRENT_HOST = "pumpkin.lc.brotherwolf.ca";
-        QBITTORRENT_USER = "admin";
-      };
-      ports = [
-        "127.0.0.1:9177:8000/tcp"
       ];
     };
   };
