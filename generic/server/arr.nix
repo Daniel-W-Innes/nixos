@@ -78,5 +78,29 @@
         log.analyticsEnabled = true;
       };
     };
+    radarr = {
+      enable = true;
+      settings = {
+        log.analyticsEnabled = true;
+      };
+    };
+    sonarr = {
+      enable = true;
+      settings = {
+        log.analyticsEnabled = true;
+      };
+    };
+    lidarr = {
+      enable = true;
+      settings = {
+        log.analyticsEnabled = true;
+      };
+    };
+    readarr = {
+      enable = true;
+      settings = {
+        log.analyticsEnabled = true;
+      };
+    };
   };
 }

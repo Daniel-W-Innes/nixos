@@ -83,6 +83,22 @@
           rule = "Host(`prowlarr.brotherwolf.ca`) || Host(`prowlarr.lc.brotherwolf.ca`)";
           service = "prowlarr";
         };
+        radarr = lib.mkIf config.services.radarr.enable {
+          rule = "Host(`radarr.brotherwolf.ca`) || Host(`radarr.lc.brotherwolf.ca`)";
+          service = "radarr";
+        };
+        sonarr = lib.mkIf config.services.sonarr.enable {
+          rule = "Host(`sonarr.brotherwolf.ca`) || Host(`sonarr.lc.brotherwolf.ca`)";
+          service = "sonarr";
+        };
+        lidarr = lib.mkIf config.services.lidarr.enable {
+          rule = "Host(`lidarr.brotherwolf.ca`) || Host(`lidarr.lc.brotherwolf.ca`)";
+          service = "lidarr";
+        };
+        readarr = lib.mkIf config.services.readarr.enable {
+          rule = "Host(`readarr.brotherwolf.ca`) || Host(`readarr.lc.brotherwolf.ca`)";
+          service = "readarr";
+        };
       };
       services = {
         calibre.loadBalancer = lib.mkIf config.services.calibre-web.enable {
@@ -135,6 +151,46 @@
           servers = [
             { url = "http://localhost:9696"; }
           ];
+          healthCheck = {
+            path = "/api/v1/health";
+            interval = "10s";
+          };
+        };
+        radarr.loadBalancer = lib.mkIf config.services.radarr.enable {
+          servers = [
+            { url = "http://localhost:7878"; }
+          ];
+          healthCheck = {
+            path = "/api/v1/health";
+            interval = "10s";
+          };
+        };
+        sonarr.loadBalancer = lib.mkIf config.services.sonarr.enable {
+          servers = [
+            { url = "http://localhost:8989"; }
+          ];
+          healthCheck = {
+            path = "/api/v1/health";
+            interval = "10s";
+          };
+        };
+        lidarr.loadBalancer = lib.mkIf config.services.lidarr.enable {
+          servers = [
+            { url = "http://localhost:8686"; }
+          ];
+          healthCheck = {
+            path = "/api/v1/health";
+            interval = "10s";
+          };
+        };
+        readarr.loadBalancer = lib.mkIf config.services.readarr.enable {
+          servers = [
+            { url = "http://localhost:8787"; }
+          ];
+          healthCheck = {
+            path = "/api/v1/health";
+            interval = "10s";
+          };
         };
       };
     };
