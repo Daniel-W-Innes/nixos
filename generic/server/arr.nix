@@ -72,6 +72,9 @@
       };
     };
     flaresolverr.enable = true;
-    prowlarr.enable = true;
+    prowlarr = {
+      enable = true;
+      settings.log.analyticsEnabled = true;
+    };
   };
 }
