@@ -202,6 +202,7 @@ in
   programs.firefox = {
     enable = true;
     profiles.main = {
+      isDefault = true;
       bookmarks = {
         force = true;
         settings = [
