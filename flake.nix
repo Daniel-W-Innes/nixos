@@ -77,6 +77,8 @@
           system = "x86_64-linux";
           modules = [
             agenix.nixosModules.default
+            nixos-facter-modules.nixosModules.facter
+            { config.facter.reportPath = ./melon/facter.json; }
             vpn-confinement.nixosModules.default
             ./melon/configuration.nix
             ./secrets/age.nix
