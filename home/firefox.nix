@@ -23,6 +23,7 @@ let
       };
       meta = {
         mozPermissions = permissions;
+        mozAddonId = addonId;
       };
     };
 
@@ -1372,31 +1373,31 @@ in
           simpleLogin
         ];
         settings = {
-          "{446900e4-71c2-419f-a6a7-df9c091e268b}" = {
+          bitwarden.meta.mozAddonId = {
             permissions = bitwarden.meta.mozPermissions;
           };
-          "{70b4fb8a-ae41-4e66-99f5-0fa89e411d69}" = {
+          dnssec.meta.mozAddonId = {
             permissions = dnssec.meta.mozPermissions;
           };
-          "harper@writewithharper.com" = {
+          harper.meta.mozAddonId = {
             permissions = harper.meta.mozPermissions;
           };
-          "{531906d3-e22f-4a6c-a102-8057b88a1a63}" = {
+          singleFile.meta.mozAddonId = {
             permissions = singleFile.meta.mozPermissions;
           };
-          "{ddc62400-f22d-4dd3-8b4a-05837de53c2e}" = {
+          readAloud.meta.mozAddonId = {
             permissions = readAloud.meta.mozPermissions;
           };
-          "@contain-facebook" = {
+          facebookContainer.meta.mozAddonId = {
             permissions = facebookContainer.meta.mozPermissions;
           };
-          "enhancerforyoutube@maximerf.addons.mozilla.org" = {
+          enhancerForYouTube.meta.mozAddonId = {
             permissions = enhancerForYouTube.meta.mozPermissions;
           };
-          "jid1-ZAdIEUB7XOzOJw@jetpack" = {
+          duckDuckGoPrivacyEssentials.meta.mozAddonId = {
             permissions = duckDuckGoPrivacyEssentials.meta.mozPermissions;
           };
-          "addon@simplelogin" = {
+          simpleLogin.meta.mozAddonId = {
             permissions = simpleLogin.meta.mozPermissions;
           };
         };
