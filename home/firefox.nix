@@ -1373,31 +1373,31 @@ in
           simpleLogin
         ];
         settings = {
-          bitwarden.meta.mozAddonId = {
+          "${bitwarden.meta.mozAddonId}" = {
             permissions = bitwarden.meta.mozPermissions;
           };
-          dnssec.meta.mozAddonId = {
+          "${dnssec.meta.mozAddonId}" = {
             permissions = dnssec.meta.mozPermissions;
           };
-          harper.meta.mozAddonId = {
+          "${harper.meta.mozAddonId}" = {
             permissions = harper.meta.mozPermissions;
           };
-          singleFile.meta.mozAddonId = {
+          "${singleFile.meta.mozAddonId}" = {
             permissions = singleFile.meta.mozPermissions;
           };
-          readAloud.meta.mozAddonId = {
+          "${readAloud.meta.mozAddonId}" = {
             permissions = readAloud.meta.mozPermissions;
           };
-          facebookContainer.meta.mozAddonId = {
+          "${facebookContainer.meta.mozAddonId}" = {
             permissions = facebookContainer.meta.mozPermissions;
           };
-          enhancerForYouTube.meta.mozAddonId = {
+          "${enhancerForYouTube.meta.mozAddonId}" = {
             permissions = enhancerForYouTube.meta.mozPermissions;
           };
-          duckDuckGoPrivacyEssentials.meta.mozAddonId = {
+          "${duckDuckGoPrivacyEssentials.meta.mozAddonId}" = {
             permissions = duckDuckGoPrivacyEssentials.meta.mozPermissions;
           };
-          simpleLogin.meta.mozAddonId = {
+          "${simpleLogin.meta.mozAddonId}" = {
             permissions = simpleLogin.meta.mozPermissions;
           };
         };
