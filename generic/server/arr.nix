@@ -112,12 +112,4 @@ in
       extraGroups = [ "media" ];
     };
   };
-  virtualisation.oci-containers.containers = {
-    transmission-tracker-add = {
-      image = "andrewmhub/transmission-tracker-add:latest";
-      environment = {
-        HOSTPORT = "transmission.lc.brotherwolf.ca";
-      };
-    };
-  };
 }
