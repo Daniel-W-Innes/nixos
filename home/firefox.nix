@@ -653,7 +653,7 @@ in
                     url = "https://www.dcode.fr/boolean-expressions-calculator";
                   }
                   {
-                    name = "My NeoVim Go(lang) setup — As good as Intellj/Goland IDE | by Suyash Raj | Medium";
+                    name = "My NeoVim Go(lang) setup — As good as IntelliJ/Goland IDE | by Suyash Raj | Medium";
                     url = "https://medium.com/@suyash10581108/my-neovim-go-lang-setup-as-good-as-intellj-goland-ide-d48dd765f6de";
                   }
                 ];
