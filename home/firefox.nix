@@ -1,4 +1,204 @@
-_: {
+{ pkgs, ... }:
+let
+  mkFirefoxExtension =
+    {
+      pname,
+      version,
+      addonId,
+      url,
+      hash,
+      permissions,
+    }:
+    pkgs.stdenvNoCC.mkDerivation {
+      inherit pname version;
+      src = pkgs.fetchurl {
+        inherit url hash;
+      };
+      dontUnpack = true;
+      installPhase = ''
+        install -Dm444 "$src" "$out/share/mozilla/extensions/${addonId}.xpi"
+      '';
+      passthru = {
+        inherit addonId;
+      };
+      meta = {
+        mozPermissions = permissions;
+      };
+    };
+
+  bitwarden = mkFirefoxExtension {
+    pname = "bitwarden-password-manager";
+    version = "2026.3.0";
+    addonId = "{446900e4-71c2-419f-a6a7-df9c091e268b}";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4749958/bitwarden_password_manager-2026.3.0.xpi";
+    hash = "sha256-LcbQdNTcCr0qiWb1BlpV5yUrv15Usjwx2+2r+sDU28Q=";
+    permissions = [
+      "*://*/*"
+      "<all_urls>"
+      "alarms"
+      "clipboardRead"
+      "clipboardWrite"
+      "contextMenus"
+      "file:///*"
+      "idle"
+      "nativeMessaging"
+      "notifications"
+      "storage"
+      "tabs"
+      "unlimitedStorage"
+      "webNavigation"
+      "webRequest"
+      "webRequestBlocking"
+    ];
+  };
+
+  dnssec = mkFirefoxExtension {
+    pname = "dnssec";
+    version = "1.1.1resigned1";
+    addonId = "{70b4fb8a-ae41-4e66-99f5-0fa89e411d69}";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4273645/dnssec-1.1.1resigned1.xpi";
+    hash = "sha256-br0bfu3/nxjdFBU7l4U9r2OZ18xnmBFYoya34c06oaQ=";
+    permissions = [
+      "<all_urls>"
+      "storage"
+      "tabs"
+      "webNavigation"
+      "webRequest"
+    ];
+  };
+
+  harper = mkFirefoxExtension {
+    pname = "private-grammar-checker-harper";
+    version = "2.1.0";
+    addonId = "harper@writewithharper.com";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4778851/private_grammar_checker_harper-2.1.0.xpi";
+    hash = "sha256-caNvUid/kE6Lpv5ePEuPHJQE+zUBN4Het6uHTe8izgE=";
+    permissions = [
+      "<all_urls>"
+      "https://docs.google.com/document/*"
+      "https://writewithharper.com/*"
+      "storage"
+      "tabs"
+    ];
+  };
+
+  singleFile = mkFirefoxExtension {
+    pname = "single-file";
+    version = "1.22.98";
+    addonId = "{531906d3-e22f-4a6c-a102-8057b88a1a63}";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4704412/single_file-1.22.98.xpi";
+    hash = "sha256-9BdNiqQzVPRfJ1Mm4BA2YP7oEhwlpDvoTXoFrIVu888=";
+    permissions = [
+      "<all_urls>"
+      "bookmarks"
+      "clipboardWrite"
+      "downloads"
+      "identity"
+      "menus"
+      "nativeMessaging"
+      "storage"
+      "tabs"
+      "webRequest"
+      "webRequestBlocking"
+    ];
+  };
+
+  readAloud = mkFirefoxExtension {
+    pname = "read-aloud";
+    version = "1.81.1";
+    addonId = "{ddc62400-f22d-4dd3-8b4a-05837de53c2e}";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4687318/read_aloud-1.81.1.xpi";
+    hash = "sha256-AOa62piBQQj6o84QggO1BS2463FKJ0chpLUy9w+hVFg=";
+    permissions = [
+      "activeTab"
+      "file://*/*"
+      "http://*/"
+      "https://*/"
+      "https://piper.ttstool.com/"
+      "https://supertonic.ttstool.com/"
+      "https://translate.google.com/"
+      "identity"
+      "menus"
+      "storage"
+      "webNavigation"
+      "webRequest"
+      "webRequestBlocking"
+    ];
+  };
+
+  facebookContainer = mkFirefoxExtension {
+    pname = "facebook-container";
+    version = "2.3.12";
+    addonId = "@contain-facebook";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4451874/facebook_container-2.3.12.xpi";
+    hash = "sha256-M2m9hlh3hg5tfTg5nVkCswDT1XN6yy0TQv9b6x03gME=";
+    permissions = [
+      "<all_urls>"
+      "browsingData"
+      "contextualIdentities"
+      "cookies"
+      "management"
+      "storage"
+      "tabs"
+      "webRequest"
+      "webRequestBlocking"
+    ];
+  };
+
+  enhancerForYouTube = mkFirefoxExtension {
+    pname = "enhancer-for-youtube";
+    version = "2.0.133.1";
+    addonId = "enhancerforyoutube@maximerf.addons.mozilla.org";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4756023/enhancer_for_youtube-2.0.133.1.xpi";
+    hash = "sha256-ieIJq4NR/4C5B3NV2oOp0qN60Sq2enL1JGKSSke8Wuw=";
+    permissions = [
+      "*://www.youtube.com/*"
+      "*://www.youtube.com/embed/*"
+      "*://www.youtube.com/live_chat*"
+      "*://www.youtube.com/shorts/*"
+      "storage"
+    ];
+  };
+
+  duckDuckGoPrivacyEssentials = mkFirefoxExtension {
+    pname = "duckduckgo-for-firefox";
+    version = "2026.1.12";
+    addonId = "jid1-ZAdIEUB7XOzOJw@jetpack";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4663303/duckduckgo_for_firefox-2026.1.12.xpi";
+    hash = "sha256-r+wLhxCNrtOgAXqKHVSFwZawoaJ4MdyF1TtnQAs55Vs=";
+    permissions = [
+      "*://*/*"
+      "<all_urls>"
+      "activeTab"
+      "alarms"
+      "contextMenus"
+      "storage"
+      "tabs"
+      "webNavigation"
+      "webRequest"
+      "webRequestBlocking"
+    ];
+  };
+
+  simpleLogin = mkFirefoxExtension {
+    pname = "simplelogin";
+    version = "3.0.7";
+    addonId = "addon@simplelogin";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4458602/simplelogin-3.0.7.xpi";
+    hash = "sha256-jpHQt+K8dnRoGN2MxTPqUlucPP1DP7pS2kdmqD9Xne0=";
+    permissions = [
+      "activeTab"
+      "contextMenus"
+      "http://*/*"
+      "https://*.simplelogin.io/*"
+      "https://*/*"
+      "scripting"
+      "storage"
+      "tabs"
+    ];
+  };
+in
+{
   programs.firefox = {
     enable = true;
     profiles.main = {
@@ -1119,6 +1319,49 @@ _: {
             ];
           }
         ];
+      };
+      extensions = {
+        force = true;
+        packages = [
+          bitwarden
+          dnssec
+          harper
+          singleFile
+          readAloud
+          facebookContainer
+          enhancerForYouTube
+          duckDuckGoPrivacyEssentials
+          simpleLogin
+        ];
+        settings = {
+          "{446900e4-71c2-419f-a6a7-df9c091e268b}" = {
+            permissions = bitwarden.meta.mozPermissions;
+          };
+          "{70b4fb8a-ae41-4e66-99f5-0fa89e411d69}" = {
+            permissions = dnssec.meta.mozPermissions;
+          };
+          "harper@writewithharper.com" = {
+            permissions = harper.meta.mozPermissions;
+          };
+          "{531906d3-e22f-4a6c-a102-8057b88a1a63}" = {
+            permissions = singleFile.meta.mozPermissions;
+          };
+          "{ddc62400-f22d-4dd3-8b4a-05837de53c2e}" = {
+            permissions = readAloud.meta.mozPermissions;
+          };
+          "@contain-facebook" = {
+            permissions = facebookContainer.meta.mozPermissions;
+          };
+          "enhancerforyoutube@maximerf.addons.mozilla.org" = {
+            permissions = enhancerForYouTube.meta.mozPermissions;
+          };
+          "jid1-ZAdIEUB7XOzOJw@jetpack" = {
+            permissions = duckDuckGoPrivacyEssentials.meta.mozPermissions;
+          };
+          "addon@simplelogin" = {
+            permissions = simpleLogin.meta.mozPermissions;
+          };
+        };
       };
     };
   };
