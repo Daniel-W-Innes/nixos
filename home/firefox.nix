@@ -919,7 +919,7 @@ in
                     url = "https://www.youtube.com/watch?v=RC-_fFq1mQA&list=UU0YvoAYGgdOfySQSLcxtu1w&index=83";
                   }
                   {
-                    name = "No more VPN. Introducting Cloudflare Tunnel // Szymon Sakowicz";
+                    name = "No more VPN. Introducing Cloudflare Tunnel // Szymon Sakowicz";
                     url = "https://www.sakowi.cz/blog/cloudflared-docker-compose-tutorial";
                   }
                   {
