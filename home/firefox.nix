@@ -201,6 +201,69 @@ in
     enable = true;
     profiles.main = {
       isDefault = true;
+      extensions =
+         let
+           firefoxExtensions = [
+             bitwarden
+             dnssec
+             harper
+             singleFile
+             readAloud
+             facebookContainer
+             enhancerForYouTube
+             duckDuckGoPrivacyEssentials
+             simpleLogin
+           ];
+         in
+         {
+           force = true;
+           packages = firefoxExtensions;
+           settings = builtins.listToAttrs (
+             map (extension: {
+               name = extension.addonId;
+               value = with extension; {
+                 inherit permissions;
+               };
+             }) firefoxExtensions
+           );
+         };
+      search = {
+        force = true;
+        default = "ddg";
+        privateDefault = "ddg";
+        engines = {
+          "MyNixOS" = {
+            definedAliases = [ "@no" ];
+            urls = [
+              {
+                template = "https://mynixos.com/search?q={searchTerms}";
+              }
+            ];
+          };
+          "NixOS Packages" = {
+            definedAliases = [ "@np" ];
+            urls = [
+              {
+                template = "https://search.nixos.org/packages";
+                params = [
+                  {
+                    name = "type";
+                    value = "packages";
+                  }
+                  {
+                    name = "query";
+                    value = "{searchTerms}";
+                  }
+                ];
+              }
+            ];
+          };
+          "NixOS Wiki" = {
+            definedAliases = [ "@nw" ];
+            urls = [ { template = "https://wiki.nixos.org/w/index.php?search={searchTerms}"; } ];
+          };
+        };
+      };
       bookmarks = {
         force = true;
         settings = [
@@ -1319,69 +1382,6 @@ in
           }
         ];
       };
-      search = {
-        force = true;
-        default = "ddg";
-        privateDefault = "ddg";
-        engines = {
-          "MyNixOS" = {
-            definedAliases = [ "@no" ];
-            urls = [
-              {
-                template = "https://mynixos.com/search?q={searchTerms}";
-              }
-            ];
-          };
-          "NixOS Packages" = {
-            definedAliases = [ "@np" ];
-            urls = [
-              {
-                template = "https://search.nixos.org/packages";
-                params = [
-                  {
-                    name = "type";
-                    value = "packages";
-                  }
-                  {
-                    name = "query";
-                    value = "{searchTerms}";
-                  }
-                ];
-              }
-            ];
-          };
-          "NixOS Wiki" = {
-            definedAliases = [ "@nw" ];
-            urls = [ { template = "https://wiki.nixos.org/w/index.php?search={searchTerms}"; } ];
-          };
-        };
-      };
-      extensions =
-         let
-           firefoxExtensions = [
-             bitwarden
-             dnssec
-             harper
-             singleFile
-             readAloud
-             facebookContainer
-             enhancerForYouTube
-             duckDuckGoPrivacyEssentials
-             simpleLogin
-           ];
-         in
-         {
-           force = true;
-           packages = firefoxExtensions;
-           settings = builtins.listToAttrs (
-             map (extension: {
-               name = extension.addonId;
-               value = with extension; {
-                 inherit permissions;
-               };
-             }) firefoxExtensions
-           );
-         };
     };
   };
 }
