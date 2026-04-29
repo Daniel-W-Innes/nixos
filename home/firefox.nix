@@ -1320,6 +1320,43 @@ in
           }
         ];
       };
+      search = {
+        force = true;
+        default = "ddg";
+        privateDefault = "ddg";
+        engines = {
+          "MyNixOS" = {
+            definedAliases = [ "@no" ];
+            urls = [
+              {
+                template = "https://mynixos.com/search?q={searchTerms}";
+              }
+            ];
+          };
+          "NixOS Packages" = {
+            definedAliases = [ "@np" ];
+            urls = [
+              {
+                template = "https://search.nixos.org/packages";
+                params = [
+                  {
+                    name = "type";
+                    value = "packages";
+                  }
+                  {
+                    name = "query";
+                    value = "{searchTerms}";
+                  }
+                ];
+              }
+            ];
+          };
+          "NixOS Wiki" = {
+            definedAliases = [ "@nw" ];
+            urls = [ { template = "https://wiki.nixos.org/w/index.php?search={searchTerms}"; } ];
+          };
+        };
+      };
       extensions = {
         force = true;
         packages = [
