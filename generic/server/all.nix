@@ -11,6 +11,7 @@ _:
     # > Checking runtime dependencies for calibreweb-0.6.25-py3-none-any.whl
     # >   - requests<2.33.0,>=2.32.0 not satisfied by version 2.33.1
     # ./calibre.nix
+    ./immich.nix
     ./traefik.nix
   ];
 }
