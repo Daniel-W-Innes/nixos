@@ -232,7 +232,7 @@ in
                 name = "TTRPG";
                 bookmarks = [
                   {
-                    name = " SKiM anydice";
+                    name = "SKiM anydice";
                     url = "https://anydice.com/program/3817a";
                   }
                   {
