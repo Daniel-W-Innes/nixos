@@ -93,6 +93,7 @@
             home-manager.nixosModules.home-manager
             {
               home-manager = {
+                backupFileExtension = "bak";
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 users.daniel = import ./home/server.nix;
@@ -121,6 +122,7 @@
             home-manager.nixosModules.home-manager
             {
               home-manager = {
+                backupFileExtension = "bak";
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 users.daniel = import ./home/desktop.nix;
@@ -148,6 +150,7 @@
             home-manager.nixosModules.home-manager
             {
               home-manager = {
+                backupFileExtension = "bak";
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 users.daniel = import ./home/laptop.nix;
