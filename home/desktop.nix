@@ -10,5 +10,6 @@
     ./gui.nix
     ./steam.nix
     ./vscode.nix
+    ./firefox.nix
   ];
 }
