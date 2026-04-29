@@ -112,9 +112,6 @@ let
     hash = "sha256-AOa62piBQQj6o84QggO1BS2463FKJ0chpLUy9w+hVFg=";
     permissions = [
       "activeTab"
-      "file://*/*"
-      "http://*/"
-      "https://*/"
       "https://piper.ttstool.com/"
       "https://supertonic.ttstool.com/"
       "https://translate.google.com/"
