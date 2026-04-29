@@ -20,10 +20,10 @@ let
       '';
       passthru = {
         inherit addonId;
+        inherit permissions;
       };
       meta = {
         mozPermissions = permissions;
-        mozAddonId = addonId;
       };
     };
 
@@ -1359,49 +1359,32 @@ in
           };
         };
       };
-      extensions = {
-        force = true;
-        packages = [
-          bitwarden
-          dnssec
-          harper
-          singleFile
-          readAloud
-          facebookContainer
-          enhancerForYouTube
-          duckDuckGoPrivacyEssentials
-          simpleLogin
-        ];
-        settings = {
-          "${bitwarden.meta.mozAddonId}" = {
-            permissions = bitwarden.meta.mozPermissions;
-          };
-          "${dnssec.meta.mozAddonId}" = {
-            permissions = dnssec.meta.mozPermissions;
-          };
-          "${harper.meta.mozAddonId}" = {
-            permissions = harper.meta.mozPermissions;
-          };
-          "${singleFile.meta.mozAddonId}" = {
-            permissions = singleFile.meta.mozPermissions;
-          };
-          "${readAloud.meta.mozAddonId}" = {
-            permissions = readAloud.meta.mozPermissions;
-          };
-          "${facebookContainer.meta.mozAddonId}" = {
-            permissions = facebookContainer.meta.mozPermissions;
-          };
-          "${enhancerForYouTube.meta.mozAddonId}" = {
-            permissions = enhancerForYouTube.meta.mozPermissions;
-          };
-          "${duckDuckGoPrivacyEssentials.meta.mozAddonId}" = {
-            permissions = duckDuckGoPrivacyEssentials.meta.mozPermissions;
-          };
-          "${simpleLogin.meta.mozAddonId}" = {
-            permissions = simpleLogin.meta.mozPermissions;
-          };
-        };
-      };
+      extensions =
+         let
+           firefoxExtensions = [
+             bitwarden
+             dnssec
+             harper
+             singleFile
+             readAloud
+             facebookContainer
+             enhancerForYouTube
+             duckDuckGoPrivacyEssentials
+             simpleLogin
+           ];
+         in
+         {
+           force = true;
+           packages = firefoxExtensions;
+           settings = builtins.listToAttrs (
+             map (extension: {
+               name = extension.addonId;
+               value = with extension; {
+                 inherit permissions;
+               };
+             }) firefoxExtensions
+           );
+         };
     };
   };
 }
