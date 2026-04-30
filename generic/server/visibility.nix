@@ -15,6 +15,7 @@
     "grafana/nvidia_gpu_exporter.json".source = ./grafana/nvidia_gpu_exporter.json;
     "grafana/iperf3_exporter.json".source = ./grafana/iperf3_exporter.json;
     "grafana/mc_monitor_exporter.json".source = ./grafana/mc_monitor_exporter.json;
+    "grafana/navidrome_exporter.json".source = ./grafana/navidrome_exporter.json;
   };
   services = {
     grafana = {
@@ -88,6 +89,10 @@
           {
             name = "mc-monitor-exporter";
             options.path = "/etc/grafana/mc_monitor_exporter.json";
+          }
+          {
+            name = "navidrome-exporter";
+            options.path = "/etc/grafana/navidrome_exporter.json";
           }
         ];
       };
