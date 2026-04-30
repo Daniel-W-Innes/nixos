@@ -89,6 +89,16 @@ in
     sonarr = arrSettings;
     lidarr = arrSettings;
     readarr = arrSettings;
+    navidrome = {
+      enable = true;
+      group = "media";
+      settings = {
+        EnableInsightsCollector = true;
+        MusicFolder = "/mnt/media/music";
+        BaseUrl = "https://navidrome.lc.brotherwolf.ca";
+        "Prometheus.Enabled" = true;
+      };
+    };
   };
   users.users = {
     radarr = {
