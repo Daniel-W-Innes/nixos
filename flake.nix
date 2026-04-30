@@ -4,11 +4,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
 
-    lanzaboote = {
-      url = "github:nix-community/lanzaboote/v0.4.3";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -45,7 +40,6 @@
       self,
       nixpkgs,
       agenix,
-      lanzaboote,
       home-manager,
       nix-index-database,
       nixos-facter-modules,
@@ -128,50 +122,6 @@
                 users.daniel = import ./home/desktop.nix;
               };
             }
-            nix-index-database.nixosModules.nix-index
-            { programs.nix-index-database.comma.enable = true; }
-          ];
-        };
-        cucamelon = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          modules = [
-            lanzaboote.nixosModules.lanzaboote
-            agenix.nixosModules.default
-            nixos-facter-modules.nixosModules.facter
-            { config.facter.reportPath = ./cucamelon/facter.json; }
-            ./cucamelon/configuration.nix
-            ./secrets/age.nix
-            ./generic/all.nix
-            {
-              environment.systemPackages = self.checks.x86_64-linux.pre-commit-check.enabledPackages ++ [
-                nixpkgs.legacyPackages.x86_64-linux.prek
-              ];
-            }
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                users.daniel = import ./home/laptop.nix;
-              };
-            }
-            (
-              { pkgs, lib, ... }:
-              {
-
-                environment.systemPackages = [ pkgs.sbctl ];
-                # Lanzaboote currently replaces the systemd-boot module.
-                # This setting is usually set to true in configuration.nix
-                # generated at installation time. So we force it to false
-                # for now.
-                boot.loader.systemd-boot.enable = lib.mkForce false;
-
-                boot.lanzaboote = {
-                  enable = true;
-                  pkiBundle = "/var/lib/sbctl";
-                };
-              }
-            )
             nix-index-database.nixosModules.nix-index
             { programs.nix-index-database.comma.enable = true; }
           ];
