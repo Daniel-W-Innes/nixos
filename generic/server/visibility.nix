@@ -257,8 +257,8 @@
           static_configs = [
             {
               targets = [
-                "pumpkin.lc.brotherwolf.ca:30363"
-                "pumpkin.lc.brotherwolf.ca:30364"
+                "localhost:8081"
+                "localhost:8082"
               ];
             }
           ];
