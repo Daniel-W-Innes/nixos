@@ -52,7 +52,7 @@
         "x-systemd.automount"
         "noauto"
         "nofail"
-        "uid=media"
+        "uid=immich"
         "gid=media"
         "file_mode=0660"
         "dir_mode=0770"
