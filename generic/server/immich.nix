@@ -7,11 +7,19 @@ _:
     mediaLocation = "/mnt/immich";
     environment = {
       IMMICH_TELEMETRY_INCLUDE = "all";
+      IMMICH_ALLOW_SETUP = "false";
     };
     settings = {
+      library = {
+        scan = {
+          enabled = true;
+          cronExpression = "0 00 * * *";
+        };
+        watch.enabled = true;
+      };
       backup.database = {
         enabled = true;
-        cronExpression = "0 02 * * *";
+        cronExpression = "0 05 * * *";
         keepLastAmount = 20;
       };
       metadata.faces.import = true;
@@ -22,7 +30,7 @@ _:
         generateMemories = true;
         missingThumbnails = true;
         syncQuotaUsage = true;
-        startTime = "00:00";
+        startTime = "01:00";
       };
       passwordLogin.enabled = true;
       reverseGeocoding.enabled = true;
