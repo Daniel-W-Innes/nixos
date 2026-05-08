@@ -1,15 +1,15 @@
-{ config, ... }:
+{ config, lib, ... }:
 
 {
   boot.supportedFilesystems = [ "cifs" ];
   users.groups.media = { };
   users.users.media = {
     isSystemUser = true;
-    group = "media";
+    group = "media"; 
   };
 
   fileSystems = {
-    "/mnt/media" = {
+    "/mnt/media" = lib.mkIf config.services.jellyfin.enable {
       device = "//pumpkin.lc.brotherwolf.ca/Media";
       fsType = "cifs";
       options = [
@@ -23,7 +23,7 @@
         "dir_mode=0770"
       ];
     };
-    "/mnt/references" = {
+    "/mnt/references" = lib.mkIf config.services.calibre-web.enable {
       device = "//pumpkin.lc.brotherwolf.ca/Calibre";
       fsType = "cifs";
       options = [
