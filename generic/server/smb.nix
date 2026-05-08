@@ -37,7 +37,7 @@
         "dir_mode=0770"
       ];
     };
-    "/mnt/immich" = {
+    "/mnt/immich" = lib.mkIf config.services.immich.enable {
       device = "//pumpkin.lc.brotherwolf.ca/Immich";
       fsType = "cifs";
       options = [
