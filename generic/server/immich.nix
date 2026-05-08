@@ -10,10 +10,10 @@ _:
     };
     settings = {
       backup.database = {
-          enabled = true;
-          cronExpression = "0 02 * * *";
-          keepLastAmount = 20;
-        };
+        enabled = true;
+        cronExpression = "0 02 * * *";
+        keepLastAmount = 20;
+      };
       metadata.faces.import = true;
       newVersionCheck.enabled = false;
       nightlyTasks = {

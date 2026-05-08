@@ -5,7 +5,7 @@
   users.groups.media = { };
   users.users.media = {
     isSystemUser = true;
-    group = "media"; 
+    group = "media";
   };
 
   fileSystems = {
