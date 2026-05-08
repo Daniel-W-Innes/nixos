@@ -103,6 +103,10 @@
           rule = "Host(`navidrome.brotherwolf.ca`) || Host(`navidrome.lc.brotherwolf.ca`)";
           service = "navidrome";
         };
+        immich = lib.mkIf config.services.immich.enable {
+          rule = "Host(`immich.brotherwolf.ca`) || Host(`immich.lc.brotherwolf.ca`)";
+          service = "immich";
+        };
       };
       services = {
         calibre.loadBalancer = lib.mkIf config.services.calibre-web.enable {
@@ -199,6 +203,11 @@
         navidrome.loadBalancer = lib.mkIf config.services.navidrome.enable {
           servers = [
             { url = "http://localhost:4533"; }
+          ];
+        };
+        immich.loadBalancer = lib.mkIf config.services.immich.enable {
+          servers = [
+            { url = "http://localhost:2283"; }
           ];
         };
       };
