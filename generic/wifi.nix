@@ -1,6 +1,17 @@
-{ lib, config, ... }:
+{
+  lib,
+  config,
+  secretsDir,
+  ...
+}:
 
 {
+  age.secrets.wifi = lib.mkIf config.networking.networkmanager.enable {
+    file = secretsDir + /wifi.age;
+    owner = "root";
+    group = "root";
+  };
+
   networking.networkmanager.ensureProfiles = lib.mkIf config.networking.networkmanager.enable {
     environmentFiles = [
       config.age.secrets.wifi.path

@@ -1,6 +1,18 @@
-{ lib, config, ... }:
+{
+  config,
+  lib,
+  secretsDir,
+  ...
+}:
 
 {
+  age.secrets.traefik-env = lib.mkIf config.services.traefik.enable {
+    file = secretsDir + /traefik-env.age;
+    owner = "traefik";
+    group = "traefik";
+    mode = "0400";
+  };
+
   services.traefik = {
     enable = true;
     environmentFiles = [

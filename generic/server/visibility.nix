@@ -1,6 +1,33 @@
-{ config, ... }:
+{
+  config,
+  lib,
+  secretsDir,
+  ...
+}:
 
 {
+  age.secrets = {
+    prom-copyparty-metrics = lib.mkIf config.services.prometheus.enable {
+      file = secretsDir + /copyparty-metrics.age;
+      owner = "prometheus";
+      group = "prometheus";
+    };
+
+    grafana-admin-password = lib.mkIf config.services.grafana.enable {
+      file = secretsDir + /grafana-admin-password.age;
+      owner = "grafana";
+      group = "grafana";
+      mode = "0400";
+    };
+
+    unpoller-password = lib.mkIf config.services.prometheus.exporters.unpoller.enable {
+      file = secretsDir + /unpoller-password.age;
+      owner = "unpoller-exporter";
+      group = "unpoller-exporter";
+      mode = "0400";
+    };
+  };
+
   environment.etc = {
     "grafana/node_exporter.json".source = ./grafana/node_exporter.json;
     "grafana/SMARTctl_exporter.json".source = ./grafana/SMARTctl_exporter.json;

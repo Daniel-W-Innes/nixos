@@ -73,9 +73,9 @@
             agenix.nixosModules.default
             nixos-facter-modules.nixosModules.facter
             { config.facter.reportPath = ./melon/facter.json; }
+            { _module.args.secretsDir = ./secrets; }
             vpn-confinement.nixosModules.default
             ./melon/configuration.nix
-            ./secrets/age.nix
             ./generic/avahi.nix
             ./generic/min.nix
             ./generic/ssh.nix
@@ -104,8 +104,8 @@
             agenix.nixosModules.default
             nixos-facter-modules.nixosModules.facter
             { config.facter.reportPath = ./onion/facter.json; }
+            { _module.args.secretsDir = ./secrets; }
             ./onion/configuration.nix
-            ./secrets/age.nix
             ./generic/server/smb.nix
             ./generic/all.nix
             ./generic/borgmatic.nix

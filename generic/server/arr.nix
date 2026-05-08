@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  secretsDir,
   ...
 }:
 
@@ -14,6 +15,22 @@ let
   };
 in
 {
+  age.secrets = {
+    transmission = lib.mkIf config.services.transmission.enable {
+      file = secretsDir + /transmission.credentialsFile.age;
+      owner = "transmission";
+      group = "media";
+      mode = "0400";
+    };
+
+    proton-vpn = lib.mkIf config.vpnNamespaces.proton.enable {
+      file = secretsDir + /proton-vpn.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
+  };
+
   vpnNamespaces.proton = {
     enable = true;
     wireguardConfigFile = config.age.secrets.proton-vpn.path;

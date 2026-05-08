@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, ... }:
+{ config, secretsDir, ... }:
 
 {
   imports = [
@@ -28,6 +28,11 @@
   };
 
   services.xserver.videoDrivers = [ "nvidia" ];
+  age.secrets.user-daniel = {
+    file = secretsDir + /user-daniel.age;
+    owner = "root";
+    group = "root";
+  };
   users.users.daniel.hashedPasswordFile = config.age.secrets.user-daniel.path;
 
   # This value determines the NixOS release from which the default
