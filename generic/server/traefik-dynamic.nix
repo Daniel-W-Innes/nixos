@@ -44,111 +44,14 @@ let
       inherit healthCheck;
     };
 
-  pingHealthCheck = {
-    path = "/ping";
-    interval = "10s";
+  targetData = import ./traefik-targets.nix {
+    inherit config;
   };
 
-  readyHealthCheck = {
-    path = "/-/ready";
-    interval = "10s";
-  };
-
-  mkArrTarget =
-    service:
-    let
-      serviceConfig = config.services.${service};
-    in
-    mkTarget {
-      inherit (serviceConfig) enable;
-      inherit (serviceConfig.settings.server) port;
-      healthCheck = pingHealthCheck;
-    };
-
-  arrTargets = lib.genAttrs [
-    "prowlarr"
-    "radarr"
-    "sonarr"
-    "lidarr"
-    "readarr"
-  ] mkArrTarget;
-
-  traefikTargets = lib.filterAttrs (_: target: target.enable) ({
-    calibre =
-      let
-        host = config.services.calibre-web.listen.ip;
-        inherit (config.services.calibre-web) enable;
-        inherit (config.services.calibre-web.listen) port;
-      in
-      mkTarget {
-        inherit enable host port;
-        healthCheck = {
-          path = "/login";
-          interval = "10s";
-        };
-      };
-    jellyfin = mkTarget {
-      inherit (config.services.jellyfin) enable;
-      # The NixOS jellyfin module does not expose its HTTP port as a configurable option.
-      port = 8096;
-      healthCheck = {
-        path = "/health";
-        interval = "10s";
-      };
-    };
-    prometheus =
-      let
-        host = config.services.prometheus.listenAddress;
-        inherit (config.services.prometheus) enable port;
-      in
-      mkTarget {
-        inherit enable host port;
-        healthCheck = readyHealthCheck;
-      };
-    grafana =
-      let
-        inherit (config.services.grafana) enable;
-        host = config.services.grafana.settings.server.http_addr;
-        port = config.services.grafana.settings.server.http_port;
-      in
-      mkTarget {
-        inherit enable host port;
-        healthCheck = readyHealthCheck;
-      };
-    dawarich =
-      let
-        inherit (config.services.dawarich) enable;
-        port = config.services.dawarich.webPort;
-      in
-      mkTarget {
-        inherit enable port;
-      };
-    transmission =
-      let
-        inherit (config.services.transmission) enable;
-        host = config.services.transmission.settings.rpc-bind-address;
-        port = config.services.transmission.settings.rpc-port;
-      in
-      mkTarget {
-        inherit enable host port;
-      };
-    navidrome =
-      let
-        inherit (config.services.navidrome) enable;
-        host = config.services.navidrome.settings.Address;
-        port = config.services.navidrome.settings.Port;
-      in
-      mkTarget {
-        inherit enable host port;
-      };
-    immich = mkTarget {
-      inherit (config.services.immich)
-        enable
-        host
-        port
-        ;
-    };
-  } // arrTargets);
+  traefikTargets = lib.pipe targetData [
+    (lib.filterAttrs (_: target: target.enable))
+    (lib.mapAttrs (_: mkTarget))
+  ];
 
   routers = lib.mapAttrs (name: _: {
     rule = mkHostRule name;
