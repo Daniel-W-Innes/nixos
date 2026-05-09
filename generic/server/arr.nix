@@ -118,6 +118,7 @@ in
     slskd = {
       enable = true;
       group = "media";
+      domain = "slskd.lc.brotherwolf.ca";
       settings = {
         directories = {
           downloads = "/mnt/media/downloads";
