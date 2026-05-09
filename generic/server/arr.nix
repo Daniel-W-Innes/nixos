@@ -118,6 +118,13 @@ in
     slskd = {
       enable = true;
       group = "media";
+      settings = {
+        directories = {
+          downloads = "/mnt/media/downloads";
+          incomplete = "/mnt/media/downloads/incomplete";
+        };
+        shares.directories = [ "/mnt/media/music" ];
+      };
     };
     navidrome = {
       enable = true;
