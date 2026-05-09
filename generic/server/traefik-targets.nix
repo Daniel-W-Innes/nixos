@@ -112,5 +112,9 @@ in
   immich = {
     inherit (config.services.immich) enable host port;
   };
+  slskd = {
+      inherit (config.services.slskd) enable;
+      inherit (config.services.slskd.settings.web) port;
+    };
 }
 // arrTargetData
