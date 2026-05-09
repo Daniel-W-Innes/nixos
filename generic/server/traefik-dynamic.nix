@@ -29,7 +29,29 @@ let
     in
     "http://${formattedHost}:${toString port}";
 
-  traefikTargets = lib.filterAttrs (_: target: target.enable) {
+  mkArrTarget =
+    service:
+    let
+      serviceConfig = config.services.${service};
+    in
+    {
+      inherit (serviceConfig) enable;
+      url = mkBackendUrl { inherit (serviceConfig.settings.server) port; };
+      healthCheck = {
+        path = "/ping";
+        interval = "10s";
+      };
+    };
+
+  arrTargets = lib.genAttrs [
+    "prowlarr"
+    "radarr"
+    "sonarr"
+    "lidarr"
+    "readarr"
+  ] mkArrTarget;
+
+  traefikTargets = lib.filterAttrs (_: target: target.enable) ({
     calibre = {
       inherit (config.services.calibre-web) enable;
       url =
@@ -103,46 +125,6 @@ let
           inherit host port;
         };
     };
-    prowlarr = {
-      inherit (config.services.prowlarr) enable;
-      url = mkBackendUrl { inherit (config.services.prowlarr.settings.server) port; };
-      healthCheck = {
-        path = "/ping";
-        interval = "10s";
-      };
-    };
-    radarr = {
-      inherit (config.services.radarr) enable;
-      url = mkBackendUrl { inherit (config.services.radarr.settings.server) port; };
-      healthCheck = {
-        path = "/ping";
-        interval = "10s";
-      };
-    };
-    sonarr = {
-      inherit (config.services.sonarr) enable;
-      url = mkBackendUrl { inherit (config.services.sonarr.settings.server) port; };
-      healthCheck = {
-        path = "/ping";
-        interval = "10s";
-      };
-    };
-    lidarr = {
-      inherit (config.services.lidarr) enable;
-      url = mkBackendUrl { inherit (config.services.lidarr.settings.server) port; };
-      healthCheck = {
-        path = "/ping";
-        interval = "10s";
-      };
-    };
-    readarr = {
-      inherit (config.services.readarr) enable;
-      url = mkBackendUrl { inherit (config.services.readarr.settings.server) port; };
-      healthCheck = {
-        path = "/ping";
-        interval = "10s";
-      };
-    };
     navidrome = {
       inherit (config.services.navidrome) enable;
       url =
@@ -163,7 +145,7 @@ let
           ;
       };
     };
-  };
+  } // arrTargets);
 
   routers = lib.mapAttrs (name: _: {
     rule = mkHostRule name;
