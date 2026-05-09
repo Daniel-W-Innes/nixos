@@ -9,10 +9,7 @@ let
     ];
 
   mkBackendUrl =
-    {
-      host ? "127.0.0.1",
-      port,
-    }:
+    { host, port }:
     let
       normalizedHost =
         if host == "" || host == "0.0.0.0" then
