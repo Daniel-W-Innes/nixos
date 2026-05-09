@@ -1,0 +1,116 @@
+{ config, ... }:
+
+let
+  pingHealthCheck = {
+    path = "/ping";
+    interval = "10s";
+  };
+
+  readyHealthCheck = {
+    path = "/-/ready";
+    interval = "10s";
+  };
+
+  healthHealthCheck = {
+    path = "/health";
+    interval = "10s";
+  };
+
+  loginHealthCheck = {
+    path = "/login";
+    interval = "10s";
+  };
+
+  mkArrData =
+    service:
+    let
+      serviceConfig = config.services.${service};
+    in
+    {
+      inherit (serviceConfig) enable;
+      inherit (serviceConfig.settings.server) port;
+      healthCheck = pingHealthCheck;
+    };
+
+  arrTargetData = builtins.listToAttrs (
+    map
+      (name: {
+        inherit name;
+        value = mkArrData name;
+      })
+      [
+        "prowlarr"
+        "radarr"
+        "sonarr"
+        "lidarr"
+        "readarr"
+      ]
+  );
+in
+{
+  calibre =
+    let
+      host = config.services.calibre-web.listen.ip;
+      inherit (config.services.calibre-web) enable;
+      inherit (config.services.calibre-web.listen) port;
+    in
+    {
+      inherit enable host port;
+      healthCheck = loginHealthCheck;
+    };
+  jellyfin = {
+    inherit (config.services.jellyfin) enable;
+    # The NixOS jellyfin module does not expose its HTTP port as a configurable option.
+    port = 8096;
+    healthCheck = healthHealthCheck;
+  };
+  prometheus =
+    let
+      host = config.services.prometheus.listenAddress;
+      inherit (config.services.prometheus) enable port;
+    in
+    {
+      inherit enable host port;
+      healthCheck = readyHealthCheck;
+    };
+  grafana =
+    let
+      inherit (config.services.grafana) enable;
+      host = config.services.grafana.settings.server.http_addr;
+      port = config.services.grafana.settings.server.http_port;
+    in
+    {
+      inherit enable host port;
+      healthCheck = readyHealthCheck;
+    };
+  dawarich =
+    let
+      inherit (config.services.dawarich) enable;
+      port = config.services.dawarich.webPort;
+    in
+    {
+      inherit enable port;
+    };
+  transmission =
+    let
+      inherit (config.services.transmission) enable;
+      host = config.services.transmission.settings.rpc-bind-address;
+      port = config.services.transmission.settings.rpc-port;
+    in
+    {
+      inherit enable host port;
+    };
+  navidrome =
+    let
+      inherit (config.services.navidrome) enable;
+      host = config.services.navidrome.settings.Address;
+      port = config.services.navidrome.settings.Port;
+    in
+    {
+      inherit enable host port;
+    };
+  immich = {
+    inherit (config.services.immich) enable host port;
+  };
+}
+// arrTargetData
