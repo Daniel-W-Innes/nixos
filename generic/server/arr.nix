@@ -125,7 +125,7 @@ in
     slskd = {
       enable = true;
       group = "media";
-      domain = "slskd.lc.brotherwolf.ca";
+      domain = null;
       environmentFile = config.age.secrets.slskd.path;
       settings = {
         directories = {
