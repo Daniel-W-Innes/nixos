@@ -43,6 +43,10 @@ in
         from = 9091;
         to = 9091;
       }
+      {
+        from = 5030;
+        to = 5030;
+      }
     ];
     openVPNPorts = [
       {
@@ -72,6 +76,11 @@ in
         ''
       )
     ];
+  };
+
+  systemd.services.slskd.vpnConfinement = {
+    enable = true;
+    vpnNamespace = "proton";
   };
 
   services = {
@@ -106,6 +115,10 @@ in
     sonarr = arrSettings;
     lidarr = arrSettings;
     readarr = arrSettings;
+    slskd = {
+      enable = true;
+      group = "media";
+    };
     navidrome = {
       enable = true;
       group = "media";
