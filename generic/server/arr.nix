@@ -29,6 +29,13 @@ in
       group = "root";
       mode = "0400";
     };
+
+    slskd = lib.mkIf config.services.slskd.enable {
+      file = secretsDir + /slskd.env.age;
+      owner = "slskd";
+      group = "media";
+      mode = "0400";
+    };
   };
 
   vpnNamespaces.proton = {
@@ -119,6 +126,7 @@ in
       enable = true;
       group = "media";
       domain = "slskd.lc.brotherwolf.ca";
+      environmentFile = config.age.secrets.slskd.path;
       settings = {
         directories = {
           downloads = "/mnt/media/downloads";

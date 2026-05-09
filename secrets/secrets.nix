@@ -54,4 +54,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "slskd.env.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
