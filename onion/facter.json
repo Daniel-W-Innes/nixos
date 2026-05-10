@@ -1339,7 +1339,7 @@
         "fpu_exception": false,
         "cpuid_level": 22,
         "write_protect": false,
-        "tlb_size": 32700,
+        "tlb_size": 32767,
         "clflush_size": 64,
         "cache_alignment": 64,
         "address_sizes": {
@@ -1351,163 +1351,6 @@
     "disk": [
       {
         "index": 53,
-        "attached_to": 25,
-        "class_list": [
-          "disk",
-          "block_device",
-          "nvme"
-        ],
-        "bus_type": {
-          "hex": "0096",
-          "name": "NVME",
-          "value": 150
-        },
-        "slot": {
-          "bus": 0,
-          "number": 0
-        },
-        "base_class": {
-          "hex": "0106",
-          "name": "Mass Storage Device",
-          "value": 262
-        },
-        "sub_class": {
-          "hex": "0000",
-          "name": "Disk",
-          "value": 0
-        },
-        "vendor": {
-          "hex": "144d",
-          "value": 5197
-        },
-        "sub_vendor": {
-          "hex": "144d",
-          "value": 5197
-        },
-        "device": {
-          "hex": "a808",
-          "name": "Samsung SSD 970 EVO 1TB",
-          "value": 43016
-        },
-        "sub_device": {
-          "hex": "a801",
-          "value": 43009
-        },
-        "serial": "S5H9NC0MA15467W",
-        "model": "Samsung SSD 970 EVO 1TB",
-        "sysfs_id": "/class/block/nvme0n1",
-        "sysfs_bus_id": "nvme0",
-        "sysfs_device_link": "/devices/pci0000:00/0000:00:1b.0/0000:02:00.0/nvme/nvme0",
-        "unix_device_names": [
-          "/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_1TB_S5H9NC0MA15467W",
-          "/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_1TB_S5H9NC0MA15467W_1",
-          "/dev/disk/by-id/nvme-eui.0025385a9150b6ca",
-          "/dev/disk/by-path/pci-0000:02:00.0-nvme-1",
-          "/dev/nvme0n1"
-        ],
-        "resources": [
-          {
-            "type": "disk_geo",
-            "cylinders": 953869,
-            "heads": 64,
-            "sectors": 32,
-            "size": "0x0",
-            "geo_type": "logical"
-          },
-          {
-            "type": "size",
-            "unit": "sectors",
-            "value_1": 1953525168,
-            "value_2": 512
-          }
-        ],
-        "driver": "nvme",
-        "driver_module": "nvme",
-        "drivers": [
-          "nvme"
-        ],
-        "driver_modules": [
-          "nvme"
-        ]
-      },
-      {
-        "index": 54,
-        "attached_to": 21,
-        "class_list": [
-          "disk",
-          "ide",
-          "block_device"
-        ],
-        "bus_type": {
-          "hex": "0085",
-          "name": "IDE",
-          "value": 133
-        },
-        "slot": {
-          "bus": 0,
-          "number": 0
-        },
-        "base_class": {
-          "hex": "0106",
-          "name": "Mass Storage Device",
-          "value": 262
-        },
-        "sub_class": {
-          "hex": "0000",
-          "name": "Disk",
-          "value": 0
-        },
-        "device": {
-          "hex": "0000",
-          "name": "ST2000DM001-1CH1",
-          "value": 0
-        },
-        "revision": {
-          "hex": "0000",
-          "name": "CC27",
-          "value": 0
-        },
-        "serial": "Z1E77937",
-        "model": "ST2000DM001-1CH1",
-        "sysfs_id": "/class/block/sdb",
-        "sysfs_bus_id": "0:0:0:0",
-        "sysfs_device_link": "/devices/pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0",
-        "unix_device_names": [
-          "/dev/disk/by-id/ata-ST2000DM001-1CH164_Z1E77937",
-          "/dev/disk/by-id/wwn-0x5000c500661c3d96",
-          "/dev/disk/by-path/pci-0000:00:17.0-ata-1",
-          "/dev/disk/by-path/pci-0000:00:17.0-ata-1.0",
-          "/dev/sdb"
-        ],
-        "resources": [
-          {
-            "type": "disk_geo",
-            "cylinders": 243201,
-            "heads": 255,
-            "sectors": 63,
-            "size": "0x0",
-            "geo_type": "logical"
-          },
-          {
-            "type": "size",
-            "unit": "sectors",
-            "value_1": 3907029168,
-            "value_2": 512
-          }
-        ],
-        "driver": "ahci",
-        "driver_module": "ahci",
-        "drivers": [
-          "ahci",
-          "sd"
-        ],
-        "driver_modules": [
-          "ahci",
-          "sd_mod"
-        ]
-      },
-      {
-        "index": 55,
         "attached_to": 34,
         "class_list": [
           "disk",
@@ -1521,7 +1364,7 @@
         },
         "slot": {
           "bus": 0,
-          "number": 1
+          "number": 0
         },
         "base_class": {
           "hex": "0106",
@@ -1552,15 +1395,15 @@
         },
         "serial": "25025T804674",
         "model": "WD_BLACK SN850X 2000GB",
-        "sysfs_id": "/class/block/nvme1n1",
-        "sysfs_bus_id": "nvme1",
-        "sysfs_device_link": "/devices/pci0000:00/0000:00:1d.0/0000:0a:00.0/nvme/nvme1",
+        "sysfs_id": "/class/block/nvme0n1",
+        "sysfs_bus_id": "nvme0",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:1d.0/0000:0a:00.0/nvme/nvme0",
         "unix_device_names": [
           "/dev/disk/by-id/nvme-WD_BLACK_SN850X_2000GB_25025T804674",
           "/dev/disk/by-id/nvme-WD_BLACK_SN850X_2000GB_25025T804674_1",
           "/dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b4d59049d",
           "/dev/disk/by-path/pci-0000:0a:00.0-nvme-1",
-          "/dev/nvme1n1"
+          "/dev/nvme0n1"
         ],
         "resources": [
           {
@@ -1588,7 +1431,7 @@
         ]
       },
       {
-        "index": 56,
+        "index": 54,
         "attached_to": 21,
         "class_list": [
           "disk",
@@ -1626,7 +1469,7 @@
         },
         "serial": "ZW626ELP",
         "model": "ST4000VN006-3CW1",
-        "sysfs_id": "/class/block/sda",
+        "sysfs_id": "/class/block/sdb",
         "sysfs_bus_id": "1:0:0:0",
         "sysfs_device_link": "/devices/pci0000:00/0000:00:17.0/ata2/host1/target1:0:0/1:0:0:0",
         "unix_device_names": [
@@ -1634,7 +1477,7 @@
           "/dev/disk/by-id/wwn-0x5000c500e87bca16",
           "/dev/disk/by-path/pci-0000:00:17.0-ata-2",
           "/dev/disk/by-path/pci-0000:00:17.0-ata-2.0",
-          "/dev/sda"
+          "/dev/sdb"
         ],
         "resources": [
           {
@@ -1649,6 +1492,163 @@
             "type": "size",
             "unit": "sectors",
             "value_1": 7814037168,
+            "value_2": 512
+          }
+        ],
+        "driver": "ahci",
+        "driver_module": "ahci",
+        "drivers": [
+          "ahci",
+          "sd"
+        ],
+        "driver_modules": [
+          "ahci",
+          "sd_mod"
+        ]
+      },
+      {
+        "index": 55,
+        "attached_to": 25,
+        "class_list": [
+          "disk",
+          "block_device",
+          "nvme"
+        ],
+        "bus_type": {
+          "hex": "0096",
+          "name": "NVME",
+          "value": 150
+        },
+        "slot": {
+          "bus": 0,
+          "number": 1
+        },
+        "base_class": {
+          "hex": "0106",
+          "name": "Mass Storage Device",
+          "value": 262
+        },
+        "sub_class": {
+          "hex": "0000",
+          "name": "Disk",
+          "value": 0
+        },
+        "vendor": {
+          "hex": "144d",
+          "value": 5197
+        },
+        "sub_vendor": {
+          "hex": "144d",
+          "value": 5197
+        },
+        "device": {
+          "hex": "a808",
+          "name": "Samsung SSD 970 EVO 1TB",
+          "value": 43016
+        },
+        "sub_device": {
+          "hex": "a801",
+          "value": 43009
+        },
+        "serial": "S5H9NC0MA15467W",
+        "model": "Samsung SSD 970 EVO 1TB",
+        "sysfs_id": "/class/block/nvme1n1",
+        "sysfs_bus_id": "nvme1",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:1b.0/0000:02:00.0/nvme/nvme1",
+        "unix_device_names": [
+          "/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_1TB_S5H9NC0MA15467W",
+          "/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_1TB_S5H9NC0MA15467W_1",
+          "/dev/disk/by-id/nvme-eui.0025385a9150b6ca",
+          "/dev/disk/by-path/pci-0000:02:00.0-nvme-1",
+          "/dev/nvme1n1"
+        ],
+        "resources": [
+          {
+            "type": "disk_geo",
+            "cylinders": 953869,
+            "heads": 64,
+            "sectors": 32,
+            "size": "0x0",
+            "geo_type": "logical"
+          },
+          {
+            "type": "size",
+            "unit": "sectors",
+            "value_1": 1953525168,
+            "value_2": 512
+          }
+        ],
+        "driver": "nvme",
+        "driver_module": "nvme",
+        "drivers": [
+          "nvme"
+        ],
+        "driver_modules": [
+          "nvme"
+        ]
+      },
+      {
+        "index": 56,
+        "attached_to": 21,
+        "class_list": [
+          "disk",
+          "ide",
+          "block_device"
+        ],
+        "bus_type": {
+          "hex": "0085",
+          "name": "IDE",
+          "value": 133
+        },
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
+        "base_class": {
+          "hex": "0106",
+          "name": "Mass Storage Device",
+          "value": 262
+        },
+        "sub_class": {
+          "hex": "0000",
+          "name": "Disk",
+          "value": 0
+        },
+        "device": {
+          "hex": "0000",
+          "name": "ST2000DM001-1CH1",
+          "value": 0
+        },
+        "revision": {
+          "hex": "0000",
+          "name": "CC27",
+          "value": 0
+        },
+        "serial": "Z1E77937",
+        "model": "ST2000DM001-1CH1",
+        "sysfs_id": "/class/block/sda",
+        "sysfs_bus_id": "0:0:0:0",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0",
+        "unix_device_names": [
+          "/dev/disk/by-id/ata-ST2000DM001-1CH164_Z1E77937",
+          "/dev/disk/by-id/wwn-0x5000c500661c3d96",
+          "/dev/disk/by-path/pci-0000:00:17.0-ata-1",
+          "/dev/disk/by-path/pci-0000:00:17.0-ata-1.0",
+          "/dev/sda"
+        ],
+        "resources": [
+          {
+            "type": "disk_geo",
+            "cylinders": 243201,
+            "heads": 255,
+            "sectors": 63,
+            "size": "0x0",
+            "geo_type": "logical"
+          },
+          {
+            "type": "size",
+            "unit": "sectors",
+            "value_1": 3907029168,
             "value_2": 512
           }
         ],
@@ -1771,7 +1771,7 @@
         },
         "vendor": {
           "hex": "1d6b",
-          "name": "Linux 6.18.9 xhci-hcd",
+          "name": "Linux 7.0.3 xhci-hcd",
           "value": 7531
         },
         "device": {
@@ -1781,11 +1781,11 @@
         },
         "revision": {
           "hex": "0000",
-          "name": "6.18",
+          "name": "7.00",
           "value": 0
         },
         "serial": "0000:01:00.2",
-        "model": "Linux 6.18.9 xhci-hcd xHCI Host Controller",
+        "model": "Linux 7.0.3 xhci-hcd xHCI Host Controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:01.0/0000:01:00.2/usb3/3-0:1.0",
         "sysfs_bus_id": "3-0:1.0",
         "resources": [
@@ -1833,7 +1833,7 @@
         "driver_modules": [
           "usbcore"
         ],
-        "module_alias": "usb:v1D6Bp0002d0618dc09dsc00dp01ic09isc00ip00in00"
+        "module_alias": "usb:v1D6Bp0002d0700dc09dsc00dp01ic09isc00ip00in00"
       },
       {
         "index": 65,
@@ -2019,7 +2019,7 @@
         },
         "vendor": {
           "hex": "1d6b",
-          "name": "Linux 6.18.9 xhci-hcd",
+          "name": "Linux 7.0.3 xhci-hcd",
           "value": 7531
         },
         "device": {
@@ -2029,11 +2029,11 @@
         },
         "revision": {
           "hex": "0000",
-          "name": "6.18",
+          "name": "7.00",
           "value": 0
         },
         "serial": "0000:01:00.2",
-        "model": "Linux 6.18.9 xhci-hcd xHCI Host Controller",
+        "model": "Linux 7.0.3 xhci-hcd xHCI Host Controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:01.0/0000:01:00.2/usb4/4-0:1.0",
         "sysfs_bus_id": "4-0:1.0",
         "detail": {
@@ -2071,7 +2071,7 @@
         "driver_modules": [
           "usbcore"
         ],
-        "module_alias": "usb:v1D6Bp0003d0618dc09dsc00dp03ic09isc00ip00in00"
+        "module_alias": "usb:v1D6Bp0003d0700dc09dsc00dp03ic09isc00ip00in00"
       },
       {
         "index": 77,
@@ -2096,7 +2096,7 @@
         },
         "vendor": {
           "hex": "1d6b",
-          "name": "Linux 6.18.9 xhci-hcd",
+          "name": "Linux 7.0.3 xhci-hcd",
           "value": 7531
         },
         "device": {
@@ -2106,11 +2106,11 @@
         },
         "revision": {
           "hex": "0000",
-          "name": "6.18",
+          "name": "7.00",
           "value": 0
         },
         "serial": "0000:00:14.0",
-        "model": "Linux 6.18.9 xhci-hcd xHCI Host Controller",
+        "model": "Linux 7.0.3 xhci-hcd xHCI Host Controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-0:1.0",
         "sysfs_bus_id": "1-0:1.0",
         "resources": [
@@ -2158,7 +2158,7 @@
         "driver_modules": [
           "usbcore"
         ],
-        "module_alias": "usb:v1D6Bp0002d0618dc09dsc00dp01ic09isc00ip00in00"
+        "module_alias": "usb:v1D6Bp0002d0700dc09dsc00dp01ic09isc00ip00in00"
       },
       {
         "index": 84,
@@ -2183,7 +2183,7 @@
         },
         "vendor": {
           "hex": "1d6b",
-          "name": "Linux 6.18.9 xhci-hcd",
+          "name": "Linux 7.0.3 xhci-hcd",
           "value": 7531
         },
         "device": {
@@ -2193,11 +2193,11 @@
         },
         "revision": {
           "hex": "0000",
-          "name": "6.18",
+          "name": "7.00",
           "value": 0
         },
         "serial": "0000:00:14.0",
-        "model": "Linux 6.18.9 xhci-hcd xHCI Host Controller",
+        "model": "Linux 7.0.3 xhci-hcd xHCI Host Controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb2/2-0:1.0",
         "sysfs_bus_id": "2-0:1.0",
         "detail": {
@@ -2235,7 +2235,7 @@
         "driver_modules": [
           "usbcore"
         ],
-        "module_alias": "usb:v1D6Bp0003d0618dc09dsc00dp03ic09isc00ip00in00"
+        "module_alias": "usb:v1D6Bp0003d0700dc09dsc00dp03ic09isc00ip00in00"
       },
       {
         "index": 86,
@@ -3534,7 +3534,7 @@
         "resources": [
           {
             "type": "hwaddr",
-            "address": 100
+            "address": 56
           },
           {
             "type": "phwaddr",
@@ -3970,69 +3970,6 @@
     "network_interface": [
       {
         "index": 88,
-        "attached_to": 40,
-        "class_list": [
-          "network_interface"
-        ],
-        "base_class": {
-          "hex": "0107",
-          "name": "Network Interface",
-          "value": 263
-        },
-        "sub_class": {
-          "hex": "0001",
-          "name": "Ethernet",
-          "value": 1
-        },
-        "model": "Ethernet network interface",
-        "sysfs_id": "/class/net/enp6s0",
-        "sysfs_device_link": "/devices/pci0000:00/0000:00:1b.4/0000:03:00.0/0000:04:02.0/0000:06:00.0",
-        "unix_device_names": [
-          "enp6s0"
-        ],
-        "resources": [
-          {
-            "type": "hwaddr",
-            "address": 56
-          },
-          {
-            "type": "phwaddr",
-            "address": 56
-          }
-        ],
-        "driver": "igc",
-        "driver_module": "igc",
-        "drivers": [
-          "igc"
-        ],
-        "driver_modules": [
-          "igc"
-        ]
-      },
-      {
-        "index": 89,
-        "attached_to": 0,
-        "class_list": [
-          "network_interface"
-        ],
-        "base_class": {
-          "hex": "0107",
-          "name": "Network Interface",
-          "value": 263
-        },
-        "sub_class": {
-          "hex": "0000",
-          "name": "Loopback",
-          "value": 0
-        },
-        "model": "Loopback network interface",
-        "sysfs_id": "/class/net/lo",
-        "unix_device_names": [
-          "lo"
-        ]
-      },
-      {
-        "index": 90,
         "attached_to": 44,
         "class_list": [
           "network_interface"
@@ -4073,7 +4010,7 @@
         ]
       },
       {
-        "index": 91,
+        "index": 89,
         "attached_to": 27,
         "class_list": [
           "network_interface"
@@ -4093,6 +4030,69 @@
         "sysfs_device_link": "/devices/pci0000:00/0000:00:1b.4/0000:03:00.0/0000:04:04.0/0000:08:00.0",
         "unix_device_names": [
           "enp8s0"
+        ],
+        "resources": [
+          {
+            "type": "hwaddr",
+            "address": 56
+          },
+          {
+            "type": "phwaddr",
+            "address": 56
+          }
+        ],
+        "driver": "igc",
+        "driver_module": "igc",
+        "drivers": [
+          "igc"
+        ],
+        "driver_modules": [
+          "igc"
+        ]
+      },
+      {
+        "index": 90,
+        "attached_to": 0,
+        "class_list": [
+          "network_interface"
+        ],
+        "base_class": {
+          "hex": "0107",
+          "name": "Network Interface",
+          "value": 263
+        },
+        "sub_class": {
+          "hex": "0000",
+          "name": "Loopback",
+          "value": 0
+        },
+        "model": "Loopback network interface",
+        "sysfs_id": "/class/net/lo",
+        "unix_device_names": [
+          "lo"
+        ]
+      },
+      {
+        "index": 91,
+        "attached_to": 36,
+        "class_list": [
+          "network_interface"
+        ],
+        "base_class": {
+          "hex": "0107",
+          "name": "Network Interface",
+          "value": 263
+        },
+        "sub_class": {
+          "hex": "0001",
+          "name": "Ethernet",
+          "value": 1
+        },
+        "model": "Ethernet network interface",
+        "sysfs_id": "/class/net/enp7s0",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:1b.4/0000:03:00.0/0000:04:03.0/0000:07:00.0",
+        "unix_device_names": [
+          "enp7s0"
         ],
         "resources": [
           {
@@ -4138,7 +4138,7 @@
         "resources": [
           {
             "type": "hwaddr",
-            "address": 100
+            "address": 56
           },
           {
             "type": "phwaddr",
@@ -4156,7 +4156,7 @@
       },
       {
         "index": 93,
-        "attached_to": 36,
+        "attached_to": 40,
         "class_list": [
           "network_interface"
         ],
@@ -4171,10 +4171,10 @@
           "value": 1
         },
         "model": "Ethernet network interface",
-        "sysfs_id": "/class/net/enp7s0",
-        "sysfs_device_link": "/devices/pci0000:00/0000:00:1b.4/0000:03:00.0/0000:04:03.0/0000:07:00.0",
+        "sysfs_id": "/class/net/enp6s0",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:1b.4/0000:03:00.0/0000:04:02.0/0000:06:00.0",
         "unix_device_names": [
-          "enp7s0"
+          "enp6s0"
         ],
         "resources": [
           {
@@ -5958,9 +5958,6 @@
         "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-10/1-10:1.1",
         "sysfs_bus_id": "1-10:1.1",
         "unix_device_names": [
-          "/dev/input/by-id/usb-0c45_USB_Wired_Keyboard-event-if01",
-          "/dev/input/by-path/pci-0000:00:14.0-usb-0:10:1.1-event",
-          "/dev/input/by-path/pci-0000:00:14.0-usbv2-0:10:1.1-event",
           "/dev/input/event1"
         ],
         "resources": [
