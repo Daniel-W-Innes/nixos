@@ -106,7 +106,6 @@
             { config.facter.reportPath = ./onion/facter.json; }
             { _module.args.secretsDir = ./secrets; }
             ./onion/configuration.nix
-            ./generic/server/smb.nix
             ./generic/all.nix
             ./generic/borgmatic.nix
             ./generic/zsa.nix
