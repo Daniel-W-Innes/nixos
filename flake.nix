@@ -33,6 +33,11 @@
       url = "github:Maroka-chan/VPN-Confinement";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    whisper-dictation = {
+      url = "github:jacopone/whisper-dictation";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -45,6 +50,7 @@
       nixos-facter-modules,
       pre-commit-hooks,
       vpn-confinement,
+      whisper-dictation,
       ...
     }:
     {
@@ -109,6 +115,13 @@
             ./generic/all.nix
             ./generic/borgmatic.nix
             ./generic/zsa.nix
+            {
+              environment.systemPackages = [whisper-dictation.packages.x86_64-linux.default];
+               systemd.user.services.whisper-dictation = {
+                enable = true;
+                wantedBy = [ "graphical-session.target" ];
+              };
+            }
             {
               environment.systemPackages = self.checks.x86_64-linux.pre-commit-check.enabledPackages ++ [
                 nixpkgs.legacyPackages.x86_64-linux.prek
