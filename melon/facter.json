@@ -331,7 +331,7 @@
         "fpu_exception": false,
         "cpuid_level": 20,
         "write_protect": false,
-        "tlb_size": 31878,
+        "tlb_size": 32767,
         "clflush_size": 64,
         "cache_alignment": 64,
         "address_sizes": {
@@ -503,7 +503,7 @@
         },
         "vendor": {
           "hex": "1d6b",
-          "name": "Linux 6.19.14 xhci-hcd",
+          "name": "Linux 7.0.3 xhci-hcd",
           "value": 7531
         },
         "device": {
@@ -513,11 +513,11 @@
         },
         "revision": {
           "hex": "0000",
-          "name": "6.19",
+          "name": "7.00",
           "value": 0
         },
         "serial": "0000:00:04.0",
-        "model": "Linux 6.19.14 xhci-hcd xHCI Host Controller",
+        "model": "Linux 7.0.3 xhci-hcd xHCI Host Controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:04.0/usb1/1-0:1.0",
         "sysfs_bus_id": "1-0:1.0",
         "resources": [
@@ -565,7 +565,7 @@
         "driver_modules": [
           "usbcore"
         ],
-        "module_alias": "usb:v1D6Bp0002d0619dc09dsc00dp01ic09isc00ip00in00"
+        "module_alias": "usb:v1D6Bp0002d0700dc09dsc00dp01ic09isc00ip00in00"
       },
       {
         "index": 86,
@@ -590,7 +590,7 @@
         },
         "vendor": {
           "hex": "1d6b",
-          "name": "Linux 6.19.14 xhci-hcd",
+          "name": "Linux 7.0.3 xhci-hcd",
           "value": 7531
         },
         "device": {
@@ -600,11 +600,11 @@
         },
         "revision": {
           "hex": "0000",
-          "name": "6.19",
+          "name": "7.00",
           "value": 0
         },
         "serial": "0000:00:04.0",
-        "model": "Linux 6.19.14 xhci-hcd xHCI Host Controller",
+        "model": "Linux 7.0.3 xhci-hcd xHCI Host Controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:04.0/usb2/2-0:1.0",
         "sysfs_bus_id": "2-0:1.0",
         "detail": {
@@ -642,7 +642,7 @@
         "driver_modules": [
           "usbcore"
         ],
-        "module_alias": "usb:v1D6Bp0003d0619dc09dsc00dp03ic09isc00ip00in00"
+        "module_alias": "usb:v1D6Bp0003d0700dc09dsc00dp03ic09isc00ip00in00"
       }
     ],
     "memory": [
@@ -666,7 +666,7 @@
         "resources": [
           {
             "type": "phys_mem",
-            "range": 68719476736
+            "range": 85899345920
           }
         ]
       }
@@ -834,7 +834,29 @@
     ],
     "network_interface": [
       {
-        "index": 87,
+        "index": 89,
+        "attached_to": 0,
+        "class_list": [
+          "network_interface"
+        ],
+        "base_class": {
+          "hex": "0107",
+          "name": "Network Interface",
+          "value": 263
+        },
+        "sub_class": {
+          "hex": "0000",
+          "name": "Loopback",
+          "value": 0
+        },
+        "model": "Loopback network interface",
+        "sysfs_id": "/class/net/lo",
+        "unix_device_names": [
+          "lo"
+        ]
+      },
+      {
+        "index": 91,
         "attached_to": 80,
         "class_list": [
           "network_interface"
@@ -872,28 +894,6 @@
         ],
         "driver_modules": [
           "virtio_net"
-        ]
-      },
-      {
-        "index": 90,
-        "attached_to": 0,
-        "class_list": [
-          "network_interface"
-        ],
-        "base_class": {
-          "hex": "0107",
-          "name": "Network Interface",
-          "value": 263
-        },
-        "sub_class": {
-          "hex": "0000",
-          "name": "Loopback",
-          "value": 0
-        },
-        "model": "Loopback network interface",
-        "sysfs_id": "/class/net/lo",
-        "unix_device_names": [
-          "lo"
         ]
       }
     ],
@@ -1570,9 +1570,9 @@
           "name": "Multi-bit",
           "value": 6
         },
-        "max_size": "0x4000000",
+        "max_size": "0x5000000",
         "error_handle": 65534,
-        "slots": 4
+        "slots": 5
       }
     ],
     "memory_array_mapped_address": [
@@ -1587,7 +1587,7 @@
         "handle": 4865,
         "array_handle": 4096,
         "start_address": "0x100000000",
-        "end_address": "0x1040000000",
+        "end_address": "0x1440000000",
         "part_width": 1
       }
     ],
@@ -1676,6 +1676,33 @@
       {
         "handle": 4355,
         "location": "DIMM 3",
+        "bank_location": "",
+        "manufacturer": "QEMU",
+        "part_number": "",
+        "array_handle": 4096,
+        "error_handle": 65534,
+        "width": 0,
+        "ecc_bits": 0,
+        "size": 16777216,
+        "form_factor": {
+          "hex": "0009",
+          "name": "DIMM",
+          "value": 9
+        },
+        "set": 0,
+        "memory_type": {
+          "hex": "0007",
+          "name": "RAM",
+          "value": 7
+        },
+        "memory_type_details": [
+          "Other"
+        ],
+        "speed": 0
+      },
+      {
+        "handle": 4356,
+        "location": "DIMM 4",
         "bank_location": "",
         "manufacturer": "QEMU",
         "part_number": "",
