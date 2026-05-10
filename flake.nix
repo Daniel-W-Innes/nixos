@@ -47,9 +47,11 @@
       vpn-confinement,
       ...
     }:
-    {
-      formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt-tree;
-      checks.x86_64-linux.pre-commit-check = pre-commit-hooks.lib.x86_64-linux.run {
+    let
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+
+      preCommitCheck = pre-commit-hooks.lib.${system}.run {
         src = self;
         hooks = {
           deadnix.enable = true;
@@ -64,68 +66,69 @@
           ripsecrets.enable = true;
           trufflehog.enable = true;
         };
-        package = nixpkgs.legacyPackages.x86_64-linux.prek;
+        package = pkgs.prek;
       };
-      nixosConfigurations = {
-        melon = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          modules = [
-            agenix.nixosModules.default
-            nixos-facter-modules.nixosModules.facter
-            { config.facter.reportPath = ./melon/facter.json; }
-            { _module.args.secretsDir = ./secrets; }
-            vpn-confinement.nixosModules.default
-            ./melon/configuration.nix
-            ./generic/avahi.nix
-            ./generic/min.nix
-            ./generic/ssh.nix
-            ./generic/prometheus.nix
-            ./generic/server/all.nix
-            {
-              environment.systemPackages = self.checks.x86_64-linux.pre-commit-check.enabledPackages ++ [
-                nixpkgs.legacyPackages.x86_64-linux.prek
-              ];
-            }
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                users.daniel = import ./home/server.nix;
-              };
-            }
-            nix-index-database.nixosModules.nix-index
-            { programs.nix-index-database.comma.enable = true; }
+
+      sharedModules = [
+        agenix.nixosModules.default
+        nixos-facter-modules.nixosModules.facter
+        { _module.args.secretsDir = ./secrets; }
+        {
+          environment.systemPackages = preCommitCheck.enabledPackages ++ [
+            pkgs.prek
+          ];
+        }
+        home-manager.nixosModules.home-manager
+        nix-index-database.nixosModules.nix-index
+        { programs.nix-index-database.comma.enable = true; }
+      ];
+
+      mkHomeManagerModule = homeFile: {
+        home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          users.daniel = import homeFile;
+        };
+      };
+
+      mkHost =
+        name:
+        {
+          type,
+          extraModules ? [ ],
+        }:
+        nixpkgs.lib.nixosSystem {
+          inherit system;
+          modules =
+            sharedModules
+            ++ [
+              { config.facter.reportPath = ./. + "/${name}/facter.json"; }
+              (./. + "/${name}/configuration.nix")
+              (./. + "/generic/${type}.nix")
+              (mkHomeManagerModule (./. + "/home/${type}.nix"))
+            ]
+            ++ extraModules;
+        };
+
+      hosts = {
+        melon = {
+          type = "server";
+          extraModules = [
+            vpn-confinement.nixosModules.default # TODO: This should be in the server module not here.
           ];
         };
-        onion = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          modules = [
-            agenix.nixosModules.default
-            nixos-facter-modules.nixosModules.facter
-            { config.facter.reportPath = ./onion/facter.json; }
-            { _module.args.secretsDir = ./secrets; }
-            ./onion/configuration.nix
-            ./generic/all.nix
-            ./generic/borgmatic.nix
+
+        onion = {
+          type = "desktop";
+          extraModules = [
             ./generic/zsa.nix
-            {
-              environment.systemPackages = self.checks.x86_64-linux.pre-commit-check.enabledPackages ++ [
-                nixpkgs.legacyPackages.x86_64-linux.prek
-              ];
-            }
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                users.daniel = import ./home/desktop.nix;
-              };
-            }
-            nix-index-database.nixosModules.nix-index
-            { programs.nix-index-database.comma.enable = true; }
           ];
         };
       };
+    in
+    {
+      formatter.${system} = pkgs.nixfmt-tree;
+      checks.${system}.pre-commit-check = preCommitCheck;
+      nixosConfigurations = nixpkgs.lib.mapAttrs mkHost hosts;
     };
 }
