@@ -54,4 +54,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "meilisearch-masterKey.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
