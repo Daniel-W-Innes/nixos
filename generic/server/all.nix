@@ -13,5 +13,6 @@ _:
     # ./calibre.nix
     ./immich.nix
     ./traefik.nix
+    ./meilisearch.nix
   ];
 }

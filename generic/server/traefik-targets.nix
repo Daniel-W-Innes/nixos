@@ -112,5 +112,14 @@ in
   immich = {
     inherit (config.services.immich) enable host port;
   };
+  meilisearch = 
+    let
+      inherit (config.services.meilisearch) enable;
+      host = config.services.meilisearch.listenAddress;
+      port = config.services.meilisearch.listenPort;
+    in
+    {
+      inherit enable host port;
+    };
 }
 // arrTargetData
