@@ -22,7 +22,7 @@
     };
   };
   virtualisation.oci-containers.containers = {
-    mc-monitor-exporter = {
+    meilisearch-ui = {
       image = "eyeix/meilisearch-ui:latest";
       ports = [
         "127.0.0.1:24900:24900/tcp"
