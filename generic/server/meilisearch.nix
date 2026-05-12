@@ -1,6 +1,10 @@
 { config, secretsDir, ...}:
 
-{ 
+{
+  users.users.meilisearch = {
+    isSystemUser = true;
+    group = "meilisearch";
+  };
   age.secrets.meilisearch-masterKey = {
     file = secretsDir + /meilisearch-masterKey.age;
     owner = "meilisearch";
