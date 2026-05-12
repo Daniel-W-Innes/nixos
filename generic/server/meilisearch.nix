@@ -13,6 +13,7 @@
     masterKeyFile = config.age.secrets.meilisearch-masterKey.path;
     settings = {
       no_analytics = false;
+      env = "production";
     };
   };
 }
