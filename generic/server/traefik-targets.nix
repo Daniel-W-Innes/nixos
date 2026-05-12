@@ -121,5 +121,10 @@ in
     {
       inherit enable host port;
     };
+  meilisearch-ui = 
+    {
+      inherit (config.services.meilisearch) enable;
+      port = 24900;
+    };
 }
 // arrTargetData

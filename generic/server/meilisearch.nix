@@ -21,4 +21,12 @@
       env = "production";
     };
   };
+  virtualisation.oci-containers.containers = {
+    mc-monitor-exporter = {
+      image = "eyeix/meilisearch-ui:latest";
+      ports = [
+        "127.0.0.1:24900:24900/tcp"
+      ];
+    };
+  };
 }
