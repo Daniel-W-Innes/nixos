@@ -14,10 +14,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixos-facter-modules = {
-      url = "github:numtide/nixos-facter-modules";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
 
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
@@ -26,13 +23,13 @@
 
     agenix = {
       url = "github:ryantm/agenix";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs ={
+        nixpkgs.follows = "nixpkgs";  
+        home-manager.follows = "home-manager";
+      };
     };
 
-    vpn-confinement = {
-      url = "github:Maroka-chan/VPN-Confinement";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
   };
 
   outputs =
