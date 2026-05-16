@@ -4,6 +4,7 @@ _:
   services.calibre-server = {
     enable = true;
     group = "media";
+    port = 23155;
     libraries = [
       "/mnt/references"
     ];
