@@ -113,9 +113,10 @@ in
     inherit (config.services.meilisearch) enable;
     port = 24900;
   };
-  searx = {
-    inherit (config.services.searx) enable;
-    port = 8888;
-  };
+  searx = 
+    {
+      inherit (config.services.searx) enable;
+      port = 8888;
+    };
 }
 // arrTargetData

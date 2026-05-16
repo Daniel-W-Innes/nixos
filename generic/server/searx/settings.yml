@@ -51,7 +51,7 @@ engines:
     shortcut: jel
     base_url: https://meilisearch.lc.brotherwolf.ca
     index: jellyfin
-    auth_key: "@MEILISEARCH_AUTH_KEY@"
+    auth_key: "Bearer @MEILISEARCH_MASTERKEY@"
     tokens: [ '@SEARX_DANIEL_TOKEN@' ]
 
 plugins:
