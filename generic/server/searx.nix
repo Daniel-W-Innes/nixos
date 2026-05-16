@@ -15,8 +15,8 @@ in
     searx-metrics-password = lib.mkIf config.services.searx.enable {
       file = secretsDir + /searx-metrics-password.age;
       owner = "searx";
-      group = "searx";
-      mode = "0400";
+      group = "prometheus";
+      mode = "0440";
     };
   };
 
