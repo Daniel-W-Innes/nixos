@@ -1,7 +1,7 @@
-{ config, secretsDir, ...}:
+{ config, secretsDir, ... }:
 
 {
-  users.groups.meilisearch = {};
+  users.groups.meilisearch = { };
   users.users.meilisearch = {
     isSystemUser = true;
     group = "meilisearch";
