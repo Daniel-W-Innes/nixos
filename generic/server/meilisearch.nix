@@ -9,8 +9,8 @@
   age.secrets.meilisearch-masterKey = {
     file = secretsDir + /meilisearch-masterKey.age;
     owner = "meilisearch";
-    group = "searx";
-    mode = "0440";
+    group = "meilisearch";
+    mode = "0400";
   };
 
   services.meilisearch = {
@@ -23,7 +23,7 @@
   };
   virtualisation.oci-containers.containers = {
     meilisearch-ui = {
-      image = "eyeix/meilisearch-ui:latest";
+      image = "eyeix/meilisearch-ui:v0.15.1";
       ports = [
         "127.0.0.1:24900:24900/tcp"
       ];
