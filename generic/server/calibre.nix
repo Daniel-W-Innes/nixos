@@ -1,6 +1,10 @@
 _:
 
 {
+  systemd.tmpfiles.rules = [
+    "d /var/log/calibre 0755 calibre-server media -"
+  ];
+
   services.calibre-server = {
     enable = true;
     group = "media";
@@ -10,7 +14,8 @@ _:
     ];
     extraFlags = [
       "--daemonize"
-      "--log=/var/log/calibre-server.log"
+      "--log=/var/log/calibre/calibre-server.log"
     ];
   };
 }
+
