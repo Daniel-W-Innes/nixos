@@ -66,4 +66,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "searx-daniel-token.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
