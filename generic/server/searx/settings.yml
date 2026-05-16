@@ -40,3 +40,11 @@ engines:
     disabled: false
   - name: nixos wiki
     disabled: false
+  - name: jellyfin
+    disabled: false
+    engine: meilisearch
+    shortcut: jel
+    base_url: https://meilisearch.lc.brotherwolf.ca
+    index: jellyfin
+    auth_key: "Bearer @MEILISEARCH_MASTERKEY@"
+    tokens: [ '@SEARX_DANIEL_TOKEN@' ]

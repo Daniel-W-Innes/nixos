@@ -9,8 +9,8 @@
   age.secrets.meilisearch-masterKey = {
     file = secretsDir + /meilisearch-masterKey.age;
     owner = "meilisearch";
-    group = "meilisearch";
-    mode = "0400";
+    group = "searx";
+    mode = "0440";
   };
 
   services.meilisearch = {
