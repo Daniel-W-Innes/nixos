@@ -113,8 +113,7 @@ in
     inherit (config.services.meilisearch) enable;
     port = 24900;
   };
-  searx = 
-    {
+  searx = {
       inherit (config.services.searx) enable;
       port = 8888;
     };
