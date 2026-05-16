@@ -1,13 +1,14 @@
 _:
 
 {
-  services.calibre-web = {
+  services.calibre-server = {
     enable = true;
     group = "media";
-    options = {
-      calibreLibrary = "/mnt/references";
-      enableBookConversion = true;
-      enableBookUploading = true;
-    };
+    libraries = [
+      "/mnt/references"
+    ];
+    extraFlags = [
+      "--daemonize"
+    ];
   };
 }

@@ -16,11 +16,6 @@ let
     interval = "10s";
   };
 
-  loginHealthCheck = {
-    path = "/login";
-    interval = "10s";
-  };
-
   mkArrData =
     service:
     let
@@ -48,16 +43,9 @@ let
   );
 in
 {
-  calibre =
-    let
-      host = config.services.calibre-web.listen.ip;
-      inherit (config.services.calibre-web) enable;
-      inherit (config.services.calibre-web.listen) port;
-    in
-    {
-      inherit enable host port;
-      healthCheck = loginHealthCheck;
-    };
+  calibre = {
+    inherit (config.services.calibre-server) enable host port;
+  };
   jellyfin = {
     inherit (config.services.jellyfin) enable;
     # The NixOS jellyfin module does not expose its HTTP port as a configurable option.
@@ -112,7 +100,7 @@ in
   immich = {
     inherit (config.services.immich) enable host port;
   };
-  meilisearch = 
+  meilisearch =
     let
       inherit (config.services.meilisearch) enable;
       host = config.services.meilisearch.listenAddress;
@@ -121,10 +109,9 @@ in
     {
       inherit enable host port;
     };
-  meilisearch-ui = 
-    {
-      inherit (config.services.meilisearch) enable;
-      port = 24900;
-    };
+  meilisearch-ui = {
+    inherit (config.services.meilisearch) enable;
+    port = 24900;
+  };
 }
 // arrTargetData
