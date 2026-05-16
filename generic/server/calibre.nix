@@ -10,6 +10,7 @@ _:
     ];
     extraFlags = [
       "--daemonize"
+      "--log=/var/log/calibre-server.log"
     ];
   };
 }
