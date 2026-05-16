@@ -12,6 +12,9 @@ _:
     libraries = [
       "/mnt/references"
     ];
+    extraFlags = [
+      "--log=/var/log/calibre/calibre-server.log"
+    ];
   };
 }
 
