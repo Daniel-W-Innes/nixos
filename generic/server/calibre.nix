@@ -12,10 +12,6 @@ _:
     libraries = [
       "/mnt/references"
     ];
-    extraFlags = [
-      "--daemonize"
-      "--log=/var/log/calibre/calibre-server.log"
-    ];
   };
 }
 
