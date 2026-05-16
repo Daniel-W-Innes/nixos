@@ -1,4 +1,9 @@
-{ config, lib, secretsDir, ... }:
+{
+  config,
+  lib,
+  secretsDir,
+  ...
+}:
 
 let
   settingsTemplate = ./searx/settings.yml;
