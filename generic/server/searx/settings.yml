@@ -43,6 +43,7 @@ engines:
   - name: jellyfin
     disabled: false
     engine: meilisearch
+    weight: 2
     shortcut: jel
     base_url: https://meilisearch.lc.brotherwolf.ca
     index: jellyfin
