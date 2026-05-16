@@ -10,7 +10,7 @@ _:
     group = "media";
     port = 23155;
     libraries = [
-      "/mnt/references"
+      "/mnt/calibre"
     ];
     extraFlags = [
       "--log=/var/log/calibre/calibre-server.log"

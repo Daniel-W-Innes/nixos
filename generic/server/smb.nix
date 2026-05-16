@@ -30,7 +30,7 @@
         "dir_mode=0770"
       ];
     };
-    "/mnt/references" = {
+    "/mnt/calibre" = {
       device = "//pumpkin.lc.brotherwolf.ca/Calibre";
       fsType = "cifs";
       options = [
