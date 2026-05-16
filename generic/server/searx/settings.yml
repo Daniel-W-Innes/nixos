@@ -11,6 +11,10 @@ use_default_settings:
       - apple maps
       - apple app store
 
+ui:
+  theme_args:
+    simple_style: black
+
 general:
   enable_metrics: true
   open_metrics: "@SEARX_METRICS_PASSWORD@"
@@ -49,3 +53,25 @@ engines:
     index: jellyfin
     auth_key: "Bearer @MEILISEARCH_MASTERKEY@"
     tokens: [ '@SEARX_DANIEL_TOKEN@' ]
+
+plugins:
+  searx.plugins.calculator.SXNGPlugin:
+    active: true
+  searx.plugins.infinite_scroll.SXNGPlugin:
+    active: true
+  searx.plugins.hash_plugin.SXNGPlugin:
+    active: true
+  searx.plugins.self_info.SXNGPlugin:
+    active: true
+  searx.plugins.tracker_url_remover.SXNGPlugin:
+    active: true
+  searx.plugins.unit_converter.SXNGPlugin:
+    active: true
+  searx.plugins.ahmia_filter.SXNGPlugin:
+    active: true
+  searx.plugins.hostnames.SXNGPlugin:
+    active: true
+  searx.plugins.oa_doi_rewrite.SXNGPlugin:
+    active: true
+  searx.plugins.tor_check.SXNGPlugin:
+    active: true
