@@ -26,13 +26,6 @@
       group = "unpoller-exporter";
       mode = "0400";
     };
-
-    prometheus-searx-metrics-password = lib.mkIf config.services.searx.enable {
-      file = secretsDir + /searx-metrics-password.age;
-      owner = "prometheus";
-      group = "prometheus";
-      mode = "0440";
-    };
   };
 
   environment.etc = {
@@ -344,7 +337,7 @@
           job_name = "searx";
           basic_auth = {
             username = "metrics";
-            password_file = config.age.secrets.prometheus-searx-metrics-password.path;
+            password_file = config.age.secrets.searx-metrics-password.path;
           };
           static_configs = [
             {
