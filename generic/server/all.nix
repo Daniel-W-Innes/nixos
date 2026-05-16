@@ -13,5 +13,6 @@ _:
     ./immich.nix
     ./traefik.nix
     ./meilisearch.nix
+    ./searx.nix
   ];
 }

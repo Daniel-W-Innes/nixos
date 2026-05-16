@@ -1,0 +1,42 @@
+use_default_settings:
+  engines:
+    remove:
+      - google
+      - google images
+      - google videos
+      - google play movies
+      - google news
+      - google scholar
+      - google play apps
+      - apple maps
+      - apple app store
+
+general:
+  enable_metrics: true
+  open_metrics: "@SEARX_METRICS_PASSWORD@"
+
+server:
+  secret_key: "@SEARX_SECRET_KEY@"
+  image_proxy: true
+
+search:
+  safe_search: 0
+  autocomplete_min: 2
+  autocomplete: duckduckgo
+  ban_time_on_fail: 5
+  max_ban_time_on_fail: 120
+
+redis:
+  url: "@SEARX_REDIS_URL@"
+
+engines:
+  - name: openlibrary
+    disabled: false
+  - name: annas archive
+    disabled: false
+  - name: reddit
+    disabled: false
+  - name: steam
+    disabled: false
+  - name: nixos wiki
+    disabled: false

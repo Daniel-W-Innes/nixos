@@ -333,6 +333,18 @@
             }
           ];
         }
+        {
+          job_name = "searx";
+          basic_auth = {
+            username = "metrics";
+            password_file = config.age.secrets.searx-metrics-password.path;
+          };
+          static_configs = [
+            {
+              targets = [ "localhost:8888" ];
+            }
+          ];
+        }
       ];
       exporters = {
         smokeping = {
