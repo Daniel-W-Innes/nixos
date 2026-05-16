@@ -8,7 +8,8 @@ _:
     ./smb.nix
     ./jellyfin.nix
     ./dawarich.nix
-    ./calibre.nix
+    # TODO: Fix calibre the SQLite database doesn't work with CIFS.
+    # ./calibre.nix
     ./immich.nix
     ./traefik.nix
     ./meilisearch.nix
