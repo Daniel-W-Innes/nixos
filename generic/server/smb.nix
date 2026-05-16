@@ -30,8 +30,8 @@
         "dir_mode=0770"
       ];
     };
-    "/mnt/calibre" = {
-      device = "//pumpkin.lc.brotherwolf.ca/Calibre";
+    "/mnt/references" = {
+      device = "//pumpkin.lc.brotherwolf.ca/References";
       fsType = "cifs";
       options = [
         "credentials=${config.age.secrets.pumpkin-smb-credentials.path}"
