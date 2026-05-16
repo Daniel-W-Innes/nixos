@@ -70,4 +70,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "searx-meilisearch-auth-key.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
