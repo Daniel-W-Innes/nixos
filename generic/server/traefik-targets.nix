@@ -114,12 +114,9 @@ in
     port = 24900;
   };
   searx = 
-    let
-      inherit (config.services.searx) enable;
-      inherit (config.services.searx.settings.server) port;
-    in
     {
-      inherit enable port;
+      inherit (config.services.searx) enable;
+      port = 8888;
     };
 }
 // arrTargetData
