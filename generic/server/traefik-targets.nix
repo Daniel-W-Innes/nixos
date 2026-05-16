@@ -117,10 +117,9 @@ in
     let
       inherit (config.services.searx) enable;
       inherit (config.services.searx.settings.server) port;
-      host = config.services.searx.settings.server.bind_address;
     in
     {
-      inherit enable host port;
+      inherit enable port;
     };
 }
 // arrTargetData
