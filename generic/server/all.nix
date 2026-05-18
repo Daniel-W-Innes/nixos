@@ -14,5 +14,6 @@ _:
     ./traefik.nix
     ./meilisearch.nix
     ./searx.nix
+    ./home-assistant.nix
   ];
 }
