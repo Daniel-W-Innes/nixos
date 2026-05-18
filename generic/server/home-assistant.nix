@@ -15,6 +15,10 @@ _:
       "isal"
     ];
     config = {
+      http = {
+        server_host = "127.0.0.1";
+        server_port = 8123;
+      };
       default_config = { };
       homeassistant = {
         auth_mfa_modules = [ { type = "totp"; } ];
