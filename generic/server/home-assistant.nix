@@ -1062,6 +1062,7 @@ _:
       http = {
         use_x_forwarded_for = true;
         trusted_proxies = [
+          "127.0.0.1"
           "10.8.8.8"
           "172.30.33.0/24"
         ];
