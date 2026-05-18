@@ -117,5 +117,14 @@ in
     inherit (config.services.searx) enable;
     port = 8888;
   };
+  home-assistant =
+    let
+      inherit (config.services.home-assistant) enable;
+      host = config.services.home-assistant.config.http.server_host;
+      port = config.services.home-assistant.config.http.server_port;
+    in
+    {
+      inherit enable host port;
+    };
 }
 // arrTargetData
