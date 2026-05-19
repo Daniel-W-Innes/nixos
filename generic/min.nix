@@ -2,6 +2,7 @@
 
 {
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.loader.systemd-boot.configurationLimit = 10;
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
