@@ -131,6 +131,10 @@ in
         "Prometheus.Enabled" = true;
       };
     };
+    jellyfin = {
+      enable = true;
+      group = "media";
+    };
   };
   users.users = {
     radarr = {
