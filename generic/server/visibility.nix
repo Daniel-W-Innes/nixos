@@ -26,6 +26,13 @@
       group = "unpoller-exporter";
       mode = "0400";
     };
+
+    airzone-explorer = lib.mkIf config.services.airzone-explorer.enable {
+      file = secretsDir + /airzone-explorer.age;
+      owner = "airzone-explorer";
+      group = "airzone-explorer";
+      mode = "0400";
+    };
   };
 
   environment.etc = {
@@ -345,6 +352,14 @@
             }
           ];
         }
+        {
+          job_name = "airzone-explorer";
+          static_configs = [
+            {
+              targets = [ "localhost:9922" ];
+            }
+          ];
+        }
       ];
       exporters = {
         smokeping = {
@@ -383,6 +398,11 @@
             }
           ];
         };
+      };
+      airzone-explorer = {
+        enable = true;
+        email = "airzonecloud.crawling495@simplelogin.com";
+        passwordFile = config.age.secrets.airzone-explorer.path;
       };
     };
   };
