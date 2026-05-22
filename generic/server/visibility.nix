@@ -399,11 +399,11 @@
           ];
         };
       };
-      airzone-explorer = {
-        enable = true;
-        email = "airzonecloud.crawling495@simplelogin.com";
-        passwordFile = config.age.secrets.airzone-explorer.path;
-      };
+    };
+    airzone-explorer = {
+      enable = true;
+      email = "airzonecloud.crawling495@simplelogin.com";
+      passwordFile = config.age.secrets.airzone-explorer.path;
     };
   };
   virtualisation.oci-containers.containers = {
