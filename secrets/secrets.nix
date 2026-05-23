@@ -74,4 +74,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "sonarr-api-key.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
