@@ -33,6 +33,13 @@
       group = "airzone-explorer";
       mode = "0400";
     };
+
+    sonarr-api-key = lib.mkIf config.services.prometheus.exporters.exportarr-sonarr.enable {
+      file = secretsDir + /sonarr-api-key.age;
+      owner = config.services.prometheus.exporters.exportarr-sonarr.user;
+      inherit (config.services.prometheus.exporters.exportarr-sonarr) group;
+      mode = "0400";  
+    };
   };
 
   environment.etc = {
@@ -362,6 +369,11 @@
         }
       ];
       exporters = {
+        exportarr-sonarr = {
+          enable = true;
+          url = "https://sonarr.lc.brotherwolf.ca";
+          apiKeyFile = config.age.secrets.sonarr-api-key.path;
+        };
         smokeping = {
           enable = true;
           port = 9374;
