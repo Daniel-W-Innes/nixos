@@ -36,8 +36,8 @@
 
     sonarr-api-key = lib.mkIf config.services.prometheus.exporters.exportarr-sonarr.enable {
       file = secretsDir + /sonarr-api-key.age;
-      owner = config.services.prometheus.exporters.exportarr-sonarr.user;
-      inherit (config.services.prometheus.exporters.exportarr-sonarr) group;
+      owner = "exportarr-sonarr";
+      group = "exportarr-sonarr";
       mode = "0400";  
     };
   };
@@ -364,6 +364,14 @@
           static_configs = [
             {
               targets = [ "localhost:9922" ];
+            }
+          ];
+        }
+        {
+          job_name = "exportarr";
+          static_configs = [
+            {
+              targets = [ "localhost:9708" ];
             }
           ];
         }
