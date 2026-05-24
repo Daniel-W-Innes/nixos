@@ -40,6 +40,24 @@
       inherit (config.services.prometheus.exporters.exportarr-sonarr) group;
       mode = "0400";  
     };
+    radarr-api-key = lib.mkIf config.services.prometheus.exporters.exportarr-radarr.enable {
+      file = secretsDir + /radarr-api-key.age;
+      owner = config.services.prometheus.exporters.exportarr-radarr.user;
+      inherit (config.services.prometheus.exporters.exportarr-radarr) group;
+      mode = "0400";  
+    };
+    lidarr-api-key = lib.mkIf config.services.prometheus.exporters.exportarr-lidarr.enable {
+      file = secretsDir + /lidarr-api-key.age;
+      owner = config.services.prometheus.exporters.exportarr-lidarr.user;
+      inherit (config.services.prometheus.exporters.exportarr-lidarr) group;  
+      mode = "0400";
+    };
+    prowlarr-api-key = lib.mkIf config.services.prometheus.exporters.exportarr-prowlarr.enable {
+      file = secretsDir + /prowlarr-api-key.age;
+      owner = config.services.prometheus.exporters.exportarr-prowlarr.user;
+      inherit (config.services.prometheus.exporters.exportarr-prowlarr) group;  
+      mode = "0400";
+    };
   };
 
   environment.etc = {
@@ -371,7 +389,12 @@
           job_name = "exportarr";
           static_configs = [
             {
-              targets = [ "localhost:9708" ];
+              targets = [
+                 "localhost:9708"
+                  "localhost:9709"
+                  "localhost:9710"
+                  "localhost:9711"
+                  ];
             }
           ];
         }
@@ -379,8 +402,27 @@
       exporters = {
         exportarr-sonarr = {
           enable = true;
+          port = 9708;
           url = "https://sonarr.lc.brotherwolf.ca";
           apiKeyFile = config.age.secrets.sonarr-api-key.path;
+        };
+        exportarr-radarr = {
+          enable = true;
+          port = 9709;
+          url = "https://radarr.lc.brotherwolf.ca";
+          apiKeyFile = config.age.secrets.radarr-api-key.path;
+        };
+        exportarr-lidarr = {
+          enable = true;
+          port = 9710;
+          url = "https://lidarr.lc.brotherwolf.ca";
+          apiKeyFile = config.age.secrets.lidarr-api-key.path;
+        };
+        exportarr-prowlarr = {
+          enable = true;
+          port = 9711;
+          url = "https://prowlarr.lc.brotherwolf.ca";
+          apiKeyFile = config.age.secrets.prowlarr-api-key.path;
         };
         smokeping = {
           enable = true;
