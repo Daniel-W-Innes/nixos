@@ -154,6 +154,10 @@
             name = "navidrome-exporter";
             options.path = "/etc/grafana/navidrome_exporter.json";
           }
+          {
+            name = "exportarr-exporter";
+            options.path = "/etc/grafana/exportarr_exporter.json";
+          }
         ];
       };
     };
