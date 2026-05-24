@@ -78,4 +78,16 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "radarr-api-key.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
+  "lidarr-api-key.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
+  "prowlarr-api-key.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
