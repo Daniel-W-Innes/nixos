@@ -75,6 +75,7 @@
     "grafana/iperf3_exporter.json".source = ./grafana/iperf3_exporter.json;
     "grafana/mc_monitor_exporter.json".source = ./grafana/mc_monitor_exporter.json;
     "grafana/navidrome_exporter.json".source = ./grafana/navidrome_exporter.json;
+    "grafana/exportarr_exporter.json".source = ./grafana/exportarr_exporter.json;
   };
   services = {
     grafana = {
