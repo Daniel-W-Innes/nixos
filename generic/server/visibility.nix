@@ -36,26 +36,26 @@
 
     sonarr-api-key = lib.mkIf config.services.prometheus.exporters.exportarr-sonarr.enable {
       file = secretsDir + /sonarr-api-key.age;
-      owner = config.services.prometheus.exporters.exportarr-sonarr.user;
-      inherit (config.services.prometheus.exporters.exportarr-sonarr) group;
+      owner = "root";
+      group = "root";
       mode = "0400";  
     };
     radarr-api-key = lib.mkIf config.services.prometheus.exporters.exportarr-radarr.enable {
       file = secretsDir + /radarr-api-key.age;
-      owner = config.services.prometheus.exporters.exportarr-radarr.user;
-      inherit (config.services.prometheus.exporters.exportarr-radarr) group;
+      owner = "root";
+      group = "root";
       mode = "0400";  
     };
     lidarr-api-key = lib.mkIf config.services.prometheus.exporters.exportarr-lidarr.enable {
       file = secretsDir + /lidarr-api-key.age;
-      owner = config.services.prometheus.exporters.exportarr-lidarr.user;
-      inherit (config.services.prometheus.exporters.exportarr-lidarr) group;  
+      owner = "root";
+      group = "root";
       mode = "0400";
     };
     prowlarr-api-key = lib.mkIf config.services.prometheus.exporters.exportarr-prowlarr.enable {
       file = secretsDir + /prowlarr-api-key.age;
-      owner = config.services.prometheus.exporters.exportarr-prowlarr.user;
-      inherit (config.services.prometheus.exporters.exportarr-prowlarr) group;  
+      owner = "root";
+      group = "root";
       mode = "0400";
     };
   };
