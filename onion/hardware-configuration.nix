@@ -49,11 +49,6 @@
     ];
   };
 
-  #fileSystems."/home/daniel" = {
-  #  device = "/dev/disk/by-uuid/9d67d240-730b-4763-b43e-3f65f4cdf2cd";
-  #  fsType = "btrfs";
-  #};
-
   fileSystems."/home/daniel/games" = {
     device = "/dev/disk/by-uuid/92aa571b-c395-4e3b-8370-4a34cde82c16";
     fsType = "btrfs";
@@ -67,6 +62,11 @@
   fileSystems."/run/media/daniel/stb" = {
     device = "/dev/disk/by-uuid/1a8ce06e-21f7-45ac-9253-85330d0f5b4f";
     fsType = "btrfs";
+  };
+
+  fileSystems."/nix" = {
+    device = "/dev/disk/by-uuid/790eabb0-c756-4530-8978-00fa4b627f5a";
+    fsType = "ext4";
   };
 
   swapDevices = [
