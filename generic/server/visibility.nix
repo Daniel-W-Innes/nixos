@@ -403,6 +403,14 @@
             }
           ];
         }
+        {
+          job_name = "rasdaemon";
+          static_configs = [
+            {
+              targets = [ "localhost:10029" ];
+            }
+          ];
+        }
       ];
       exporters = {
         exportarr-sonarr = {
@@ -465,6 +473,7 @@
             }
           ];
         };
+        rasdaemon.enable = true;
       };
     };
     airzone-explorer = {
