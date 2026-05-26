@@ -196,6 +196,10 @@ let
     pythonImportsCheck = [ ];
   };
 
+  librewxr-pythonpath = py.makePythonPath (
+    [ librewxr-python ] ++ librewxr-python.propagatedBuildInputs
+  );
+
   librewxr-env = pkgs.python3.withPackages (_: [
     librewxr-python
   ]);
@@ -204,7 +208,7 @@ let
     name = "librewxr";
     runtimeInputs = [ librewxr-env ];
     text = ''
-      export PYTHONPATH="${librewxr-python}/${pkgs.python3.sitePackages}"''${PYTHONPATH:+:$PYTHONPATH}
+      export PYTHONPATH="${librewxr-pythonpath}"''${PYTHONPATH:+:$PYTHONPATH}
       exec ${librewxr-env}/bin/python -m librewxr.main "$@"
     '';
   };
