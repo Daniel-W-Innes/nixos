@@ -204,6 +204,7 @@ let
     name = "librewxr";
     runtimeInputs = [ librewxr-env ];
     text = ''
+      export PYTHONPATH="${librewxr-python}/${pkgs.python3.sitePackages}"''${PYTHONPATH:+:$PYTHONPATH}
       exec ${librewxr-env}/bin/python -m librewxr.main "$@"
     '';
   };
