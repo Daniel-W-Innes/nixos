@@ -36,6 +36,11 @@
       };
     };
 
+    librewxr = {
+      url = "github:JoshuaKimsey/LibreWXR/6013d3a05f2ac984f3f1712d43593923dc618db1";
+      flake = false;
+    };
+
     vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
   };
 
@@ -43,6 +48,7 @@
     {
       self,
       airzone-explorer,
+      librewxr,
       nixpkgs,
       agenix,
       home-manager,
@@ -77,7 +83,12 @@
       sharedModules = [
         agenix.nixosModules.default
         nixos-facter-modules.nixosModules.facter
-        { _module.args.secretsDir = ./secrets; }
+        {
+          _module.args = {
+            inherit librewxr;
+            secretsDir = ./secrets;
+          };
+        }
         {
           environment.systemPackages = preCommitCheck.enabledPackages ++ [
             pkgs.prek
@@ -119,8 +130,10 @@
         melon = {
           type = "server";
           extraModules = [
+            # TODO: This should be in the server module not here.
             airzone-explorer.nixosModules.default
-            vpn-confinement.nixosModules.default # TODO: This should be in the server module not here.
+            vpn-confinement.nixosModules.default 
+            ./modules/librewxr.nix
           ];
         };
 

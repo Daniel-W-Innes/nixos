@@ -170,6 +170,23 @@
         "type": "github"
       }
     },
+    "librewxr": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1779711820,
+        "narHash": "sha256-5aQF6fsbWfSZCvSFqYAaXE+Aaed37XB22mHwoPKAT4A=",
+        "owner": "JoshuaKimsey",
+        "repo": "LibreWXR",
+        "rev": "6013d3a05f2ac984f3f1712d43593923dc618db1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "JoshuaKimsey",
+        "repo": "LibreWXR",
+        "rev": "6013d3a05f2ac984f3f1712d43593923dc618db1",
+        "type": "github"
+      }
+    },
     "nix-index-database": {
       "inputs": {
         "nixpkgs": [
@@ -248,6 +265,7 @@
         "agenix": "agenix",
         "airzone-explorer": "airzone-explorer",
         "home-manager": "home-manager",
+        "librewxr": "librewxr",
         "nix-index-database": "nix-index-database",
         "nixos-facter-modules": "nixos-facter-modules",
         "nixpkgs": "nixpkgs",

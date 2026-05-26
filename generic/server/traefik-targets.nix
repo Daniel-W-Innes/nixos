@@ -117,5 +117,9 @@ in
     inherit (config.services.searx) enable;
     port = 8888;
   };
+  librewxr = {
+    inherit (config.services.librewxr) enable host port;
+    healthCheck = healthHealthCheck;
+  };
 }
 // arrTargetData
