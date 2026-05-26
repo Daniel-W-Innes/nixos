@@ -121,5 +121,8 @@ in
     inherit (config.services.librewxr) enable host port;
     healthCheck = healthHealthCheck;
   };
+  radar = {
+    inherit (config.services.librewxr.frontend) enable host port;
+  };
 }
 // arrTargetData
