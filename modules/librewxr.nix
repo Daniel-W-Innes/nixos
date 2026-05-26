@@ -152,7 +152,6 @@ let
     version = "0.1.0";
     pyproject = true;
     src = librewxr;
-    meta.mainProgram = "librewxr";
 
     nativeBuildInputs = [
       py.hatchling
@@ -197,6 +196,18 @@ let
     pythonImportsCheck = [ ];
   };
 
+  librewxr-env = pkgs.python3.withPackages (_: [
+    librewxr-python
+  ]);
+
+  librewxr-package = pkgs.writeShellApplication {
+    name = "librewxr";
+    runtimeInputs = [ librewxr-env ];
+    text = ''
+      exec ${librewxr-env}/bin/python -m librewxr.main "$@"
+    '';
+  };
+
 in
 {
   options.services.librewxr = {
@@ -204,7 +215,7 @@ in
 
     package = lib.mkOption {
       type = lib.types.package;
-      default = librewxr-python;
+      default = librewxr-package;
       description = "Package used to run LibreWXR.";
     };
 
