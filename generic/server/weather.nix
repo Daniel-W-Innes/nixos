@@ -1,5 +1,8 @@
 _:
 
 {
-  services.librewxr.enable = true;
+  services.librewxr = {
+    enable = true;
+    frontend.enable = true;
+  };
 }

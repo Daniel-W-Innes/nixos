@@ -207,6 +207,23 @@ let
     '';
   };
 
+  frontendHtml = builtins.replaceStrings
+    [
+      "<option value=\"local\">Local (localhost:8080)</option>"
+      "<option value=\"public\">Public (api.librewxr.net)</option>"
+      "    local: 'http://localhost:8080',"
+      "    public: 'https://api.librewxr.net'"
+    ]
+    [
+      "<option value=\"local\">LibreWXR</option>"
+      "<option value=\"public\">LibreWXR</option>"
+      "    local: '${cfg.publicUrl}',"
+      "    public: '${cfg.publicUrl}'"
+    ]
+    (builtins.readFile "${librewxr}/examples/leaflet.html");
+
+  frontendPackage = pkgs.writeTextDir "index.html" frontendHtml;
+
 in
 {
   options.services.librewxr = {
@@ -240,6 +257,32 @@ in
       type = lib.types.str;
       default = "US,CANADA";
       description = "LibreWXR region selection.";
+    };
+
+    frontend = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Whether to serve the LibreWXR Leaflet frontend.";
+      };
+
+      host = lib.mkOption {
+        type = lib.types.str;
+        default = "127.0.0.1";
+        description = "Bind address for the LibreWXR frontend.";
+      };
+
+      port = lib.mkOption {
+        type = lib.types.port;
+        default = 8099;
+        description = "Port for the LibreWXR frontend.";
+      };
+
+      package = lib.mkOption {
+        type = lib.types.package;
+        default = frontendPackage;
+        description = "Static frontend package to serve for LibreWXR.";
+      };
     };
   };
 
@@ -279,6 +322,28 @@ in
         StateDirectory = "librewxr";
         User = "librewxr";
         WorkingDirectory = "/var/lib/librewxr";
+      };
+    };
+
+    systemd.services.librewxr-frontend = lib.mkIf cfg.frontend.enable {
+      description = "LibreWXR Leaflet frontend";
+      after = [ "network-online.target" ];
+      wants = [ "network-online.target" ];
+      wantedBy = [ "multi-user.target" ];
+
+      serviceConfig = {
+        ExecStart = ''
+          ${pkgs.python3}/bin/python -m http.server ${toString cfg.frontend.port} \
+            --bind ${cfg.frontend.host} \
+            --directory ${cfg.frontend.package}
+        '';
+        DynamicUser = true;
+        NoNewPrivileges = true;
+        PrivateTmp = true;
+        ProtectHome = true;
+        ProtectSystem = "strict";
+        Restart = "on-failure";
+        RestartSec = "10s";
       };
     };
   };
