@@ -90,4 +90,12 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "openweathermap-api-key.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
+  "openweathermap-coords.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }

@@ -13,5 +13,6 @@ _:
     ./traefik.nix
     ./meilisearch.nix
     ./searx.nix
+    ./weather.nix
   ];
 }

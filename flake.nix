@@ -77,6 +77,7 @@
       sharedModules = [
         agenix.nixosModules.default
         nixos-facter-modules.nixosModules.facter
+        ./modules/openweathermap-exporter.nix
         { _module.args.secretsDir = ./secrets; }
         {
           environment.systemPackages = preCommitCheck.enabledPackages ++ [
