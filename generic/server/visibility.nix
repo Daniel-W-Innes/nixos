@@ -38,13 +38,13 @@
       file = secretsDir + /sonarr-api-key.age;
       owner = "root";
       group = "root";
-      mode = "0400";  
+      mode = "0400";
     };
     radarr-api-key = lib.mkIf config.services.prometheus.exporters.exportarr-radarr.enable {
       file = secretsDir + /radarr-api-key.age;
       owner = "root";
       group = "root";
-      mode = "0400";  
+      mode = "0400";
     };
     lidarr-api-key = lib.mkIf config.services.prometheus.exporters.exportarr-lidarr.enable {
       file = secretsDir + /lidarr-api-key.age;
@@ -54,6 +54,13 @@
     };
     prowlarr-api-key = lib.mkIf config.services.prometheus.exporters.exportarr-prowlarr.enable {
       file = secretsDir + /prowlarr-api-key.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
+
+    openweathermap-api-key = lib.mkIf config.services.prometheus.exporters.openweathermap.enable {
+      file = secretsDir + /openweathermap-api-key.age;
       owner = "root";
       group = "root";
       mode = "0400";
@@ -395,11 +402,19 @@
           static_configs = [
             {
               targets = [
-                 "localhost:9708"
-                  "localhost:9709"
-                  "localhost:9710"
-                  "localhost:9711"
-                  ];
+                "localhost:9708"
+                "localhost:9709"
+                "localhost:9710"
+                "localhost:9711"
+              ];
+            }
+          ];
+        }
+        {
+          job_name = "openweathermap";
+          static_configs = [
+            {
+              targets = [ "localhost:9876" ];
             }
           ];
         }
