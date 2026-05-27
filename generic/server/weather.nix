@@ -19,5 +19,6 @@
     enable = true;
     apiKeyFile = config.age.secrets.openweathermap-api-key.path;
     coordsFile = config.age.secrets.openweathermap-coords.path;
+    refreshInterval = "2m";
   };
 }
