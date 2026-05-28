@@ -88,6 +88,13 @@
   services = {
     tempo = {
       enable = true;
+      settings = {
+        server = {
+          http_listen_address = "127.0.0.1";
+          http_listen_port = 3200;
+          grpc_listen_port = 3201;
+        };
+      };
     };
     grafana = {
       enable = true;
@@ -106,6 +113,12 @@
             access = "proxy";
             url = "http://localhost:9090";
             isDefault = true;
+          }
+          {
+            name = "Tempo";
+            type = "tempo";
+            access = "proxy";
+            url = "http://localhost:3200";
           }
         ];
         dashboards.settings.providers = [
