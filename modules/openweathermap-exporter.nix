@@ -19,7 +19,7 @@ in
   options.services.prometheus.exporters.openweathermap = {
     enable = lib.mkEnableOption "OpenWeatherMap Prometheus exporter";
 
-    listenAddress = lib.mkOption {
+    host = lib.mkOption {
       type = lib.types.str;
       default = "127.0.0.1";
       description = "Address to bind the exporter to.";
@@ -70,7 +70,7 @@ in
         DynamicUser = true;
         ExecStart = lib.escapeShellArgs [
           "${package}/bin/nixos-openweathermap-exporter"
-          "--web.listen-address=${cfg.listenAddress}:${toString cfg.port}"
+          "--web.listen-address=${cfg.host}:${toString cfg.port}"
           "--api-key-file=%d/api-key"
           "--coords-file=%d/coords"
           "--language=${cfg.language}"
@@ -82,7 +82,19 @@ in
           "coords:${cfg.coordsFile}"
         ];
         Restart = "on-failure";
-        RestartSec = "10s";
+        RestartSec = 5;
+        NoNewPrivileges = true;
+        PrivateTmp = true;
+        ProtectSystem = "strict";
+        ProtectHome = true;
+        ProtectKernelTunables = true;
+        ProtectKernelModules = true;
+        ProtectControlGroups = true;
+        LockPersonality = true;
+        RestrictRealtime = true;
+        RestrictSUIDSGID = true;
+        MemoryDenyWriteExecute = true;
+        SystemCallArchitectures = "native";
       };
     };
   };

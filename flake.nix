@@ -29,20 +29,12 @@
       };
     };
 
-    airzone-explorer = {
-      url = "github:Daniel-W-Innes/airzone-explorer";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
-
     vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
   };
 
   outputs =
     {
       self,
-      airzone-explorer,
       nixpkgs,
       agenix,
       home-manager,
@@ -77,6 +69,7 @@
       sharedModules = [
         agenix.nixosModules.default
         nixos-facter-modules.nixosModules.facter
+        ./modules/airzone-exporter.nix
         ./modules/openweathermap-exporter.nix
         { _module.args.secretsDir = ./secrets; }
         {
@@ -120,7 +113,6 @@
         melon = {
           type = "server";
           extraModules = [
-            airzone-explorer.nixosModules.default
             vpn-confinement.nixosModules.default # TODO: This should be in the server module not here.
           ];
         };
