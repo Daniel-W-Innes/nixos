@@ -428,7 +428,7 @@
           metrics_path = "/probe";
           static_configs = [
             {
-              targets = [ 
+              targets = [
                 "https://www.githubstatus.com/"
                 "https://www.cloudflarestatus.com/"
                 "https://status.qlikcloud.com/"
