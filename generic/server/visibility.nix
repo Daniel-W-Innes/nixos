@@ -423,6 +423,37 @@
             }
           ];
         }
+        {
+          job_name = "statuspage";
+          metrics_path = "/probe";
+          static_configs = [
+            {
+              targets = [ 
+                "https://mrshu.github.io/github-statuses/"
+                "https://www.githubstatus.com/"
+                "https://www.cloudflarestatus.com/"
+                "https://status.qlikcloud.com/"
+                "https://status.airzonecloud.com/"
+                "https://www.dockerstatus.com/"
+                "https://status.atlassian.com/"
+              ];
+            }
+          ];
+          relabel_configs = [
+            {
+              source_labels = [ "__address__" ];
+              target_label = "__param_target";
+            }
+            {
+              source_labels = [ "__param_target" ];
+              target_label = "instance";
+            }
+            {
+              target_label = "__address__";
+              replacement = "localhost:9747";
+            }
+          ];
+        }
       ];
       exporters = {
         exportarr-sonarr = {
@@ -510,6 +541,12 @@
       image = "ghcr.io/edgard/iperf3_exporter:latest";
       ports = [
         "127.0.0.1:9579:9579/tcp"
+      ];
+    };
+    statuspage-exporter = {
+      image = "ghcr.io/sergeyshevch/statuspage-exporter:latest";
+      ports = [
+        "127.0.0.1:9747:9747/tcp"
       ];
     };
   };
