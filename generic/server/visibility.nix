@@ -86,6 +86,9 @@
     "grafana/traefik_exporter.json".source = ./grafana/traefik_exporter.json;
   };
   services = {
+    tempo = {
+      enable = true;
+    };
     grafana = {
       enable = true;
       settings = {
