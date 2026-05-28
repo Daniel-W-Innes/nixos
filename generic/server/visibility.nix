@@ -546,7 +546,7 @@
     statuspage-exporter = {
       image = "ghcr.io/sergeyshevch/statuspage-exporter:latest";
       ports = [
-        "127.0.0.1:9747:9747/tcp"
+        "127.0.0.1:9747:8080/tcp"
       ];
     };
   };
