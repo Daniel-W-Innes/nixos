@@ -70,7 +70,7 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
-  "airzone-explorer.age" = {
+  "airzone-exporter.age" = {
     publicKeys = users ++ systems;
     armor = true;
   };

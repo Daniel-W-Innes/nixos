@@ -12,28 +12,18 @@
       owner = "prometheus";
       group = "prometheus";
     };
-
     grafana-admin-password = lib.mkIf config.services.grafana.enable {
       file = secretsDir + /grafana-admin-password.age;
       owner = "grafana";
       group = "grafana";
       mode = "0400";
     };
-
     unpoller-password = lib.mkIf config.services.prometheus.exporters.unpoller.enable {
       file = secretsDir + /unpoller-password.age;
       owner = "unpoller-exporter";
       group = "unpoller-exporter";
       mode = "0400";
     };
-
-    airzone-explorer = lib.mkIf config.services.airzone-explorer.enable {
-      file = secretsDir + /airzone-explorer.age;
-      owner = "airzone-explorer";
-      group = "airzone-explorer";
-      mode = "0400";
-    };
-
     sonarr-api-key = lib.mkIf config.services.prometheus.exporters.exportarr-sonarr.enable {
       file = secretsDir + /sonarr-api-key.age;
       owner = "root";
@@ -54,13 +44,6 @@
     };
     prowlarr-api-key = lib.mkIf config.services.prometheus.exporters.exportarr-prowlarr.enable {
       file = secretsDir + /prowlarr-api-key.age;
-      owner = "root";
-      group = "root";
-      mode = "0400";
-    };
-
-    openweathermap-api-key = lib.mkIf config.services.prometheus.exporters.openweathermap.enable {
-      file = secretsDir + /openweathermap-api-key.age;
       owner = "root";
       group = "root";
       mode = "0400";
@@ -395,7 +378,7 @@
           ];
         }
         {
-          job_name = "airzone-explorer";
+          job_name = "airzone-exporter";
           static_configs = [
             {
               targets = [ "localhost:9922" ];
@@ -524,11 +507,6 @@
           ];
         };
       };
-    };
-    airzone-explorer = {
-      enable = true;
-      email = "airzonecloud.crawling495@simplelogin.com";
-      passwordFile = config.age.secrets.airzone-explorer.path;
     };
   };
   virtualisation.oci-containers.containers = {
