@@ -84,7 +84,6 @@
     "grafana/navidrome_exporter.json".source = ./grafana/navidrome_exporter.json;
     "grafana/exportarr_exporter.json".source = ./grafana/exportarr_exporter.json;
     "grafana/traefik_exporter.json".source = ./grafana/traefik_exporter.json;
-    "grafana/process_exporter.json".source = ./grafana/process_exporter.json;
   };
   services = {
     grafana = {
@@ -170,10 +169,6 @@
           {
             name = "traefik-exporter";
             options.path = "/etc/grafana/traefik_exporter.json";
-          }
-          { 
-            name = "process-exporter";
-            options.path = "/etc/grafana/process_exporter.json";
           }
         ];
       };
