@@ -453,6 +453,14 @@
             }
           ];
         }
+        {
+          job_name = "metar";
+          static_configs = [
+            {
+              targets = [ "localhost:9750" ];
+            }
+          ];
+        }
       ];
       exporters = {
         exportarr-sonarr = {
@@ -546,6 +554,18 @@
       image = "ghcr.io/sergeyshevch/statuspage-exporter:latest";
       ports = [
         "127.0.0.1:9747:8080/tcp"
+      ];
+    };
+    metar-exporter = {
+      image = "ghcr.io/sgsunder/prometheus-metar:latest";
+      cmd = [
+        "CYOW"
+        "CYYZ"
+        "CYTZ"
+        "CYND"
+      ];
+      ports = [
+        "127.0.0.1:9750:8080/tcp"
       ];
     };
   };
