@@ -429,7 +429,6 @@
           static_configs = [
             {
               targets = [ 
-                "https://mrshu.github.io/github-statuses/"
                 "https://www.githubstatus.com/"
                 "https://www.cloudflarestatus.com/"
                 "https://status.qlikcloud.com/"
