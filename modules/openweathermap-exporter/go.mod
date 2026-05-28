@@ -1,6 +1,6 @@
 module github.com/daniel-w-innes/nixos-openweathermap-exporter
 
-go 1.25.0
+go 1.25.9
 
 require (
 	github.com/briandowns/openweathermap v0.21.1

@@ -12,7 +12,7 @@ let
     pname = "openweathermap-exporter";
     version = "0.1.0";
     src = ./openweathermap-exporter;
-    vendorHash = null;
+    vendorHash = "sha256-/ywjmv8lCjK0MFSgQf/LiW7uGw/rlP8EwL5sX25+dWc=";
   };
 in
 {
