@@ -16,8 +16,8 @@
     };
     airzone-exporter = {
       file = secretsDir + "/airzone-exporter.age";
-      owner = "airzone-exporter";
-      group = "airzone-exporter";
+      owner = "root";
+      group = "root";
       mode = "0400";
     };
   };
