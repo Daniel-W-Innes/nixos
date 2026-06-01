@@ -8,6 +8,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"net/http"
 	"net/url"
@@ -20,24 +21,10 @@ import (
 )
 
 const (
-	defaultBaseURL      = "https://m.airzonecloud.com/api/v1"
-	defaultListenHost   = ""
-	defaultListenPort   = 9922
-	defaultMetricsPath  = "/metrics"
-	exporterNamespace   = "airzone"
-	deviceConfigType    = "user"
-	rootPageContentType = "text/plain; charset=utf-8"
+	defaultBaseURL   = "https://m.airzonecloud.com/api/v1"
+	namespace        = "airzone"
+	deviceConfigType = "user"
 )
-
-type exporterConfig struct {
-	email         string
-	passwordFile  string
-	baseURL       string
-	listenHost    string
-	listenPort    int
-	metricsPath   string
-	timeout       time.Duration
-}
 
 type airzoneClient struct {
 	baseURL      string
@@ -128,7 +115,8 @@ type apiErrorResponse struct {
 	Errors json.RawMessage `json:"errors"`
 }
 
-type airzoneCollector struct {
+type exporter struct {
+	logger                 *log.Logger
 	client                 *airzoneClient
 	upDesc                 *prometheus.Desc
 	durationDesc           *prometheus.Desc
@@ -180,352 +168,339 @@ type airzoneCollector struct {
 }
 
 func main() {
-	cfg := exporterConfig{}
-	flag.StringVar(&cfg.email, "email", "", "Airzone account email")
-	flag.StringVar(&cfg.passwordFile, "password-file", "", "Path to a file containing the Airzone account password")
-	flag.StringVar(&cfg.baseURL, "base-url", defaultBaseURL, "Airzone API base URL")
-	flag.StringVar(&cfg.listenHost, "listen-host", defaultListenHost, "Host or IP address to listen on for HTTP requests")
-	flag.IntVar(&cfg.listenPort, "listen-port", defaultListenPort, "TCP port to listen on for HTTP requests")
-	flag.StringVar(&cfg.metricsPath, "metrics-path", defaultMetricsPath, "HTTP path that serves Prometheus metrics")
-	flag.DurationVar(&cfg.timeout, "timeout", 15*time.Second, "HTTP timeout for Airzone API requests")
+	var (
+		host           = flag.String("host", "127.0.0.1", "Host or IP address to listen on for Prometheus scrapes.")
+		port           = flag.String("port", "9922", "TCP port to listen on for Prometheus scrapes.")
+		email          = flag.String("email", "", "Airzone account email.")
+		passwordFile   = flag.String("password-file", "", "File containing the Airzone account password.")
+		baseURL        = flag.String("base-url", defaultBaseURL, "Airzone API base URL.")
+		requestTimeout = flag.Duration("request-timeout", 15*time.Second, "HTTP timeout for Airzone API requests.")
+	)
+
 	flag.Parse()
 
-	if err := validateConfig(cfg); err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+	if strings.TrimSpace(*email) == "" {
+		log.Fatal("--email is required")
+	}
+
+	if strings.TrimSpace(*passwordFile) == "" {
+		log.Fatal("--password-file is required")
+	}
+
+	if strings.TrimSpace(*baseURL) == "" {
+		log.Fatal("--base-url is required")
+	}
+
+	if strings.TrimSpace(*port) == "" {
+		log.Fatal("--port is required")
 	}
 
 	client := &airzoneClient{
-		baseURL:      cfg.baseURL,
-		email:        cfg.email,
-		passwordFile: cfg.passwordFile,
-		httpClient:   &http.Client{Timeout: cfg.timeout},
+		baseURL:      *baseURL,
+		email:        *email,
+		passwordFile: *passwordFile,
+		httpClient:   &http.Client{Timeout: *requestTimeout},
 	}
+	logger := log.New(os.Stdout, "airzone-exporter: ", log.LstdFlags)
 
 	registry := prometheus.NewRegistry()
-	registry.MustRegister(newAirzoneCollector(client))
+	registry.MustRegister(newExporter(client, logger))
 
-	mux := http.NewServeMux()
-	mux.Handle(cfg.metricsPath, promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", rootPageContentType)
-		_, _ = fmt.Fprintf(w, "Airzone exporter\nmetrics: %s\n", cfg.metricsPath)
+	http.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
+	http.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("ok\n"))
 	})
 
-	server := &http.Server{
-		Addr:              net.JoinHostPort(cfg.listenHost, fmt.Sprintf("%d", cfg.listenPort)),
-		Handler:           mux,
-		ReadHeaderTimeout: 5 * time.Second,
-	}
-
-	if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
-	}
+	listenAddress := net.JoinHostPort(*host, *port)
+	logger.Printf("listening on %s", listenAddress)
+	log.Fatal(http.ListenAndServe(listenAddress, nil))
 }
 
-func validateConfig(cfg exporterConfig) error {
-	if strings.TrimSpace(cfg.email) == "" {
-		return errors.New("email is required")
-	}
-	if strings.TrimSpace(cfg.passwordFile) == "" {
-		return errors.New("password-file is required")
-	}
-	if strings.TrimSpace(cfg.baseURL) == "" {
-		return errors.New("base-url is required")
-	}
-	if cfg.listenPort < 1 || cfg.listenPort > 65535 {
-		return errors.New("listen-port must be between 1 and 65535")
-	}
-	if strings.TrimSpace(cfg.metricsPath) == "" {
-		return errors.New("metrics-path is required")
-	}
-	return nil
-}
-
-func newAirzoneCollector(client *airzoneClient) *airzoneCollector {
+func newExporter(client *airzoneClient, logger *log.Logger) *exporter {
 	deviceLabels := []string{"installation_id", "installation", "group_id", "group_name", "device_id", "device_name", "device_type", "ws_id"}
 
-	return &airzoneCollector{
+	return &exporter{
+		logger: logger,
 		client: client,
 		upDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "", "up"),
+			prometheus.BuildFQName(namespace, "", "up"),
 			"Whether the last Airzone scrape succeeded.",
 			nil,
 			nil,
 		),
 		durationDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "", "scrape_duration_seconds"),
+			prometheus.BuildFQName(namespace, "", "scrape_duration_seconds"),
 			"Duration of the last Airzone scrape.",
 			nil,
 			nil,
 		),
 		devicesDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "", "devices"),
+			prometheus.BuildFQName(namespace, "", "devices"),
 			"Number of Airzone devices returned by the last successful scrape.",
 			nil,
 			nil,
 		),
 		infoDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "info"),
+			prometheus.BuildFQName(namespace, "device", "info"),
 			"Static metadata about an Airzone device.",
 			deviceLabels,
 			nil,
 		),
 		powerDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "power_ratio"),
+			prometheus.BuildFQName(namespace, "device", "power_ratio"),
 			"Whether the device power is on as a ratio.",
 			deviceLabels,
 			nil,
 		),
 		energyLastHourDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "energy_last_hour_kwh"),
+			prometheus.BuildFQName(namespace, "device", "energy_last_hour_kwh"),
 			"Energy consumed during the last hour in kWh, reported by energy clamp devices.",
 			deviceLabels,
 			nil,
 		),
 		connectedDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "connected_ratio"),
+			prometheus.BuildFQName(namespace, "device", "connected_ratio"),
 			"Whether the device is connected as a ratio.",
 			deviceLabels,
 			nil,
 		),
 		wsConnectedDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "websocket_connected_ratio"),
+			prometheus.BuildFQName(namespace, "device", "websocket_connected_ratio"),
 			"Whether the device websocket connection is active as a ratio.",
 			deviceLabels,
 			nil,
 		),
 		activeDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "active_ratio"),
+			prometheus.BuildFQName(namespace, "device", "active_ratio"),
 			"Whether the device is actively running as a ratio.",
 			deviceLabels,
 			nil,
 		),
 		airActiveDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "air_active_ratio"),
+			prometheus.BuildFQName(namespace, "device", "air_active_ratio"),
 			"Whether the air stage of the device is active as a ratio.",
 			deviceLabels,
 			nil,
 		),
 		autoOverrideModeDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "auto_override_mode_enabled_ratio"),
+			prometheus.BuildFQName(namespace, "device", "auto_override_mode_enabled_ratio"),
 			"Whether auto override mode is enabled as a ratio.",
 			deviceLabels,
 			nil,
 		),
 		ledsActiveDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "leds_active_ratio"),
+			prometheus.BuildFQName(namespace, "device", "leds_active_ratio"),
 			"Whether device LEDs are active as a ratio.",
 			deviceLabels,
 			nil,
 		),
 		localVentDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "local_vent_ratio"),
+			prometheus.BuildFQName(namespace, "device", "local_vent_ratio"),
 			"Whether local ventilation is active as a ratio.",
 			deviceLabels,
 			nil,
 		),
 		antifreezeDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "antifreeze_ratio"),
+			prometheus.BuildFQName(namespace, "device", "antifreeze_ratio"),
 			"Whether antifreeze mode is enabled as a ratio.",
 			deviceLabels,
 			nil,
 		),
 		aqActiveDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "air_quality_active_ratio"),
+			prometheus.BuildFQName(namespace, "device", "air_quality_active_ratio"),
 			"Whether air quality control is active as a ratio.",
 			deviceLabels,
 			nil,
 		),
 		aqVentActiveDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "air_quality_vent_active_ratio"),
+			prometheus.BuildFQName(namespace, "device", "air_quality_vent_active_ratio"),
 			"Whether the AirQ ventilation fan is active as a ratio.",
 			deviceLabels,
 			nil,
 		),
 		aqPresentDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "air_quality_present_ratio"),
+			prometheus.BuildFQName(namespace, "device", "air_quality_present_ratio"),
 			"Whether air quality sensing hardware is present as a ratio.",
 			deviceLabels,
 			nil,
 		),
 		machineReadyDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "machine_ready_ratio"),
+			prometheus.BuildFQName(namespace, "device", "machine_ready_ratio"),
 			"Whether the underlying HVAC machine is ready as a ratio.",
 			deviceLabels,
 			nil,
 		),
 		blockSetpointDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "block_setpoint_ratio"),
+			prometheus.BuildFQName(namespace, "device", "block_setpoint_ratio"),
 			"Whether setpoint changes are blocked as a ratio.",
 			deviceLabels,
 			nil,
 		),
 		blockOnDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "block_on_ratio"),
+			prometheus.BuildFQName(namespace, "device", "block_on_ratio"),
 			"Whether power-on commands are blocked as a ratio.",
 			deviceLabels,
 			nil,
 		),
 		blockOffDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "block_off_ratio"),
+			prometheus.BuildFQName(namespace, "device", "block_off_ratio"),
 			"Whether power-off commands are blocked as a ratio.",
 			deviceLabels,
 			nil,
 		),
 		powerfulModeDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "powerful_mode_ratio"),
+			prometheus.BuildFQName(namespace, "device", "powerful_mode_ratio"),
 			"Whether powerful mode is enabled as a ratio.",
 			deviceLabels,
 			nil,
 		),
 		humidityRatioDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "humidity_ratio"),
+			prometheus.BuildFQName(namespace, "device", "humidity_ratio"),
 			"Device humidity expressed as a ratio from 0 to 1.",
 			deviceLabels,
 			nil,
 		),
 		modeDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "mode"),
+			prometheus.BuildFQName(namespace, "device", "mode"),
 			"Numeric Airzone operating mode reported by the device.",
 			deviceLabels,
 			nil,
 		),
 		autoModeDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "auto_mode"),
+			prometheus.BuildFQName(namespace, "device", "auto_mode"),
 			"Actual operating mode selected while the device is in automatic mode.",
 			deviceLabels,
 			nil,
 		),
 		speedConfDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "fan_speed"),
+			prometheus.BuildFQName(namespace, "device", "fan_speed"),
 			"Configured fan speed reported by the device.",
 			deviceLabels,
 			nil,
 		),
 		percentSpeedDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "fan_speed_percent"),
+			prometheus.BuildFQName(namespace, "device", "fan_speed_percent"),
 			"Configured fan speed percentage reported by the device.",
 			deviceLabels,
 			nil,
 		),
 		sleepMinutesDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "sleep_minutes"),
+			prometheus.BuildFQName(namespace, "device", "sleep_minutes"),
 			"Configured sleep timer in minutes.",
 			deviceLabels,
 			nil,
 		),
 		timerMinutesDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "timer_minutes"),
+			prometheus.BuildFQName(namespace, "device", "timer_minutes"),
 			"Configured timer target in minutes.",
 			deviceLabels,
 			nil,
 		),
 		timerCountdownDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "timer_countdown_seconds"),
+			prometheus.BuildFQName(namespace, "device", "timer_countdown_seconds"),
 			"Remaining timer countdown in seconds.",
 			deviceLabels,
 			nil,
 		),
 		localTempDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "local_temperature_celsius"),
+			prometheus.BuildFQName(namespace, "device", "local_temperature_celsius"),
 			"Local device temperature in celsius.",
 			deviceLabels,
 			nil,
 		),
 		workTempDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "work_temperature_celsius"),
+			prometheus.BuildFQName(namespace, "device", "work_temperature_celsius"),
 			"Device work temperature in celsius.",
 			deviceLabels,
 			nil,
 		),
 		zoneWorkTempDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "zone_work_temperature_celsius"),
+			prometheus.BuildFQName(namespace, "device", "zone_work_temperature_celsius"),
 			"Zone work temperature in celsius.",
 			deviceLabels,
 			nil,
 		),
 		taiTempDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "tai_temperature_celsius"),
+			prometheus.BuildFQName(namespace, "device", "tai_temperature_celsius"),
 			"TAI temperature in celsius.",
 			deviceLabels,
 			nil,
 		),
 		returnTempDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "return_temperature_celsius"),
+			prometheus.BuildFQName(namespace, "device", "return_temperature_celsius"),
 			"Return temperature in celsius.",
 			deviceLabels,
 			nil,
 		),
 		supplyAirTempDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "supply_air_temperature_celsius"),
+			prometheus.BuildFQName(namespace, "device", "supply_air_temperature_celsius"),
 			"Supply air temperature in celsius.",
 			deviceLabels,
 			nil,
 		),
 		extractAirTempDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "extract_air_temperature_celsius"),
+			prometheus.BuildFQName(namespace, "device", "extract_air_temperature_celsius"),
 			"Extract air temperature in celsius.",
 			deviceLabels,
 			nil,
 		),
 		outdoorAirTempDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "outdoor_air_inlet_temperature_celsius"),
+			prometheus.BuildFQName(namespace, "device", "outdoor_air_inlet_temperature_celsius"),
 			"Outdoor air inlet temperature in celsius.",
 			deviceLabels,
 			nil,
 		),
 		setpointTempDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "setpoint_temperature_celsius"),
+			prometheus.BuildFQName(namespace, "device", "setpoint_temperature_celsius"),
 			"Configured device setpoint temperature in celsius.",
 			append(deviceLabels, "setpoint_type"),
 			nil,
 		),
 		activeSetpointTempDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "active_setpoint_temperature_celsius"),
+			prometheus.BuildFQName(namespace, "device", "active_setpoint_temperature_celsius"),
 			"Active device setpoint temperature in celsius.",
 			deviceLabels,
 			nil,
 		),
 		aqScoreDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "air_quality_score"),
+			prometheus.BuildFQName(namespace, "device", "air_quality_score"),
 			"Air quality score reported by the device.",
 			deviceLabels,
 			nil,
 		),
 		aqTVOCDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "air_quality_tvoc_ppb"),
+			prometheus.BuildFQName(namespace, "device", "air_quality_tvoc_ppb"),
 			"Total volatile organic compounds in ppb.",
 			deviceLabels,
 			nil,
 		),
 		aqCO2Desc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "air_quality_co2_ppm"),
+			prometheus.BuildFQName(namespace, "device", "air_quality_co2_ppm"),
 			"CO2 concentration in ppm.",
 			deviceLabels,
 			nil,
 		),
 		aqPressureDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "air_quality_pressure_hpa"),
+			prometheus.BuildFQName(namespace, "device", "air_quality_pressure_hpa"),
 			"Air pressure reported by the device.",
 			deviceLabels,
 			nil,
 		),
 		aqPM10Desc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "air_quality_pm10"),
+			prometheus.BuildFQName(namespace, "device", "air_quality_pm10"),
 			"PM10 reading reported by the device.",
 			deviceLabels,
 			nil,
 		),
 		aqPM25Desc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "air_quality_pm2_5"),
+			prometheus.BuildFQName(namespace, "device", "air_quality_pm2_5"),
 			"PM2.5 reading reported by the device.",
 			deviceLabels,
 			nil,
 		),
 		aqPM1Desc: prometheus.NewDesc(
-			prometheus.BuildFQName(exporterNamespace, "device", "air_quality_pm1_0"),
+			prometheus.BuildFQName(namespace, "device", "air_quality_pm1_0"),
 			"PM1.0 reading reported by the device.",
 			deviceLabels,
 			nil,
@@ -533,7 +508,7 @@ func newAirzoneCollector(client *airzoneClient) *airzoneCollector {
 	}
 }
 
-func (c *airzoneCollector) Describe(ch chan<- *prometheus.Desc) {
+func (c *exporter) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.upDesc
 	ch <- c.durationDesc
 	ch <- c.devicesDesc
@@ -583,7 +558,7 @@ func (c *airzoneCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.aqPM1Desc
 }
 
-func (c *airzoneCollector) Collect(ch chan<- prometheus.Metric) {
+func (c *exporter) Collect(ch chan<- prometheus.Metric) {
 	start := time.Now()
 	devices, err := c.client.FetchDeviceDetails(context.Background())
 	duration := time.Since(start).Seconds()
@@ -591,7 +566,7 @@ func (c *airzoneCollector) Collect(ch chan<- prometheus.Metric) {
 	if err != nil {
 		ch <- prometheus.MustNewConstMetric(c.upDesc, prometheus.GaugeValue, 0)
 		ch <- prometheus.MustNewConstMetric(c.durationDesc, prometheus.GaugeValue, duration)
-		fmt.Fprintf(os.Stderr, "scrape error: %v\n", err)
+		c.logger.Printf("scrape failed: %v", err)
 		return
 	}
 
@@ -616,7 +591,7 @@ func (c *airzoneCollector) Collect(ch chan<- prometheus.Metric) {
 	}
 }
 
-func (c *airzoneCollector) collectFocusedMetrics(ch chan<- prometheus.Metric, baseLabels []string, deviceType string, statusRaw, configRaw json.RawMessage) {
+func (c *exporter) collectFocusedMetrics(ch chan<- prometheus.Metric, baseLabels []string, deviceType string, statusRaw, configRaw json.RawMessage) {
 	status := decodeJSONObject(statusRaw)
 	config := decodeJSONObject(configRaw)
 
@@ -689,7 +664,7 @@ func decodeJSONObject(raw json.RawMessage) map[string]any {
 	return decoded
 }
 
-func (c *airzoneCollector) emitBoolMetric(ch chan<- prometheus.Metric, desc *prometheus.Desc, labels []string, payload map[string]any, key string) {
+func (c *exporter) emitBoolMetric(ch chan<- prometheus.Metric, desc *prometheus.Desc, labels []string, payload map[string]any, key string) {
 	value, ok := boolFromMap(payload, key)
 	if !ok {
 		return
@@ -702,7 +677,7 @@ func (c *airzoneCollector) emitBoolMetric(ch chan<- prometheus.Metric, desc *pro
 	ch <- prometheus.MustNewConstMetric(desc, prometheus.GaugeValue, numeric, labels...)
 }
 
-func (c *airzoneCollector) emitNumberMetric(ch chan<- prometheus.Metric, desc *prometheus.Desc, labels []string, payload map[string]any, key string) {
+func (c *exporter) emitNumberMetric(ch chan<- prometheus.Metric, desc *prometheus.Desc, labels []string, payload map[string]any, key string) {
 	value, ok := floatFromMap(payload, key)
 	if !ok {
 		return
@@ -710,7 +685,7 @@ func (c *airzoneCollector) emitNumberMetric(ch chan<- prometheus.Metric, desc *p
 	ch <- prometheus.MustNewConstMetric(desc, prometheus.GaugeValue, value, labels...)
 }
 
-func (c *airzoneCollector) emitNestedNumberMetric(ch chan<- prometheus.Metric, desc *prometheus.Desc, labels []string, payload map[string]any, key, nestedKey string) {
+func (c *exporter) emitNestedNumberMetric(ch chan<- prometheus.Metric, desc *prometheus.Desc, labels []string, payload map[string]any, key, nestedKey string) {
 	value, ok := nestedFloatFromMap(payload, key, nestedKey)
 	if !ok {
 		return
@@ -718,7 +693,7 @@ func (c *airzoneCollector) emitNestedNumberMetric(ch chan<- prometheus.Metric, d
 	ch <- prometheus.MustNewConstMetric(desc, prometheus.GaugeValue, value, labels...)
 }
 
-func (c *airzoneCollector) emitTemperatureMetric(ch chan<- prometheus.Metric, desc *prometheus.Desc, labels []string, payload map[string]any, key string) {
+func (c *exporter) emitTemperatureMetric(ch chan<- prometheus.Metric, desc *prometheus.Desc, labels []string, payload map[string]any, key string) {
 	value, ok := celsiusValueFromMap(payload, key)
 	if !ok {
 		return
@@ -726,7 +701,7 @@ func (c *airzoneCollector) emitTemperatureMetric(ch chan<- prometheus.Metric, de
 	ch <- prometheus.MustNewConstMetric(desc, prometheus.GaugeValue, value, labels...)
 }
 
-func (c *airzoneCollector) emitHumidityRatioMetric(ch chan<- prometheus.Metric, labels []string, payload map[string]any, key string) {
+func (c *exporter) emitHumidityRatioMetric(ch chan<- prometheus.Metric, labels []string, payload map[string]any, key string) {
 	value, ok := floatFromMap(payload, key)
 	if !ok {
 		return
@@ -734,7 +709,7 @@ func (c *airzoneCollector) emitHumidityRatioMetric(ch chan<- prometheus.Metric, 
 	ch <- prometheus.MustNewConstMetric(c.humidityRatioDesc, prometheus.GaugeValue, value/100.0, labels...)
 }
 
-func (c *airzoneCollector) emitSetpointMetric(ch chan<- prometheus.Metric, labels []string, payload map[string]any, setpointType, key string) {
+func (c *exporter) emitSetpointMetric(ch chan<- prometheus.Metric, labels []string, payload map[string]any, setpointType, key string) {
 	value, ok := celsiusValueFromMap(payload, key)
 	if !ok {
 		return
