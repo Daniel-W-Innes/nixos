@@ -1573,7 +1573,7 @@
             "uid": "${ds_prometheus}"
           },
           "editorMode": "code",
-          "expr": "openweathermap_forecast_temperature_celsius{forecast_type=\"hourly\", offset_hours=\"0\"} or openweathermap_forecast_temperature_celsius{forecast_type=\"hourly\", offset_hours=\"1\"} offset 1h or openweathermap_forecast_temperature_celsius{forecast_type=\"hourly\", offset_hours=\"2\"} offset 2h or openweathermap_forecast_temperature_celsius{forecast_type=\"hourly\", offset_hours=\"3\"} offset 3h or openweathermap_forecast_temperature_celsius{forecast_type=\"hourly\", offset_hours=\"6\"} offset 6h or openweathermap_forecast_temperature_celsius{forecast_type=\"hourly\", offset_hours=\"12\"} offset 12h or openweathermap_forecast_temperature_celsius{forecast_type=\"hourly\", offset_hours=\"24\"} offset 24h or openweathermap_forecast_temperature_celsius{forecast_type=\"hourly\", offset_hours=\"36\"} offset 36h or openweathermap_forecast_temperature_celsius{forecast_type=\"hourly\", offset_hours=\"48\"} offset 48h",
+          "expr": "avg(openweathermap_forecast_temperature_celsius{forecast_type=\"hourly\", offset_hours=\"0\"} or openweathermap_forecast_temperature_celsius{forecast_type=\"hourly\", offset_hours=\"1\"} offset 1h or openweathermap_forecast_temperature_celsius{forecast_type=\"hourly\", offset_hours=\"2\"} offset 2h or openweathermap_forecast_temperature_celsius{forecast_type=\"hourly\", offset_hours=\"3\"} offset 3h or openweathermap_forecast_temperature_celsius{forecast_type=\"hourly\", offset_hours=\"6\"} offset 6h or openweathermap_forecast_temperature_celsius{forecast_type=\"hourly\", offset_hours=\"12\"} offset 12h or openweathermap_forecast_temperature_celsius{forecast_type=\"hourly\", offset_hours=\"24\"} offset 24h) by (offset_hours)",
           "legendFormat": "{{offset_hours}}h",
           "range": true,
           "refId": "A"
@@ -1665,7 +1665,7 @@
             "uid": "${ds_prometheus}"
           },
           "editorMode": "code",
-          "expr": "openweathermap_forecast_rain_depth_meters{forecast_type=\"hourly\", offset_hours=\"0\"} or openweathermap_forecast_rain_depth_meters{forecast_type=\"hourly\", offset_hours=\"1\"} offset 1h or openweathermap_forecast_rain_depth_meters{forecast_type=\"hourly\", offset_hours=\"2\"} offset 2h or openweathermap_forecast_rain_depth_meters{forecast_type=\"hourly\", offset_hours=\"3\"} offset 3h or openweathermap_forecast_rain_depth_meters{forecast_type=\"hourly\", offset_hours=\"6\"} offset 6h or openweathermap_forecast_rain_depth_meters{forecast_type=\"hourly\", offset_hours=\"12\"} offset 12h or openweathermap_forecast_rain_depth_meters{forecast_type=\"hourly\", offset_hours=\"24\"} offset 24h or openweathermap_forecast_rain_depth_meters{forecast_type=\"hourly\", offset_hours=\"36\"} offset 36h or openweathermap_forecast_rain_depth_meters{forecast_type=\"hourly\", offset_hours=\"48\"} offset 48h",
+          "expr": "avg(openweathermap_forecast_rain_depth_meters{forecast_type=\"hourly\", offset_hours=\"0\"} or openweathermap_forecast_rain_depth_meters{forecast_type=\"hourly\", offset_hours=\"1\"} offset 1h or openweathermap_forecast_rain_depth_meters{forecast_type=\"hourly\", offset_hours=\"2\"} offset 2h or openweathermap_forecast_rain_depth_meters{forecast_type=\"hourly\", offset_hours=\"3\"} offset 3h or openweathermap_forecast_rain_depth_meters{forecast_type=\"hourly\", offset_hours=\"6\"} offset 6h or openweathermap_forecast_rain_depth_meters{forecast_type=\"hourly\", offset_hours=\"12\"} offset 12h or openweathermap_forecast_rain_depth_meters{forecast_type=\"hourly\", offset_hours=\"24\"} offset 24h) by (offset_hours)",
           "legendFormat": "rain {{offset_hours}}h",
           "range": true,
           "refId": "A"
@@ -1676,7 +1676,7 @@
             "uid": "${ds_prometheus}"
           },
           "editorMode": "code",
-          "expr": "openweathermap_forecast_snow_depth_meters{forecast_type=\"hourly\", offset_hours=\"0\"} or openweathermap_forecast_snow_depth_meters{forecast_type=\"hourly\", offset_hours=\"1\"} offset 1h or openweathermap_forecast_snow_depth_meters{forecast_type=\"hourly\", offset_hours=\"2\"} offset 2h or openweathermap_forecast_snow_depth_meters{forecast_type=\"hourly\", offset_hours=\"3\"} offset 3h or openweathermap_forecast_snow_depth_meters{forecast_type=\"hourly\", offset_hours=\"6\"} offset 6h or openweathermap_forecast_snow_depth_meters{forecast_type=\"hourly\", offset_hours=\"12\"} offset 12h or openweathermap_forecast_snow_depth_meters{forecast_type=\"hourly\", offset_hours=\"24\"} offset 24h or openweathermap_forecast_snow_depth_meters{forecast_type=\"hourly\", offset_hours=\"36\"} offset 36h or openweathermap_forecast_snow_depth_meters{forecast_type=\"hourly\", offset_hours=\"48\"} offset 48h",
+          "expr": "avg(openweathermap_forecast_snow_depth_meters{forecast_type=\"hourly\", offset_hours=\"0\"} or openweathermap_forecast_snow_depth_meters{forecast_type=\"hourly\", offset_hours=\"1\"} offset 1h or openweathermap_forecast_snow_depth_meters{forecast_type=\"hourly\", offset_hours=\"2\"} offset 2h or openweathermap_forecast_snow_depth_meters{forecast_type=\"hourly\", offset_hours=\"3\"} offset 3h or openweathermap_forecast_snow_depth_meters{forecast_type=\"hourly\", offset_hours=\"6\"} offset 6h or openweathermap_forecast_snow_depth_meters{forecast_type=\"hourly\", offset_hours=\"12\"} offset 12h or openweathermap_forecast_snow_depth_meters{forecast_type=\"hourly\", offset_hours=\"24\"} offset 24h) by (offset_hours)",
           "legendFormat": "snow {{offset_hours}}h",
           "range": true,
           "refId": "B"
@@ -1709,9 +1709,31 @@
   },
   "time": {
     "from": "now-24h",
-    "to": "now+48h"
+    "to": "now+24h"
   },
-  "timepicker": {},
+  "timepicker": {
+    "nowDelay": "",
+    "refresh_intervals": [
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
   "timezone": "browser",
   "title": "OpenWeatherMap",
   "uid": "openweathermap",
