@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 48,
+  "id": 49,
   "links": [],
   "panels": [
     {
@@ -2407,7 +2407,7 @@
     }
   ],
   "preload": false,
-  "refresh": "1m",
+  "refresh": "auto",
   "schemaVersion": 42,
   "tags": [
     "openweathermap",
