@@ -208,16 +208,18 @@ const (
 )
 
 func forecastMetric(name string, help string, value float64, ftype ftype, dt int, now time.Time) prometheus.Metric {
-	offset := int(math.Max(math.Ceil(time.Unix(int64(dt), 0).Sub(now).Hours()), 0))
+	forecastTime := time.Unix(int64(dt), 0)
+	offset := int(math.Max(math.Ceil(forecastTime.Sub(now).Hours()), 0))
 	return prometheus.MustNewConstMetric(
 		prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, "", name),
 			help,
-			[]string{"offset_hours", "forecast_type"},
+			[]string{"absolute_hours","offset_hours", "forecast_type"},
 			nil,
 		),
 		prometheus.GaugeValue,
 		value,
+		fmt.Sprintf("%d", int(forecastTime.Hours())),
 		fmt.Sprintf("%d", offset),
 		string(ftype),
 	)
