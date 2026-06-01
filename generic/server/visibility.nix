@@ -64,6 +64,7 @@
     "grafana/nvidia_gpu_exporter.json".source = ./grafana/nvidia_gpu_exporter.json;
     "grafana/iperf3_exporter.json".source = ./grafana/iperf3_exporter.json;
     "grafana/mc_monitor_exporter.json".source = ./grafana/mc_monitor_exporter.json;
+    "grafana/openweathermap_exporter.json".source = ./grafana/openweathermap_exporter.json;
     "grafana/navidrome_exporter.json".source = ./grafana/navidrome_exporter.json;
     "grafana/exportarr_exporter.json".source = ./grafana/exportarr_exporter.json;
     "grafana/traefik_exporter.json".source = ./grafana/traefik_exporter.json;
@@ -140,6 +141,10 @@
           {
             name = "mc-monitor-exporter";
             options.path = "/etc/grafana/mc_monitor_exporter.json";
+          }
+          {
+            name = "openweathermap-exporter";
+            options.path = "/etc/grafana/openweathermap_exporter.json";
           }
           {
             name = "navidrome-exporter";
