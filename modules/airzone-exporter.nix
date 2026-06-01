@@ -39,28 +39,21 @@ in
 
     host = lib.mkOption {
       type = lib.types.str;
-      default = "";
-      example = "127.0.0.1";
-      description = "HTTP listen host passed to `--listen-host`. Leave empty to bind all interfaces.";
+      default = "127.0.0.1";
+      description = "Address to bind the exporter to.";
     };
 
     port = lib.mkOption {
       type = lib.types.port;
       default = 9922;
-      description = "HTTP listen port passed to `--listen-port`.";
+      description = "Port to bind the exporter to.";
     };
 
-    metricsPath = lib.mkOption {
-      type = lib.types.str;
-      default = "/metrics";
-      description = "HTTP metrics path passed to `--metrics-path`.";
-    };
-
-    timeout = lib.mkOption {
+    requestTimeout = lib.mkOption {
       type = lib.types.str;
       default = "15s";
       example = "30s";
-      description = "HTTP timeout passed to `--timeout`.";
+      description = "HTTP timeout for requests to Airzone.";
     };
   };
 
@@ -74,13 +67,12 @@ in
         DynamicUser = true;
         ExecStart = lib.escapeShellArgs [
           "${package}/bin/nixos-airzone-exporter"
+          "--host=${cfg.host}"
+          "--port=${toString cfg.port}"
           "--email=${cfg.email}"
           "--password-file=%d/password"
           "--base-url=${cfg.baseURL}"
-          "--listen-host=${cfg.host}"
-          "--listen-port=${toString cfg.port}"
-          "--metrics-path=${cfg.metricsPath}"
-          "--timeout=${cfg.timeout}"
+          "--request-timeout=${cfg.requestTimeout}"
         ];
         LoadCredential = [
           "password:${cfg.passwordFile}"
