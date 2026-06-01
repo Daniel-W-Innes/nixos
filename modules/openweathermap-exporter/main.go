@@ -219,7 +219,7 @@ func forecastMetric(name string, help string, value float64, ftype ftype, dt int
 		),
 		prometheus.GaugeValue,
 		value,
-		fmt.Sprintf("%d", int(forecastTime.Hours())),
+		fmt.Sprintf("%d", int(forecastTime.Hour())),
 		fmt.Sprintf("%d", offset),
 		string(ftype),
 	)
