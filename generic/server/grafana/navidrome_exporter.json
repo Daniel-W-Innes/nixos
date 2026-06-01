@@ -1,47 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "ds_prometheus",
-      "label": "Prometheus",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    }
-  ],
-  "__elements": {},
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "12.2.1"
-    },
-    {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "1.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "stat",
-      "name": "Stat",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "table",
-      "name": "Table",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "timeseries",
-      "name": "Time series",
-      "version": ""
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -68,6 +25,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
+  "id": 34,
   "links": [],
   "panels": [
     {
@@ -120,7 +78,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.2.1",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -188,18 +146,18 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.2.1",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "editorMode": "code",
           "expr": "db_model_totals{job=\"$job\",model=\"media\"}",
           "legendFormat": "__auto",
           "range": true,
-          "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${ds_prometheus}"
-          }
+          "refId": "A"
         }
       ],
       "title": "Songs",
@@ -255,18 +213,18 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.2.1",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "editorMode": "code",
           "expr": "db_model_totals{job=\"$job\",model=\"album\"}",
           "legendFormat": "__auto",
           "range": true,
-          "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${ds_prometheus}"
-          }
+          "refId": "A"
         }
       ],
       "title": "Albums",
@@ -322,18 +280,18 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.2.1",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "editorMode": "code",
           "expr": "db_model_totals{job=\"$job\", model=\"artist\"}",
           "legendFormat": "__auto",
           "range": true,
-          "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${ds_prometheus}"
-          }
+          "refId": "A"
         }
       ],
       "title": "Artists",
@@ -389,18 +347,18 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.2.1",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "editorMode": "code",
           "expr": "db_model_totals{job=\"$job\", model=\"user\"}",
           "legendFormat": "__auto",
           "range": true,
-          "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${ds_prometheus}"
-          }
+          "refId": "A"
         }
       ],
       "title": "Users",
@@ -456,9 +414,13 @@
         "cellHeight": "sm",
         "showHeader": true
       },
-      "pluginVersion": "12.2.1",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "editorMode": "code",
           "exemplar": false,
           "expr": "navidrome_info{job=\"$job\"}",
@@ -466,11 +428,7 @@
           "instant": true,
           "legendFormat": "__auto",
           "range": false,
-          "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${ds_prometheus}"
-          }
+          "refId": "A"
         }
       ],
       "title": "General Information",
@@ -583,7 +541,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.1",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -681,7 +639,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.1",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -776,7 +734,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.1",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -887,20 +845,20 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.1",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds_prometheus}"
+          },
           "editorMode": "builder",
           "exemplar": false,
           "expr": "sum by(client) (rate(http_request_count{job=\"$job\"}[$__rate_interval]))",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
-          "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${ds_prometheus}"
-          }
+          "refId": "A"
         }
       ],
       "title": "Requests by client",
@@ -970,7 +928,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.2.1",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1044,7 +1002,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.2.1",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1162,7 +1120,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.1",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1262,7 +1220,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.1",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1377,7 +1335,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.1",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1492,7 +1450,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.1",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1598,7 +1556,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.1",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1704,7 +1662,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.1",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1769,7 +1727,7 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "12.2.1",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1802,6 +1760,7 @@
       "type": "table"
     }
   ],
+  "preload": false,
   "refresh": "auto",
   "schemaVersion": 42,
   "tags": [],
@@ -1855,24 +1814,10 @@
       "30m",
       "1h",
       "2h"
-    ],
-    "time_options": [
-      "5m",
-      "15m",
-      "1h",
-      "6h",
-      "12h",
-      "24h",
-      "2d",
-      "7d",
-      "30d"
     ]
   },
   "timezone": "browser",
   "title": "Navidrome Observability",
   "uid": "F32fd2rfb",
-  "version": 2,
-  "weekStart": "",
-  "id": null,
-  "gnetId": 24397
+  "version": 1
 }

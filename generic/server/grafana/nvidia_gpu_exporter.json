@@ -1,53 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "ds_prometheus",
-      "label": "Prometheus",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    }
-  ],
-  "__elements": {},
-  "__requires": [
-    {
-      "type": "panel",
-      "id": "bargauge",
-      "name": "Bar gauge",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "gauge",
-      "name": "Gauge",
-      "version": ""
-    },
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "11.2.0"
-    },
-    {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "1.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "stat",
-      "name": "Stat",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "timeseries",
-      "name": "Time series",
-      "version": ""
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -67,9 +18,8 @@
   "description": "Nvidia GPU Metrics based on the prometheus metrics from github.com/utkuozdemir/nvidia_gpu_exporter",
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "gnetId": 14574,
   "graphTooltip": 0,
-  "id": null,
+  "id": 18,
   "links": [],
   "panels": [
     {
@@ -90,7 +40,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           },
@@ -123,7 +73,7 @@
         "textMode": "name",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -168,7 +118,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           },
@@ -201,7 +151,7 @@
         "textMode": "value",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -237,7 +187,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "#EAB839",
@@ -276,7 +226,7 @@
         "sizing": "auto",
         "text": {}
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -312,7 +262,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "#EAB839",
@@ -351,7 +301,7 @@
         "sizing": "auto",
         "text": {}
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -387,7 +337,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "#EAB839",
@@ -426,7 +376,7 @@
         "sizing": "auto",
         "text": {}
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -462,7 +412,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "#EAB839",
@@ -501,7 +451,7 @@
         "sizing": "auto",
         "text": {}
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -553,6 +503,7 @@
               "type": "linear"
             },
             "showPoints": "never",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -570,7 +521,7 @@
             "steps": [
               {
                 "color": "transparent",
-                "value": null
+                "value": 0
               },
               {
                 "color": "orange",
@@ -601,11 +552,12 @@
           "showLegend": false
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.1.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -640,7 +592,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           },
@@ -673,7 +625,7 @@
         "textMode": "name",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -709,7 +661,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           },
@@ -742,7 +694,7 @@
         "textMode": "name",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -790,7 +742,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           },
@@ -807,6 +759,12 @@
       "id": 32,
       "options": {
         "displayMode": "gradient",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
         "maxVizHeight": 300,
         "minVizHeight": 16,
         "minVizWidth": 8,
@@ -824,7 +782,7 @@
         "text": {},
         "valueMode": "color"
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -933,7 +891,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "#EAB839",
@@ -972,7 +930,7 @@
         "sizing": "auto",
         "text": {}
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1008,7 +966,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "#EAB839",
@@ -1047,7 +1005,7 @@
         "sizing": "auto",
         "text": {}
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1083,7 +1041,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "#EAB839",
@@ -1122,7 +1080,7 @@
         "sizing": "auto",
         "text": {}
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1158,7 +1116,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "#EAB839",
@@ -1197,7 +1155,7 @@
         "sizing": "auto",
         "text": {}
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1249,6 +1207,7 @@
               "type": "linear"
             },
             "showPoints": "never",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -1266,7 +1225,7 @@
             "steps": [
               {
                 "color": "transparent",
-                "value": null
+                "value": 0
               },
               {
                 "color": "orange",
@@ -1297,11 +1256,12 @@
           "showLegend": false
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.1.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1353,6 +1313,7 @@
               "type": "linear"
             },
             "showPoints": "never",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -1369,7 +1330,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "red",
@@ -1396,11 +1357,12 @@
           "showLegend": false
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.1.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1452,6 +1414,7 @@
               "type": "linear"
             },
             "showPoints": "never",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -1469,7 +1432,7 @@
             "steps": [
               {
                 "color": "transparent",
-                "value": null
+                "value": 0
               },
               {
                 "color": "orange",
@@ -1500,11 +1463,12 @@
           "showLegend": false
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.1.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1556,6 +1520,7 @@
               "type": "linear"
             },
             "showPoints": "never",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -1572,7 +1537,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "red",
@@ -1599,11 +1564,12 @@
           "showLegend": false
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.1.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1655,6 +1621,7 @@
               "type": "linear"
             },
             "showPoints": "never",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -1672,7 +1639,7 @@
             "steps": [
               {
                 "color": "transparent",
-                "value": null
+                "value": 0
               },
               {
                 "color": "orange",
@@ -1703,11 +1670,12 @@
           "showLegend": false
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.1.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1759,6 +1727,7 @@
               "type": "linear"
             },
             "showPoints": "never",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -1775,7 +1744,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "red",
@@ -1802,11 +1771,12 @@
           "showLegend": false
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.1.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1859,6 +1829,7 @@
               "type": "linear"
             },
             "showPoints": "never",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -1875,7 +1846,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "red",
@@ -1902,11 +1873,12 @@
           "showLegend": false
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.1.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1959,6 +1931,7 @@
               "type": "linear"
             },
             "showPoints": "never",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -1975,7 +1948,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "red",
@@ -2002,11 +1975,12 @@
           "showLegend": false
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.1.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -2059,6 +2033,7 @@
               "type": "linear"
             },
             "showPoints": "never",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -2075,7 +2050,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "red",
@@ -2102,11 +2077,12 @@
           "showLegend": false
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.1.0",
+      "pluginVersion": "12.3.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -2125,8 +2101,9 @@
       "type": "timeseries"
     }
   ],
+  "preload": false,
   "refresh": "10s",
-  "schemaVersion": 39,
+  "schemaVersion": 42,
   "tags": [
     "nvidia",
     "nvidia-smi",
@@ -2153,10 +2130,8 @@
           "uid": "${ds_prometheus}"
         },
         "definition": "label_values(nvidia_smi_index, job)",
-        "hide": 0,
         "includeAll": false,
         "label": "Job",
-        "multi": false,
         "name": "job",
         "options": [],
         "query": {
@@ -2165,11 +2140,7 @@
         },
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "type": "query"
       },
       {
         "current": {},
@@ -2178,10 +2149,8 @@
           "uid": "${ds_prometheus}"
         },
         "definition": "label_values(nvidia_smi_index{job=\"$job\"},instance)",
-        "hide": 0,
         "includeAll": false,
         "label": "Host",
-        "multi": false,
         "name": "node",
         "options": [],
         "query": {
@@ -2190,11 +2159,7 @@
         },
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "type": "query"
       },
       {
         "current": {},
@@ -2203,10 +2168,8 @@
           "uid": "${ds_prometheus}"
         },
         "definition": "label_values(nvidia_smi_index{instance=\"$node\"},uuid)",
-        "hide": 0,
         "includeAll": false,
         "label": "GPU",
-        "multi": false,
         "name": "gpu",
         "options": [],
         "query": {
@@ -2215,12 +2178,8 @@
         },
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "type": "query"
       }
     ]
   },
@@ -2238,22 +2197,10 @@
       "30m",
       "1h",
       "2h"
-    ],
-    "time_options": [
-      "5m",
-      "15m",
-      "1h",
-      "6h",
-      "12h",
-      "24h",
-      "2d",
-      "7d",
-      "30d"
     ]
   },
   "timezone": "browser",
   "title": "Nvidia GPU Metrics",
   "uid": "vlvPlrgnk",
-  "version": 8,
-  "weekStart": ""
+  "version": 1
 }
