@@ -16,6 +16,7 @@
       };
       extensions = with pkgs.vscode-extensions; [
         elijah-potter.harper
+        golang.go
       ];
     };
   };
