@@ -70,7 +70,8 @@ in
         DynamicUser = true;
         ExecStart = lib.escapeShellArgs [
           "${package}/bin/nixos-openweathermap-exporter"
-          "--web.listen-address=${cfg.host}:${toString cfg.port}"
+          "--web.host=${cfg.host}"
+          "--web.port=${toString cfg.port}"
           "--api-key-file=%d/api-key"
           "--coords-file=%d/coords"
           "--language=${cfg.language}"

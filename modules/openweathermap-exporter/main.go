@@ -5,13 +5,14 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math"
+	"net"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
-	"math"
-	"strconv"
 
 	owm "github.com/briandowns/openweathermap"
 	"github.com/prometheus/client_golang/prometheus"
@@ -26,11 +27,11 @@ type exporter struct {
 	interval time.Duration
 	logger   *log.Logger
 
-	mu           sync.RWMutex
-	lastUpdate   time.Time
-	lastAttempt  time.Time
-	lastError    string
-	scrapeOK     bool
+	mu          sync.RWMutex
+	lastUpdate  time.Time
+	lastAttempt time.Time
+	lastError   string
+	scrapeOK    bool
 }
 
 func newExporter(apiKey string, coords *owm.Coordinates, units string, language string, interval time.Duration, client *http.Client, logger *log.Logger) (*exporter, error) {
@@ -122,7 +123,7 @@ func (e *exporter) Collect(ch chan<- prometheus.Metric) {
 
 	now := time.Now()
 	ch <- metric("refresh_timestamp_seconds", "Unix timestamp of the current OpenWeatherMap data.", float64(now.Unix()))
-	
+
 	ch <- metric("latitude_degrees", "Latitude of the queried location in degrees.", e.client.Latitude)
 	ch <- metric("longitude_degrees", "Longitude of the queried location in degrees.", e.client.Longitude)
 	ch <- metric("timezone_offset_seconds", "Timezone offset from UTC in seconds for the queried location.", float64(e.client.TimezoneOffset))
@@ -143,7 +144,7 @@ func (e *exporter) Collect(ch chan<- prometheus.Metric) {
 	ch <- metric("current_uv_index", "Current UV index.", e.client.Current.UVI)
 	ch <- metric("current_rain_depth_meters", "Current one hour rain depth.", e.client.Current.Rain.OneH/1000.0)
 	ch <- metric("current_snow_depth_meters", "Current one hour snow depth.", e.client.Current.Snow.OneH/1000.0)
-	
+
 	for _, hourly := range e.client.Hourly {
 		ch <- forecastMetric("forecast_temperature_celsius", "Forecasted air temperature.", hourly.Temp, forecastHourly, hourly.Dt, now)
 		ch <- forecastMetric("forecast_feels_like_celsius", "Forecasted apparent temperature.", hourly.FeelsLike, forecastHourly, hourly.Dt, now)
@@ -214,7 +215,7 @@ func forecastMetric(name string, help string, value float64, ftype ftype, dt int
 		prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, "", name),
 			help,
-			[]string{"absolute_hours","offset_hours", "forecast_type"},
+			[]string{"absolute_hours", "offset_hours", "forecast_type"},
 			nil,
 		),
 		prometheus.GaugeValue,
@@ -224,7 +225,6 @@ func forecastMetric(name string, help string, value float64, ftype ftype, dt int
 		string(ftype),
 	)
 }
-
 
 func boolFloat(v bool) float64 {
 	if v {
@@ -282,10 +282,10 @@ func readCoords(path string) (*owm.Coordinates, error) {
 	}, nil
 }
 
-
 func main() {
 	var (
-		listenAddress  = flag.String("web.listen-address", "127.0.0.1:9876", "Address to listen on for Prometheus scrapes.")
+		host           = flag.String("host", "127.0.0.1", "Host or IP address to listen on for Prometheus scrapes.")
+		port           = flag.String("port", "9876", "TCP port to listen on for Prometheus scrapes.")
 		apiKeyFile     = flag.String("api-key-file", "", "File containing the OpenWeatherMap API key.")
 		coordsFile     = flag.String("coords-file", "", "File containing the coordinates to query.")
 		language       = flag.String("language", "EN", "Language passed to the OpenWeatherMap client.")
@@ -343,6 +343,7 @@ func main() {
 		_, _ = w.Write([]byte("ok\n"))
 	})
 
-	logger.Printf("listening on %s", *listenAddress)
-	log.Fatal(http.ListenAndServe(*listenAddress, nil))
+	listenAddress := net.JoinHostPort(*host, *port)
+	logger.Printf("listening on %s", listenAddress)
+	log.Fatal(http.ListenAndServe(listenAddress, nil))
 }

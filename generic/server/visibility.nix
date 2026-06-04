@@ -524,6 +524,10 @@
         };
       };
     };
+    influxdb2 = {
+      enable = true;
+      
+    };
   };
   virtualisation.oci-containers.containers = {
     mc-monitor-exporter = {
