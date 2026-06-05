@@ -66,8 +66,8 @@
       group = "root";
       mode = "0400";
     };
-    influxdb-visibility-token-read = lib.mkIf config.services.influxdb2.enable {
-      file = secretsDir + /influxdb-visibility-token-read.age;
+    influxdb-visibility-token = lib.mkIf config.services.influxdb2.enable {
+      file = secretsDir + /influxdb-visibility-token.age;
       owner = "influxdb2";
       group = "grafana";
       mode = "0440";
@@ -584,7 +584,7 @@
           "visibility" = {
             auths = {
               "grafana" = {
-                tokenFile = config.age.secrets.influxdb-visibility-token-read.path;
+                tokenFile = config.age.secrets.influxdb-visibility-token.path;
                 allAccess = true; 
               };
             };

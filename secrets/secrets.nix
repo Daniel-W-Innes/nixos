@@ -114,7 +114,7 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
-  "influxdb-visibility-token-read.age" = {
+  "influxdb-visibility-token.age" = {
     publicKeys = users ++ systems;
     armor = true;
   };
