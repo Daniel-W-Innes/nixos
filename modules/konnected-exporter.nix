@@ -32,12 +32,12 @@ in
     };
 
     eventsURL = lib.mkOption {
-      type = lib.types.uri;
+      type = lib.types.str;
       description = "URL to subscribe to for receiving events.";
     };
 
     dbURL = lib.mkOption {
-      type = lib.types.uri;
+      type = lib.types.str;
       default = "http://localhost:8086";
       description = "URL of the InfluxDB instance to write events to.";
     };
