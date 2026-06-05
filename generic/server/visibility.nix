@@ -583,9 +583,9 @@
         organizations = {
           "visibility" = {
             auths = {
-              "read" = {
+              "grafana" = {
                 tokenFile = config.age.secrets.influxdb-visibility-token-read.path;
-                readPermissions = [ "buckets" "orgs" ];
+                allAccess = true; 
               };
             };
           };
