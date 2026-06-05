@@ -505,6 +505,14 @@
             }
           ];
         }
+        {
+          job_name = "influxdb";
+          static_configs = [
+            {
+              targets = [ "localhost:8086" ];
+            }
+          ];
+        }
       ];
       exporters = {
         exportarr-sonarr = {
