@@ -111,15 +111,28 @@
       };
       provision = {
         enable = true;
-        datasources.settings.datasources = [
-          {
-            name = "Prometheus";
-            type = "prometheus";
-            access = "proxy";
-            url = "http://localhost:9090";
-            isDefault = true;
-          }
-        ];
+        datasources.settings = {
+          prune = true;
+          datasources = [
+            {
+              name = "Prometheus";
+              type = "prometheus";
+              access = "proxy";
+              url = "http://localhost:9090";
+              isDefault = true;
+            }
+            {
+              name = "InfluxDB";
+              type = "influxdb";
+              access = "proxy";
+              url = "http://localhost:8086";
+              database = "default";
+              secureJsonData.token = "$__file{${config.age.secrets.influxdb-visibility-token-read.path}}";
+              jsonData.version = "Flux";
+              jsonData.organization = "visibility";
+            }
+          ];
+        };
         dashboards.settings.providers = [
           {
             name = "node-exporter-full";
