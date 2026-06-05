@@ -117,5 +117,9 @@ in
     inherit (config.services.searx) enable;
     port = 8888;
   };
+  influx = {
+    inherit (config.services.influxdb2) enable;
+    port = 8086;
+  };
 }
 // arrTargetData
