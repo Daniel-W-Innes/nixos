@@ -68,9 +68,9 @@
     };
     influxdb-visibility-token-read = lib.mkIf config.services.influxdb2.enable {
       file = secretsDir + /influxdb-visibility-token-read.age;
-      owner = "root";
-      group = "root";
-      mode = "0400";
+      owner = "influxdb2";
+      group = "grafana";
+      mode = "0440";
     };
     konnected-influxdb-token = lib.mkIf config.services.prometheus.exporters.konnected.enable {
       file = secretsDir + /konnected-influxdb-token.age;
