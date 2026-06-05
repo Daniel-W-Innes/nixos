@@ -38,6 +38,7 @@ type (
 		ESPHomeVersion string
 		ProjestVersion string
 		IPAddress      string
+		debug          bool
 	}
 
 	Ping struct {
@@ -86,7 +87,7 @@ type (
 	}
 )
 
-func newExporter(logger *log.Logger, eventsURL, dbURL, token, org, bucket string) *exporter {
+func newExporter(logger *log.Logger, eventsURL, dbURL, token, org, bucket string, debug bool) *exporter {
 	db := influxdb2.NewClientWithOptions(dbURL, token,
 		influxdb2.DefaultOptions().SetBatchSize(20))
 	return &exporter{
@@ -94,6 +95,7 @@ func newExporter(logger *log.Logger, eventsURL, dbURL, token, org, bucket string
 		clientEvents: sse.NewClient(eventsURL),
 		clientDB:     db,
 		writeAPI:     db.WriteAPI(org, bucket),
+		debug:        debug,
 	}
 }
 
@@ -168,7 +170,9 @@ func (e *exporter) refresh(msg *sse.Event) {
 			e.logger.Printf("Error unmarshalling JSON: %v\n", err)
 			return
 		}
-		e.logger.Printf("Received ping with uptime: %d seconds\n", ping.Uptime)
+		if e.debug {
+			e.logger.Printf("Received ping with uptime: %d seconds\n", ping.Uptime)
+		}
 		e.mu.Lock()
 		defer e.mu.Unlock()
 		e.Uptime = ping.Uptime
@@ -186,7 +190,9 @@ func (e *exporter) refresh(msg *sse.Event) {
 				e.logger.Printf("Error unmarshalling JSON: %v\n", err)
 				return
 			}
-			e.logger.Printf("Received binary state update for %s: %s\n", binaryState.Name, binaryState.CurrentState)
+			if e.debug {
+				e.logger.Printf("Received binary state update for %s: %s\n", binaryState.Name, binaryState.CurrentState)
+			}
 			e.writeAPI.WritePoint(influxdb2.NewPointWithMeasurement(binaryState.Name).AddField("value", binaryState.Value).SetTime(time.Now()))
 		case "light":
 			var lightState LightState
@@ -194,7 +200,9 @@ func (e *exporter) refresh(msg *sse.Event) {
 				e.logger.Printf("Error unmarshalling JSON: %v\n", err)
 				return
 			}
-			e.logger.Printf("Received light state update for %s: %s\n", lightState.Name, lightState.CurrentState)
+			if e.debug {
+				e.logger.Printf("Received light state update for %s: %s\n", lightState.Name, lightState.CurrentState)
+			}
 			e.writeAPI.WritePoint(influxdb2.NewPointWithMeasurement(lightState.Name).AddField("value", lightState.Value).AddField("effect", lightState.Effect).AddField("color_mode", lightState.ColorMode).SetTime(time.Now()))
 		case "sensor":
 			var uptimeState UptimeState
@@ -202,7 +210,9 @@ func (e *exporter) refresh(msg *sse.Event) {
 				e.logger.Printf("Error unmarshalling JSON: %v\n", err)
 				return
 			}
-			e.logger.Printf("Received sensor state update for %s: %f %s\n", uptimeState.Name, uptimeState.Value, uptimeState.Uom)
+			if e.debug {
+				e.logger.Printf("Received sensor state update for %s: %f %s\n", uptimeState.Name, uptimeState.Value, uptimeState.Uom)
+			}
 			if uptimeState.NameID == "sensor.uptime" {
 				e.mu.Lock()
 				defer e.mu.Unlock()
@@ -214,16 +224,22 @@ func (e *exporter) refresh(msg *sse.Event) {
 				e.logger.Printf("Error unmarshalling JSON: %v\n", err)
 				return
 			}
-			e.logger.Printf("Received switch state update for %s: %s\n", switchState.Name, switchState.CurrentState)
+			if e.debug {
+				e.logger.Printf("Received switch state update for %s: %s\n", switchState.Name, switchState.CurrentState)
+			}
 		case "button":
-			e.logger.Printf("Received button state update for %s\n", state.Name)
+			if e.debug {
+				e.logger.Printf("Received button state update for %s\n", state.Name)
+			}
 		case "text_sensor":
 			var textState TextState
 			if err := json.Unmarshal(msg.Data, &textState); err != nil {
 				e.logger.Printf("Error unmarshalling JSON: %v\n", err)
 				return
 			}
-			e.logger.Printf("Received text state update for %s: %s\n", textState.Name, textState.Value)
+			if e.debug {
+				e.logger.Printf("Received text state update for %s: %s\n", textState.Name, textState.Value)
+			}
 			e.mu.Lock()
 			defer e.mu.Unlock()
 			switch parts[1] {
@@ -267,6 +283,7 @@ func main() {
 		dbTokenPath = flag.String("db.token-path", "/run/secrets/influxdb_token", "Path to file containing InfluxDB token.")
 		dbOrg       = flag.String("db.org", "my-org", "InfluxDB organization.")
 		dbBucket    = flag.String("db.bucket", "my-bucket", "InfluxDB bucket.")
+		debug       = flag.Bool("debug", false, "Enable debug logging.")
 	)
 	logger := log.New(os.Stdout, "konnected-exporter: ", log.LstdFlags)
 	flag.Parse()
@@ -282,7 +299,7 @@ func main() {
 	if err != nil {
 		logger.Fatalf("Error reading InfluxDB token: %v", err)
 	}
-	exp := newExporter(logger, *eventsURL, *dbURL, token, *dbOrg, *dbBucket)
+	exp := newExporter(logger, *eventsURL, *dbURL, token, *dbOrg, *dbBucket, *debug)
 
 	ctx := context.Background()
 	go exp.Run(ctx)
