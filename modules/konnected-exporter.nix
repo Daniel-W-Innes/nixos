@@ -74,8 +74,8 @@ in
         DynamicUser = true;
         ExecStart = lib.escapeShellArgs [
           "${package}/bin/nixos-konnected-exporter"
-          "--host=${cfg.host}"
-          "--port=${toString cfg.port}"
+          "--web.host=${cfg.host}"
+          "--web.port=${toString cfg.port}"
           "--events.url=${cfg.eventsURL}"
           "--db.url=${cfg.dbURL}"
           "--db.token-path=%d/db-token"

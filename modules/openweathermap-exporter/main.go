@@ -284,8 +284,8 @@ func readCoords(path string) (*owm.Coordinates, error) {
 
 func main() {
 	var (
-		host           = flag.String("host", "127.0.0.1", "Host or IP address to listen on for Prometheus scrapes.")
-		port           = flag.String("port", "9876", "TCP port to listen on for Prometheus scrapes.")
+		host           = flag.String("web.host", "127.0.0.1", "Host or IP address to listen on for Prometheus scrapes.")
+		port           = flag.String("web.port", "9876", "TCP port to listen on for Prometheus scrapes.")
 		apiKeyFile     = flag.String("api-key-file", "", "File containing the OpenWeatherMap API key.")
 		coordsFile     = flag.String("coords-file", "", "File containing the coordinates to query.")
 		language       = flag.String("language", "EN", "Language passed to the OpenWeatherMap client.")

@@ -260,8 +260,8 @@ func readToken(path string) (string, error) {
 
 func main() {
 	var (
-		host        = flag.String("host", "127.0.0.1", "Host or IP address to listen on for Prometheus scrapes.")
-		port        = flag.String("port", "9923", "TCP port to listen on for Prometheus scrapes.")
+		host        = flag.String("web.host", "127.0.0.1", "Host or IP address to listen on for Prometheus scrapes.")
+		port        = flag.String("web.port", "9923", "TCP port to listen on for Prometheus scrapes.")
 		eventsURL   = flag.String("events.url", "", "URL to subscribe to for receiving events.")
 		dbURL       = flag.String("db.url", "", "InfluxDB URL.")
 		dbTokenPath = flag.String("db.token-path", "/run/secrets/influxdb_token", "Path to file containing InfluxDB token.")
