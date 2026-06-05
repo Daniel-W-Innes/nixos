@@ -56,14 +56,14 @@
     };
     influxdb-admin-password = lib.mkIf config.services.influxdb2.enable {
       file = secretsDir + /influxdb-admin-password.age;
-      owner = "root";
-      group = "root";
+      owner = "influxdb2";
+      group = "influxdb2";
       mode = "0400";
     };
     influxdb-admin-token = lib.mkIf config.services.influxdb2.enable {
       file = secretsDir + /influxdb-admin-token.age;
-      owner = "root";
-      group = "root";
+      owner = "influxdb2";
+      group = "influxdb2";
       mode = "0400";
     };
     influxdb-visibility-token = lib.mkIf config.services.influxdb2.enable {
@@ -74,8 +74,8 @@
     };
     konnected-influxdb-token = lib.mkIf config.services.prometheus.exporters.konnected.enable {
       file = secretsDir + /konnected-influxdb-token.age;
-      owner = "root";
-      group = "root";
+      owner = "influxdb2";
+      group = "influxdb2";
       mode = "0400";
     };
   };
