@@ -247,9 +247,9 @@ func (e *exporter) refresh(msg *sse.Event) {
 				e.DeviceID = textState.Value
 			case "ESPHome Version":
 				e.ESPHomeVersion = textState.Value
-			case "Projest Version":
+			case "Projest version":
 				e.ProjestVersion = textState.Value
-			case "IP Address":
+			case "Ethernet IP Address":
 				e.IPAddress = textState.Value
 			default:
 				e.logger.Printf("Received text state update for unknown sensor: %s\n", textState.Name)
