@@ -54,19 +54,19 @@
       group = "root";
       mode = "0400";
     };
-    influxdb-admin-password = lib.mkIf config.services.influxdb.enable {
+    influxdb-admin-password = lib.mkIf config.services.influxdb2.enable {
       file = secretsDir + /influxdb-admin-password.age;
       owner = "root";
       group = "root";
       mode = "0400";
     };
-    influxdb-admin-token = lib.mkIf config.services.influxdb.enable {
+    influxdb-admin-token = lib.mkIf config.services.influxdb2.enable {
       file = secretsDir + /influxdb-admin-token.age;
       owner = "root";
       group = "root";
       mode = "0400";
     };
-    influxdb-visibility-token-read = lib.mkIf config.services.influxdb.enable {
+    influxdb-visibility-token-read = lib.mkIf config.services.influxdb2.enable {
       file = secretsDir + /influxdb-visibility-token-read.age;
       owner = "root";
       group = "root";
