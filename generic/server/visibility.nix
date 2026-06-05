@@ -127,7 +127,7 @@
               access = "proxy";
               url = "http://localhost:8086";
               database = "default";
-              secureJsonData.token = "$__file{${config.age.secrets.influxdb-visibility-token-read.path}}";
+              secureJsonData.token = "$__file{${config.age.secrets.influxdb-visibility-token.path}}";
               jsonData.version = "Flux";
               jsonData.organization = "visibility";
             }
