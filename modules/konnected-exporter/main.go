@@ -26,7 +26,7 @@ type (
 	exporter struct {
 		clientEvents   *sse.Client
 		clientDB       influxdb2.Client
-		writeAPI       api.WriteAPI
+		writeAPI       api.WriteAPIBlocking
 		logger         *log.Logger
 		mu             sync.RWMutex
 		lastUpdate     time.Time
@@ -88,13 +88,12 @@ type (
 )
 
 func newExporter(logger *log.Logger, eventsURL, dbURL, token, org, bucket string, debug bool) *exporter {
-	db := influxdb2.NewClientWithOptions(dbURL, token,
-		influxdb2.DefaultOptions().SetBatchSize(20))
+	db := influxdb2.NewClient(dbURL, token)
 	return &exporter{
 		logger:       logger,
 		clientEvents: sse.NewClient(eventsURL),
 		clientDB:     db,
-		writeAPI:     db.WriteAPI(org, bucket),
+		writeAPI:     db.WriteAPIBlocking(org, bucket),
 		debug:        debug,
 	}
 }
@@ -159,10 +158,12 @@ func (e *exporter) Collect(ch chan<- prometheus.Metric) {
 }
 
 func (e *exporter) Run(ctx context.Context) {
-	e.clientEvents.SubscribeWithContext(ctx, "", e.refresh)
+	e.clientEvents.SubscribeWithContext(ctx, "", func(msg *sse.Event) {
+		e.refresh(ctx, msg)
+	})
 }
 
-func (e *exporter) refresh(msg *sse.Event) {
+func (e *exporter) refresh(ctx context.Context, msg *sse.Event) {
 	switch string(msg.Event) {
 	case "ping":
 		var ping Ping
@@ -193,7 +194,7 @@ func (e *exporter) refresh(msg *sse.Event) {
 			if e.debug {
 				e.logger.Printf("Received binary state update for %s: %s\n", binaryState.Name, binaryState.CurrentState)
 			}
-			e.writeAPI.WritePoint(influxdb2.NewPointWithMeasurement(binaryState.Name).AddField("value", binaryState.Value).SetTime(time.Now()))
+			e.writeAPI.WritePoint(ctx, influxdb2.NewPointWithMeasurement(binaryState.Name).AddField("value", binaryState.Value).SetTime(time.Now()))
 		case "light":
 			var lightState LightState
 			if err := json.Unmarshal(msg.Data, &lightState); err != nil {
@@ -203,7 +204,7 @@ func (e *exporter) refresh(msg *sse.Event) {
 			if e.debug {
 				e.logger.Printf("Received light state update for %s: %s\n", lightState.Name, lightState.CurrentState)
 			}
-			e.writeAPI.WritePoint(influxdb2.NewPointWithMeasurement(lightState.Name).AddField("value", lightState.Value).AddField("effect", lightState.Effect).AddField("color_mode", lightState.ColorMode).SetTime(time.Now()))
+			e.writeAPI.WritePoint(ctx, influxdb2.NewPointWithMeasurement(lightState.Name).AddField("value", lightState.Value).AddField("effect", lightState.Effect).AddField("color_mode", lightState.ColorMode).SetTime(time.Now()))
 		case "sensor":
 			var uptimeState UptimeState
 			if err := json.Unmarshal(msg.Data, &uptimeState); err != nil {
