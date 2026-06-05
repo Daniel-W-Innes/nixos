@@ -1,4 +1,4 @@
-module github.com/daniel-w-innes/konnected-exporter
+module github.com/daniel-w-innes/nixos-konnected-exporter
 
 go 1.25.9
 
