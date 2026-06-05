@@ -61,13 +61,12 @@ func (e *exporter) Run() {
 
 func (e *exporter) refresh() {
 	e.mu.Lock()
+	defer e.mu.Unlock()
 	e.lastAttempt = time.Now()
 
 	if err := e.client.OneCallByCoordinates(e.coords); err != nil {
-		e.mu.Lock()
 		e.scrapeOK = false
 		e.lastError = err.Error()
-		e.mu.Unlock()
 		e.logger.Printf("refresh failed: %v", err)
 		return
 	}
@@ -75,7 +74,6 @@ func (e *exporter) refresh() {
 	e.lastUpdate = time.Now()
 	e.scrapeOK = true
 	e.lastError = ""
-	e.mu.Unlock()
 }
 
 func (e *exporter) Describe(ch chan<- *prometheus.Desc) {
