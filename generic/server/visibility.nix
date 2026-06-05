@@ -585,7 +585,7 @@
             auths = {
               "read" = {
                 tokenFile = config.age.secrets.influxdb-visibility-token-read.path;
-                readPermissions = [ "buckets" ];
+                readPermissions = [ "buckets" "orgs" ];
               };
             };
           };
