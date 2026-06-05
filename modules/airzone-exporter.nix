@@ -67,8 +67,8 @@ in
         DynamicUser = true;
         ExecStart = lib.escapeShellArgs [
           "${package}/bin/nixos-airzone-exporter"
-          "--host=${cfg.host}"
-          "--port=${toString cfg.port}"
+          "--web.host=${cfg.host}"
+          "--web.port=${toString cfg.port}"
           "--email=${cfg.email}"
           "--password-file=%d/password"
           "--base-url=${cfg.baseURL}"

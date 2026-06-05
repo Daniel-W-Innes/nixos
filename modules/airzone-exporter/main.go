@@ -169,8 +169,8 @@ type exporter struct {
 
 func main() {
 	var (
-		host           = flag.String("host", "127.0.0.1", "Host or IP address to listen on for Prometheus scrapes.")
-		port           = flag.String("port", "9922", "TCP port to listen on for Prometheus scrapes.")
+		host           = flag.String("web.host", "127.0.0.1", "Host or IP address to listen on for Prometheus scrapes.")
+		port           = flag.String("web.port", "9922", "TCP port to listen on for Prometheus scrapes.")
 		email          = flag.String("email", "", "Airzone account email.")
 		passwordFile   = flag.String("password-file", "", "File containing the Airzone account password.")
 		baseURL        = flag.String("base-url", defaultBaseURL, "Airzone API base URL.")
