@@ -484,6 +484,14 @@
             }
           ];
         }
+        {
+          job_name = "konnected";
+          static_configs = [
+            {
+              targets = [ "localhost:9877" ];
+            }
+          ];
+        }
       ];
       exporters = {
         exportarr-sonarr = {
