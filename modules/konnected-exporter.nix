@@ -19,7 +19,6 @@ in
   options.services.prometheus.exporters.konnected = {
     enable = lib.mkEnableOption "Konnected Prometheus exporter";
 
-
     host = lib.mkOption {
       type = lib.types.str;
       default = "127.0.0.1";
@@ -33,12 +32,13 @@ in
     };
 
     eventsURL = lib.mkOption {
-      type = lib.types.str;
+      type = lib.types.uri;
       description = "URL to subscribe to for receiving events.";
     };
 
     dbURL = lib.mkOption {
-      type = lib.types.str;
+      type = lib.types.uri;
+      default = "http://localhost:8086";
       description = "URL of the InfluxDB instance to write events to.";
     };
 
@@ -56,6 +56,12 @@ in
     dbBucket = lib.mkOption {
       type = lib.types.str;
       description = "InfluxDB bucket.";
+    };
+
+    setupDB = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Whether to set up the InfluxDB database and initial user.";
     };
   };
   config = lib.mkIf cfg.enable {
@@ -95,5 +101,16 @@ in
         SystemCallArchitectures = "native";
       };
     };
+    services.influxdb2.provision.organizations.${cfg.dbOrg} =
+      lib.mkIf (cfg.setupDB && config.services.influxdb2.enable)
+        {
+          buckets.${cfg.dbBucket} = { };
+          auths = {
+            "konnected-writer" = {
+              tokenFile = cfg.dbTokenPath;
+              writeBuckets = [ cfg.dbBucket ];
+            };
+          };
+        };
   };
 }

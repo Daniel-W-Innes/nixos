@@ -54,6 +54,30 @@
       group = "root";
       mode = "0400";
     };
+    influxdb-admin-password = lib.mkIf config.services.influxdb.enable {
+      file = secretsDir + /influxdb-admin-password.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
+    influxdb-admin-token = lib.mkIf config.services.influxdb.enable {
+      file = secretsDir + /influxdb-admin-token.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
+    influxdb-visibility-token-read = lib.mkIf config.services.influxdb.enable {
+      file = secretsDir + /influxdb-visibility-token-read.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
+    konnected-influxdb-token = lib.mkIf config.services.prometheus.exporters.konnected.enable {
+      file = secretsDir + /konnected-influxdb-token.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
   };
 
   environment.etc = {
@@ -522,11 +546,38 @@
             }
           ];
         };
+        konnected = {
+          enable = true;
+          eventsURL = "http://alarm.lc.brotherwolf.ca/events";
+          dbOrg = "visibility";
+          dbBucket = "konnected";
+          dbTokenPath = config.age.secrets.konnected-influxdb-token.path;
+        };
       };
     };
     influxdb2 = {
       enable = true;
-      
+      provision = {
+        enable = true;
+        organizations = {
+          "visibility" = {
+            auths = {
+              "read" = {
+                tokenFile = config.age.secrets.influxdb-visibility-token-read.path;
+                readPermissions = [ "buckets" ];
+              };
+            };
+          };
+        };
+        initialSetup = {
+          bucket = "default";
+          organization = "main";
+          passwordFile = config.age.secrets.influxdb-admin-password.path;
+          retention = 0;
+          username = "admin";
+          tokenFile = config.age.secrets.influxdb-admin-token.path;
+        };
+      };
     };
   };
   virtualisation.oci-containers.containers = {

@@ -106,4 +106,20 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "influxdb-admin-password.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
+  "influxdb-admin-token.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
+  "influxdb-visibility-token-read.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
+  "konnected-influxdb-token.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
