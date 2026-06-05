@@ -12,7 +12,7 @@ let
     pname = "konnected-exporter";
     version = "0.1.0";
     src = ./konnected-exporter;
-    vendorHash = lib.fakeHash;
+    vendorHash = "sha256-tgCJavFf3HIyDHk5/SHql7EHy2Pc/RDVOAGys9hS9Kk=";
   };
 in
 {
