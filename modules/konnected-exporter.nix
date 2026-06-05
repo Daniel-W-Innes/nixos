@@ -63,6 +63,12 @@ in
       default = true;
       description = "Whether to set up the InfluxDB database and initial user.";
     };
+
+    debug = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable debug logging in the exporter.";
+    };
   };
   config = lib.mkIf cfg.enable {
     systemd.services.prometheus-konnected-exporter = {
@@ -81,6 +87,7 @@ in
           "--db.token-path=%d/db-token"
           "--db.org=${cfg.dbOrg}"
           "--db.bucket=${cfg.dbBucket}"
+          (lib.optionalString cfg.debug "--debug")
         ];
         LoadCredential = [
           "db-token:${cfg.dbTokenPath}"
