@@ -192,10 +192,10 @@ func (e *exporter) refresh(ctx context.Context, msg *sse.Event) {
 				return
 			}
 			if e.debug {
-				e.logger.Printf("Received binary state update for %s: %s\n", binaryState.Name, binaryState.CurrentState)
+				e.logger.Printf("Received binary state update for %q: %q\n", binaryState.Name, binaryState.CurrentState)
 			}
 			if err := e.writeAPI.WritePoint(ctx, influxdb2.NewPointWithMeasurement(binaryState.Name).AddField("value", binaryState.Value).SetTime(time.Now())); err != nil {
-				e.logger.Printf("Error writing point to InfluxDB: %v, name: %s, value: %t\n", err, binaryState.Name, binaryState.Value)
+				e.logger.Printf("Error writing point to InfluxDB: %v, name: %q, value: %t\n", err, binaryState.Name, binaryState.Value)
 			}
 		case "light":
 			var lightState LightState
@@ -204,10 +204,10 @@ func (e *exporter) refresh(ctx context.Context, msg *sse.Event) {
 				return
 			}
 			if e.debug {
-				e.logger.Printf("Received light state update for %s: %s\n", lightState.Name, lightState.CurrentState)
+				e.logger.Printf("Received light state update for %q: %q\n", lightState.Name, lightState.CurrentState)
 			}
 			if err := e.writeAPI.WritePoint(ctx, influxdb2.NewPointWithMeasurement(lightState.Name).AddField("value", lightState.Value).AddField("effect", lightState.Effect).AddField("color_mode", lightState.ColorMode).SetTime(time.Now())); err != nil {
-				e.logger.Printf("Error writing point to InfluxDB: %v, name: %s, value: %s\n", err, lightState.Name, lightState.Value)
+				e.logger.Printf("Error writing point to InfluxDB: %v, name: %q, value: %q\n", err, lightState.Name, lightState.Value)
 			}
 		case "sensor":
 			var uptimeState UptimeState
@@ -216,7 +216,7 @@ func (e *exporter) refresh(ctx context.Context, msg *sse.Event) {
 				return
 			}
 			if e.debug {
-				e.logger.Printf("Received sensor state update for %s: %f %s\n", uptimeState.Name, uptimeState.Value, uptimeState.Uom)
+				e.logger.Printf("Received sensor state update for %q: %f %q\n", uptimeState.Name, uptimeState.Value, uptimeState.Uom)
 			}
 			if uptimeState.NameID == "sensor.uptime" {
 				e.mu.Lock()
@@ -230,11 +230,11 @@ func (e *exporter) refresh(ctx context.Context, msg *sse.Event) {
 				return
 			}
 			if e.debug {
-				e.logger.Printf("Received switch state update for %s: %s\n", switchState.Name, switchState.CurrentState)
+				e.logger.Printf("Received switch state update for %q: %q\n", switchState.Name, switchState.CurrentState)
 			}
 		case "button":
 			if e.debug {
-				e.logger.Printf("Received button state update for %s\n", state.Name)
+				e.logger.Printf("Received button state update for %q\n", state.Name)
 			}
 		case "text_sensor":
 			var textState TextState
@@ -243,7 +243,7 @@ func (e *exporter) refresh(ctx context.Context, msg *sse.Event) {
 				return
 			}
 			if e.debug {
-				e.logger.Printf("Received text state update for %s: %s\n", textState.Name, textState.Value)
+				e.logger.Printf("Received text state update for %q: %q\n", textState.Name, textState.Value)
 			}
 			e.mu.Lock()
 			defer e.mu.Unlock()
@@ -257,10 +257,10 @@ func (e *exporter) refresh(ctx context.Context, msg *sse.Event) {
 			case "Ethernet IP Address":
 				e.IPAddress = textState.Value
 			default:
-				e.logger.Printf("Received text state update for unknown sensor: %s\n", textState.Name)
+				e.logger.Printf("Received text state update for unknown sensor: %q\n", textState.Name)
 			}
 		default:
-			e.logger.Printf("Received state update for unknown entity type: %s\n", state.NameID)
+			e.logger.Printf("Received state update for unknown entity type: %q\n", state.NameID)
 		}
 	}
 }
