@@ -24,6 +24,7 @@ const namespace = "konnected"
 
 type (
 	exporter struct {
+		debug          bool
 		clientEvents   *sse.Client
 		clientDB       influxdb2.Client
 		writeAPI       api.WriteAPIBlocking
@@ -31,14 +32,18 @@ type (
 		mu             sync.RWMutex
 		lastUpdate     time.Time
 		lastAttempt    time.Time
-		lastError      string
 		scrapeOK       bool
 		Uptime         int
 		DeviceID       string
 		ESPHomeVersion string
 		ProjectVersion string
 		IPAddress      string
-		debug          bool
+		LastState      map[string]point
+	}
+
+	point struct {
+		value any
+		time  time.Time
 	}
 
 	Ping struct {
@@ -155,114 +160,205 @@ func (e *exporter) Collect(ch chan<- prometheus.Metric) {
 		float64(1), // Dummy value for string metric
 		e.IPAddress,
 	)
+	ch <- prometheus.MustNewConstMetric(
+		prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "last_update_timestamp"),
+			"Timestamp of the last successful update",
+			nil, nil,
+		),
+		prometheus.GaugeValue,
+		float64(e.lastUpdate.Unix()),
+	)
+	ch <- prometheus.MustNewConstMetric(
+		prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "last_attempt_timestamp"),
+			"Timestamp of the last update attempt",
+			nil, nil,
+		),
+		prometheus.GaugeValue,
+		float64(e.lastAttempt.Unix()),
+	)
+	ch <- prometheus.MustNewConstMetric(
+		prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "scrape_ok"),
+			"Whether the last scrape was successful",
+			nil, nil,
+		),
+		prometheus.GaugeValue,
+		func() float64 {
+			if e.scrapeOK {
+				return 1
+			}
+			return 0
+		}(),
+	)
 }
 
 func (e *exporter) Run(ctx context.Context) {
 	e.clientEvents.SubscribeWithContext(ctx, "", func(msg *sse.Event) {
-		e.refresh(ctx, msg)
+		 err := e.refresh(ctx, msg)
+			e.mu.Lock()
+			defer e.mu.Unlock()
+			e.lastAttempt = time.Now()
+		 if err != nil {
+			e.scrapeOK = false
+			e.logger.Printf("Error processing event: %v\n", err)
+		} else {
+			e.lastError = ""
+			e.scrapeOK = true
+			e.lastUpdate = time.Now()
+		}
 	})
 }
 
-func (e *exporter) refresh(ctx context.Context, msg *sse.Event) {
+
+func (e *exporter) refresh(ctx context.Context, msg *sse.Event) error {
 	switch string(msg.Event) {
 	case "ping":
-		var ping Ping
-		if err := json.Unmarshal(msg.Data, &ping); err != nil {
-			e.logger.Printf("Error unmarshalling JSON: %v\n", err)
-			return
+		if err := e.ping(msg); err != nil {
+			return fmt.Errorf("error handling ping event: %w", err)
 		}
-		if e.debug {
-			e.logger.Printf("Received ping with uptime: %d seconds\n", ping.Uptime)
-		}
-		e.mu.Lock()
-		defer e.mu.Unlock()
-		e.Uptime = ping.Uptime
 	case "state":
 		var state State
 		if err := json.Unmarshal(msg.Data, &state); err != nil {
-			e.logger.Printf("Error unmarshalling JSON: %v\n", err)
-			return
+			return fmt.Errorf("error unmarshalling JSON: %w", err)
 		}
 		parts := strings.Split(state.NameID, "/")
 		name := parts[len(parts)-1]
 		switch parts[0] {
 		case "binary_sensor":
-			var binaryState BinaryState
-			if err := json.Unmarshal(msg.Data, &binaryState); err != nil {
-				e.logger.Printf("Error unmarshalling JSON: %v\n", err)
-				return
-			}
-			if e.debug {
-				e.logger.Printf("Received binary state update for %q: %q\n", name, binaryState.CurrentState)
-			}
-			if err := e.writeAPI.WritePoint(ctx, influxdb2.NewPointWithMeasurement(name).AddField("value", binaryState.Value).SetTime(time.Now())); err != nil {
-				e.logger.Printf("Error writing point to InfluxDB: %v, name: %q, value: %t\n", err, name, binaryState.Value)
+			if err := e.binary_sensor(msg); err != nil {
+				return fmt.Errorf("error handling binary_sensor event: %w", err)
 			}
 		case "light":
-			var lightState LightState
-			if err := json.Unmarshal(msg.Data, &lightState); err != nil {
-				e.logger.Printf("Error unmarshalling JSON: %v\n", err)
-				return
-			}
-			if e.debug {
-				e.logger.Printf("Received light state update for %q: %q\n", name, lightState.CurrentState)
-			}
-			if err := e.writeAPI.WritePoint(ctx, influxdb2.NewPointWithMeasurement(name).AddField("value", lightState.Value).AddField("effect", lightState.Effect).AddField("color_mode", lightState.ColorMode).SetTime(time.Now())); err != nil {
-				e.logger.Printf("Error writing point to InfluxDB: %v, name: %q, value: %q\n", err, name, lightState.Value)
+			if err := e.light(msg); err != nil {
+				return fmt.Errorf("error handling light event: %w", err)
 			}
 		case "sensor":
-			var uptimeState UptimeState
-			if err := json.Unmarshal(msg.Data, &uptimeState); err != nil {
-				e.logger.Printf("Error unmarshalling JSON: %v\n", err)
-				return
-			}
-			if e.debug {
-				e.logger.Printf("Received sensor state update for %q: %f %q\n", name, uptimeState.Value, uptimeState.Uom)
-			}
-			if uptimeState.NameID == "sensor.uptime" {
-				e.mu.Lock()
-				defer e.mu.Unlock()
-				e.Uptime = int(uptimeState.Value)
+			if err := e.sensor(msg); err != nil {
+				return fmt.Errorf("error handling sensor event: %w", err)
 			}
 		case "switch":
-			var switchState SwitchState
-			if err := json.Unmarshal(msg.Data, &switchState); err != nil {
-				e.logger.Printf("Error unmarshalling JSON: %v\n", err)
-				return
-			}
-			if e.debug {
-				e.logger.Printf("Received switch state update for %q: %q\n", name, switchState.CurrentState)
+			if err := e.switch(msg); err != nil {
+				return fmt.Errorf("error handling switch event: %w", err)
 			}
 		case "button":
-			if e.debug {
-				e.logger.Printf("Received button state update for %q\n", name)
+			if err := e.button(msg); err != nil {
+				return fmt.Errorf("error handling button event: %w", err)
 			}
 		case "text_sensor":
-			var textState TextState
-			if err := json.Unmarshal(msg.Data, &textState); err != nil {
-				e.logger.Printf("Error unmarshalling JSON: %v\n", err)
-				return
-			}
-			if e.debug {
-				e.logger.Printf("Received text state update for %q: %q\n", name, textState.Value)
-			}
-			e.mu.Lock()
-			defer e.mu.Unlock()
-			switch strings.ToLower(name) {
-			case "device id":
-				e.DeviceID = textState.Value
-			case "esphome version":
-				e.ESPHomeVersion = textState.Value
-			case "project version":
-				e.ProjectVersion = textState.Value
-			case "ethernet ip address":
-				e.IPAddress = textState.Value
-			default:
-				e.logger.Printf("Received text state update for unknown sensor: %q\n", name)
+			if err := e.text_sensor(msg); err != nil {
+				return fmt.Errorf("error handling text_sensor event: %w", err)
 			}
 		default:
-			e.logger.Printf("Received state update for unknown entity type: %q\n", state.NameID)
+			return fmt.Errorf("unknown event type: %q", parts[0])
 		}
+	}
+}
+
+func (e *exporter) ping(msg *sse.Event) error {
+	var ping Ping
+	if err := json.Unmarshal(msg.Data, &ping); err != nil {
+		return fmt.Errorf("error unmarshalling JSON: %w", err)
+	}
+	if e.debug {
+		e.logger.Printf("Received ping with uptime: %d seconds\n", ping.Uptime)
+	}
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	e.Uptime = ping.Uptime
+}
+
+func (e *exporter) binary_sensor(msg *sse.Event) error {
+	var binaryState BinaryState
+	if err := json.Unmarshal(msg.Data, &binaryState); err != nil {
+		return fmt.Errorf("error unmarshalling JSON: %w", err)
+	}
+	if e.debug {
+		e.logger.Printf("Received binary state update for %q: %q\n", name, binaryState.CurrentState)
+	}
+	now := time.Now()
+	if err := e.writeAPI.WritePoint(ctx, influxdb2.NewPointWithMeasurement(name).AddField("value", binaryState.Value).SetTime(now)); err != nil {
+		return fmt.Errorf("error writing point to InfluxDB for %q: %w", name, err)
+	}
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	if e.LastState[binaryState.NameID].value != binaryState.Value {
+		e.LastState[binaryState.NameID] = point{value: binaryState.Value, time: now}
+	}
+}
+
+func (e *exporter) light(msg *sse.Event) error {
+	var lightState LightState
+	if err := json.Unmarshal(msg.Data, &lightState); err != nil {
+		return fmt.Errorf("error unmarshalling JSON: %w", err)
+	}
+	if e.debug {
+		e.logger.Printf("Received light state update for %q: %q\n", name, lightState.CurrentState)
+	}
+	now := time.Now()
+	if err := e.writeAPI.WritePoint(ctx, influxdb2.NewPointWithMeasurement(name).AddField("value", lightState.Value).AddField("effect", lightState.Effect).AddField("color_mode", lightState.ColorMode).SetTime(now)); err != nil {
+		return fmt.Errorf("error writing point to InfluxDB for %q: %w", name, err)
+	}
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	if e.LastState[lightState.NameID].value != lightState.Value {
+		e.LastState[lightState.NameID] = point{value: lightState.Value, time: now}
+	}
+}
+
+func (e *exporter) sensor(msg *sse.Event) error {
+	var uptimeState UptimeState
+	if err := json.Unmarshal(msg.Data, &uptimeState); err != nil {
+		return fmt.Errorf("error unmarshalling JSON: %w", err)
+	}
+	if e.debug {
+		e.logger.Printf("Received sensor state update for %q: %f %q\n", name, uptimeState.Value, uptimeState.Uom)
+	}
+	if uptimeState.NameID == "sensor.uptime" {
+		e.mu.Lock()
+		defer e.mu.Unlock()
+		e.Uptime = int(uptimeState.Value)
+	}
+}
+
+func (e *exporter) switch(msg *sse.Event) error {
+	var switchState SwitchState
+	if err := json.Unmarshal(msg.Data, &switchState); err != nil {
+		return fmt.Errorf("error unmarshalling JSON: %w", err)
+	}
+	if e.debug {
+		e.logger.Printf("Received switch state update for %q: %q\n", name, switchState.CurrentState)
+	}
+}
+
+func (e *exporter) button(msg *sse.Event) error {
+	if e.debug {
+		e.logger.Printf("Received button state update for %q\n", name)
+	}
+}
+
+func (e *exporter) text_sensor(msg *sse.Event) error {
+	var textState TextState
+	if err := json.Unmarshal(msg.Data, &textState); err != nil {
+		return fmt.Errorf("error unmarshalling JSON: %w", err)
+	}
+	if e.debug {
+		e.logger.Printf("Received text state update for %q: %q\n", name, textState.Value)
+	}
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	switch strings.ToLower(name) {
+	case "device id":
+		e.DeviceID = textState.Value
+	case "esphome version":
+		e.ESPHomeVersion = textState.Value
+	case "project version":
+		e.ProjectVersion = textState.Value
+	case "ethernet ip address":
+		e.IPAddress = textState.Value
+	default:
+		return fmt.Errorf("unknown text sensor name: %q", name)
 	}
 }
 
