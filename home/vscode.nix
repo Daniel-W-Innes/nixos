@@ -15,7 +15,7 @@
         "harper.dialect" = "Canadian";
       };
       extensions = with pkgs.vscode-extensions; [
-        elijah-potter.harper
+        # elijah-potter.harper removed for hash mismatch
         golang.go
       ];
     };
