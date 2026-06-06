@@ -36,7 +36,7 @@ type (
 		Uptime         int
 		DeviceID       string
 		ESPHomeVersion string
-		ProjestVersion string
+		ProjectVersion string
 		IPAddress      string
 		debug          bool
 	}
@@ -143,7 +143,7 @@ func (e *exporter) Collect(ch chan<- prometheus.Metric) {
 		),
 		prometheus.GaugeValue,
 		float64(1), // Dummy value for string metric
-		e.ProjestVersion,
+		e.ProjectVersion,
 	)
 	ch <- prometheus.MustNewConstMetric(
 		prometheus.NewDesc(
@@ -252,8 +252,8 @@ func (e *exporter) refresh(ctx context.Context, msg *sse.Event) {
 				e.DeviceID = textState.Value
 			case "ESPHome Version":
 				e.ESPHomeVersion = textState.Value
-			case "Projest version":
-				e.ProjestVersion = textState.Value
+			case "Project version":
+				e.ProjectVersion = textState.Value
 			case "Ethernet IP Address":
 				e.IPAddress = textState.Value
 			default:
