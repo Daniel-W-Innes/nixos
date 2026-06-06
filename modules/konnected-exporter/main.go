@@ -194,7 +194,9 @@ func (e *exporter) refresh(ctx context.Context, msg *sse.Event) {
 			if e.debug {
 				e.logger.Printf("Received binary state update for %s: %s\n", binaryState.Name, binaryState.CurrentState)
 			}
-			e.writeAPI.WritePoint(ctx, influxdb2.NewPointWithMeasurement(binaryState.Name).AddField("value", binaryState.Value).SetTime(time.Now()))
+			if err := e.writeAPI.WritePoint(ctx, influxdb2.NewPointWithMeasurement(binaryState.Name).AddField("value", binaryState.Value).SetTime(time.Now())); err != nil {
+				e.logger.Printf("Error writing point to InfluxDB: %v, name: %s, value: %t\n", err, binaryState.Name, binaryState.Value)
+			}
 		case "light":
 			var lightState LightState
 			if err := json.Unmarshal(msg.Data, &lightState); err != nil {
@@ -204,7 +206,9 @@ func (e *exporter) refresh(ctx context.Context, msg *sse.Event) {
 			if e.debug {
 				e.logger.Printf("Received light state update for %s: %s\n", lightState.Name, lightState.CurrentState)
 			}
-			e.writeAPI.WritePoint(ctx, influxdb2.NewPointWithMeasurement(lightState.Name).AddField("value", lightState.Value).AddField("effect", lightState.Effect).AddField("color_mode", lightState.ColorMode).SetTime(time.Now()))
+			if err := e.writeAPI.WritePoint(ctx, influxdb2.NewPointWithMeasurement(lightState.Name).AddField("value", lightState.Value).AddField("effect", lightState.Effect).AddField("color_mode", lightState.ColorMode).SetTime(time.Now())); err != nil {
+				e.logger.Printf("Error writing point to InfluxDB: %v, name: %s, value: %s\n", err, lightState.Name, lightState.Value)
+			}
 		case "sensor":
 			var uptimeState UptimeState
 			if err := json.Unmarshal(msg.Data, &uptimeState); err != nil {
