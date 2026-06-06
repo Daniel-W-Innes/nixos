@@ -248,14 +248,14 @@ func (e *exporter) refresh(ctx context.Context, msg *sse.Event) {
 			}
 			e.mu.Lock()
 			defer e.mu.Unlock()
-			switch name {
-			case "Device ID":
+			switch strings.ToLower(name) {
+			case "device id":
 				e.DeviceID = textState.Value
-			case "ESPHome Version":
+			case "esphome version":
 				e.ESPHomeVersion = textState.Value
-			case "Project version":
+			case "project version":
 				e.ProjectVersion = textState.Value
-			case "Ethernet IP Address":
+			case "ethernet ip address":
 				e.IPAddress = textState.Value
 			default:
 				e.logger.Printf("Received text state update for unknown sensor: %q\n", name)
