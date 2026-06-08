@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"flag"
+	"fmt"
 	"log"
 	"net"
 	"net/http"
@@ -195,22 +196,22 @@ func (e *exporter) Collect(ch chan<- prometheus.Metric) {
 }
 
 func (e *exporter) Run(ctx context.Context) {
-	e.clientEvents.SubscribeWithContext(ctx, "", func(msg *sse.Event) {
-		 err := e.refresh(ctx, msg)
-			e.mu.Lock()
-			defer e.mu.Unlock()
-			e.lastAttempt = time.Now()
-		 if err != nil {
+	if err := e.clientEvents.SubscribeWithContext(ctx, "", func(msg *sse.Event) {
+		err := e.refresh(ctx, msg)
+		e.mu.Lock()
+		defer e.mu.Unlock()
+		e.lastAttempt = time.Now()
+		if err != nil {
 			e.scrapeOK = false
 			e.logger.Printf("Error processing event: %v\n", err)
 		} else {
-			e.lastError = ""
 			e.scrapeOK = true
 			e.lastUpdate = time.Now()
 		}
-	})
+	}); err != nil {
+		e.logger.Printf("Error subscribing to events: %v\n", err)
+	}
 }
-
 
 func (e *exporter) refresh(ctx context.Context, msg *sse.Event) error {
 	switch string(msg.Event) {
@@ -227,33 +228,34 @@ func (e *exporter) refresh(ctx context.Context, msg *sse.Event) error {
 		name := parts[len(parts)-1]
 		switch parts[0] {
 		case "binary_sensor":
-			if err := e.binary_sensor(msg); err != nil {
+			if err := e.binary_sensor(ctx, name, msg); err != nil {
 				return fmt.Errorf("error handling binary_sensor event: %w", err)
 			}
 		case "light":
-			if err := e.light(msg); err != nil {
+			if err := e.light(ctx, name, msg); err != nil {
 				return fmt.Errorf("error handling light event: %w", err)
 			}
 		case "sensor":
-			if err := e.sensor(msg); err != nil {
+			if err := e.sensor(name, msg); err != nil {
 				return fmt.Errorf("error handling sensor event: %w", err)
 			}
 		case "switch":
-			if err := e.switch(msg); err != nil {
+			if err := e.switch_(name, msg); err != nil {
 				return fmt.Errorf("error handling switch event: %w", err)
 			}
 		case "button":
-			if err := e.button(msg); err != nil {
+			if err := e.button(name); err != nil {
 				return fmt.Errorf("error handling button event: %w", err)
 			}
 		case "text_sensor":
-			if err := e.text_sensor(msg); err != nil {
+			if err := e.text_sensor(name, msg); err != nil {
 				return fmt.Errorf("error handling text_sensor event: %w", err)
 			}
 		default:
 			return fmt.Errorf("unknown event type: %q", parts[0])
 		}
 	}
+	return nil
 }
 
 func (e *exporter) ping(msg *sse.Event) error {
@@ -267,9 +269,10 @@ func (e *exporter) ping(msg *sse.Event) error {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	e.Uptime = ping.Uptime
+	return nil
 }
 
-func (e *exporter) binary_sensor(msg *sse.Event) error {
+func (e *exporter) binary_sensor(ctx context.Context, name string, msg *sse.Event) error {
 	var binaryState BinaryState
 	if err := json.Unmarshal(msg.Data, &binaryState); err != nil {
 		return fmt.Errorf("error unmarshalling JSON: %w", err)
@@ -286,9 +289,10 @@ func (e *exporter) binary_sensor(msg *sse.Event) error {
 	if e.LastState[binaryState.NameID].value != binaryState.Value {
 		e.LastState[binaryState.NameID] = point{value: binaryState.Value, time: now}
 	}
+	return nil
 }
 
-func (e *exporter) light(msg *sse.Event) error {
+func (e *exporter) light(ctx context.Context, name string, msg *sse.Event) error {
 	var lightState LightState
 	if err := json.Unmarshal(msg.Data, &lightState); err != nil {
 		return fmt.Errorf("error unmarshalling JSON: %w", err)
@@ -305,9 +309,10 @@ func (e *exporter) light(msg *sse.Event) error {
 	if e.LastState[lightState.NameID].value != lightState.Value {
 		e.LastState[lightState.NameID] = point{value: lightState.Value, time: now}
 	}
+	return nil
 }
 
-func (e *exporter) sensor(msg *sse.Event) error {
+func (e *exporter) sensor(name string, msg *sse.Event) error {
 	var uptimeState UptimeState
 	if err := json.Unmarshal(msg.Data, &uptimeState); err != nil {
 		return fmt.Errorf("error unmarshalling JSON: %w", err)
@@ -320,9 +325,10 @@ func (e *exporter) sensor(msg *sse.Event) error {
 		defer e.mu.Unlock()
 		e.Uptime = int(uptimeState.Value)
 	}
+	return nil
 }
 
-func (e *exporter) switch(msg *sse.Event) error {
+func (e *exporter) switch_(name string, msg *sse.Event) error {
 	var switchState SwitchState
 	if err := json.Unmarshal(msg.Data, &switchState); err != nil {
 		return fmt.Errorf("error unmarshalling JSON: %w", err)
@@ -330,15 +336,17 @@ func (e *exporter) switch(msg *sse.Event) error {
 	if e.debug {
 		e.logger.Printf("Received switch state update for %q: %q\n", name, switchState.CurrentState)
 	}
+	return nil
 }
 
-func (e *exporter) button(msg *sse.Event) error {
+func (e *exporter) button(name string) error {
 	if e.debug {
 		e.logger.Printf("Received button state update for %q\n", name)
 	}
+	return nil
 }
 
-func (e *exporter) text_sensor(msg *sse.Event) error {
+func (e *exporter) text_sensor(name string, msg *sse.Event) error {
 	var textState TextState
 	if err := json.Unmarshal(msg.Data, &textState); err != nil {
 		return fmt.Errorf("error unmarshalling JSON: %w", err)
@@ -360,6 +368,7 @@ func (e *exporter) text_sensor(msg *sse.Event) error {
 	default:
 		return fmt.Errorf("unknown text sensor name: %q", name)
 	}
+	return nil
 }
 
 func readToken(path string) (string, error) {
