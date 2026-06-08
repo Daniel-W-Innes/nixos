@@ -5,7 +5,6 @@
     enable = true;
     profiles.default = {
       userSettings = {
-        "workbench.colorTheme" = "IntelliJ IDEA Islands Dark";
         "chat.agent.enabled" = false;
         "editor.inlineSuggest.enabled" = true;
         "merge-conflict.autoNavigateNextConflict.enabled" = true;
@@ -17,6 +16,7 @@
       extensions = with pkgs.vscode-extensions; [
         # elijah-potter.harper removed for hash mismatch
         golang.go
+        bbenoist.nix
       ];
     };
   };
