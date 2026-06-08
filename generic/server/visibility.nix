@@ -18,6 +18,12 @@
       group = "grafana";
       mode = "0400";
     };
+    grafana-secret-key = lib.mkIf config.services.grafana.enable {
+      file = secretsDir + /grafana-secret-key.age;
+      owner = "grafana";
+      group = "grafana";
+      mode = "0400";
+    };
     unpoller-password = lib.mkIf config.services.prometheus.exporters.unpoller.enable {
       file = secretsDir + /unpoller-password.age;
       owner = "unpoller-exporter";
@@ -76,6 +82,7 @@
         security = {
           admin_user = "admin";
           admin_password = "$__file{${config.age.secrets.grafana-admin-password.path}}";
+          secret_key = "$__file{${config.age.secrets.grafana-secret-key.path}}";
         };
       };
       provision = {

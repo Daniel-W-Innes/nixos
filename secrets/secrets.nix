@@ -34,6 +34,10 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "grafana-secret-key.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
   "unpoller-password.age" = {
     publicKeys = users ++ systems;
     armor = true;
