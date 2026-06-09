@@ -96,23 +96,23 @@ func (e *exporter) Collect(ch chan<- prometheus.Metric) {
 	)
 	ch <- prometheus.MustNewConstMetric(
 		prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "last_refresh_timestamp_seconds"),
-			"Unix timestamp of the last successful OpenWeatherMap refresh.",
+			prometheus.BuildFQName(namespace, "", "last_refresh_timestamp"),
+			"Unix timestamp in milliseconds of the last successful OpenWeatherMap refresh.",
 			nil,
 			nil,
 		),
 		prometheus.GaugeValue,
-		float64(e.lastUpdate.Unix()),
+		float64(e.lastUpdate.UnixMilli()),
 	)
 	ch <- prometheus.MustNewConstMetric(
 		prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "last_refresh_attempt_timestamp_seconds"),
-			"Unix timestamp of the last attempted OpenWeatherMap refresh.",
+			prometheus.BuildFQName(namespace, "", "last_refresh_attempt_timestamp"),
+			"Unix timestamp in milliseconds of the last attempted OpenWeatherMap refresh.",
 			nil,
 			nil,
 		),
 		prometheus.GaugeValue,
-		float64(e.lastAttempt.Unix()),
+		float64(e.lastAttempt.UnixMilli()),
 	)
 
 	if !e.scrapeOK {
@@ -120,15 +120,15 @@ func (e *exporter) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	now := time.Now()
-	ch <- metric("refresh_timestamp_seconds", "Unix timestamp of the current OpenWeatherMap data.", float64(now.Unix()))
+	ch <- metric("refresh_timestamp", "Unix timestamp in milliseconds of the current OpenWeatherMap data.", float64(now.UnixMilli()))
 
 	ch <- metric("latitude_degrees", "Latitude of the queried location in degrees.", e.client.Latitude)
 	ch <- metric("longitude_degrees", "Longitude of the queried location in degrees.", e.client.Longitude)
 	ch <- metric("timezone_offset_seconds", "Timezone offset from UTC in seconds for the queried location.", float64(e.client.TimezoneOffset))
 
-	ch <- metric("current_observation_timestamp_seconds", "Unix timestamp for the current observation.", float64(e.client.Current.Dt))
-	ch <- metric("current_sunrise_timestamp_seconds", "Unix timestamp of sunrise for the current observation.", float64(e.client.Current.Sunrise))
-	ch <- metric("current_sunset_timestamp_seconds", "Unix timestamp of sunset for the current observation.", float64(e.client.Current.Sunset))
+	ch <- metric("current_observation_timestamp", "Unix timestamp in milliseconds for the current observation.", float64(e.client.Current.Dt*1000))
+	ch <- metric("current_sunrise_timestamp", "Unix timestamp in milliseconds of sunrise for the current observation.", float64(e.client.Current.Sunrise*1000))
+	ch <- metric("current_sunset_timestamp", "Unix timestamp in milliseconds of sunset for the current observation.", float64(e.client.Current.Sunset*1000))
 	ch <- metric("current_temperature_celsius", "Current air temperature.", e.client.Current.Temp)
 	ch <- metric("current_feels_like_celsius", "Current apparent temperature.", e.client.Current.FeelsLike)
 	ch <- metric("current_dew_point_celsius", "Current dew point.", e.client.Current.DewPoint)
@@ -160,10 +160,10 @@ func (e *exporter) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	for _, daily := range e.client.Daily {
-		ch <- forecastMetric("forecast_sunrise_timestamp_seconds", "Forecasted sunrise time as a Unix timestamp.", float64(daily.Sunrise), forecastDaily, daily.Dt, now)
-		ch <- forecastMetric("forecast_sunset_timestamp_seconds", "Forecasted sunset time as a Unix timestamp.", float64(daily.Sunset), forecastDaily, daily.Dt, now)
-		ch <- forecastMetric("forecast_moonrise_timestamp_seconds", "Forecasted moonrise time as a Unix timestamp.", float64(daily.Moonrise), forecastDaily, daily.Dt, now)
-		ch <- forecastMetric("forecast_moonset_timestamp_seconds", "Forecasted moonset time as a Unix timestamp.", float64(daily.Moonset), forecastDaily, daily.Dt, now)
+		ch <- forecastMetric("forecast_sunrise_timestamp", "Forecasted sunrise time as a Unix timestamp in milliseconds.", float64(daily.Sunrise*1000), forecastDaily, daily.Dt, now)
+		ch <- forecastMetric("forecast_sunset_timestamp", "Forecasted sunset time as a Unix timestamp in milliseconds.", float64(daily.Sunset*1000), forecastDaily, daily.Dt, now)
+		ch <- forecastMetric("forecast_moonrise_timestamp", "Forecasted moonrise time as a Unix timestamp in milliseconds.", float64(daily.Moonrise*1000), forecastDaily, daily.Dt, now)
+		ch <- forecastMetric("forecast_moonset_timestamp", "Forecasted moonset time as a Unix timestamp in milliseconds.", float64(daily.Moonset*1000), forecastDaily, daily.Dt, now)
 		ch <- forecastMetric("forecast_moon_phase", "Forecasted moon phase, from 0 to 1, where 0 and 1 correspond to a new moon and 0.5 corresponds to a full moon.", daily.MoonPhase, forecastDaily, daily.Dt, now)
 		ch <- forecastMetric("forecast_temperature_morning_celsius", "Forecasted morning air temperature.", daily.Temp.Morn, forecastDaily, daily.Dt, now)
 		ch <- forecastMetric("forecast_temperature_day_celsius", "Forecasted daytime air temperature.", daily.Temp.Day, forecastDaily, daily.Dt, now)
