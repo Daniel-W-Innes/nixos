@@ -101,6 +101,7 @@ func newExporter(logger *log.Logger, eventsURL, dbURL, token, org, bucket string
 		clientDB:     db,
 		writeAPI:     db.WriteAPIBlocking(org, bucket),
 		debug:        debug,
+		LastState:    make(map[string]point),
 	}
 }
 
