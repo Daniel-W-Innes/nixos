@@ -164,20 +164,20 @@ func (e *exporter) Collect(ch chan<- prometheus.Metric) {
 	ch <- prometheus.MustNewConstMetric(
 		prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, "", "last_update_timestamp"),
-			"Timestamp of the last successful update",
+			"Timestamp in milliseconds of the last successful update",
 			nil, nil,
 		),
 		prometheus.GaugeValue,
-		float64(e.lastUpdate.Unix()),
+		float64(e.lastUpdate.UnixMilli()),
 	)
 	ch <- prometheus.MustNewConstMetric(
 		prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, "", "last_attempt_timestamp"),
-			"Timestamp of the last update attempt",
+			"Timestamp in milliseconds of the last update attempt",
 			nil, nil,
 		),
 		prometheus.GaugeValue,
-		float64(e.lastAttempt.Unix()),
+		float64(e.lastAttempt.UnixMilli()),
 	)
 	ch <- prometheus.MustNewConstMetric(
 		prometheus.NewDesc(
@@ -193,6 +193,19 @@ func (e *exporter) Collect(ch chan<- prometheus.Metric) {
 			return 0
 		}(),
 	)
+	for nameID, state := range e.LastState {
+		ch <- prometheus.MustNewConstMetric(
+			prometheus.NewDesc(
+				prometheus.BuildFQName(namespace, "", "entity_state_timestamp"),
+				"Timestamp in milliseconds of the last state change for the entity",
+				[]string{"name_id", "state"}, nil,
+			),
+			prometheus.GaugeValue,
+			float64(state.time.UnixMilli()),
+			nameID,
+			fmt.Sprintf("%v", state.value),
+		)
+	}
 }
 
 func (e *exporter) Run(ctx context.Context) {
