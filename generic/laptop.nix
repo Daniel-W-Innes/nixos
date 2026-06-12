@@ -3,6 +3,8 @@ _:
 {
   imports = [
     ./min.nix
-    ./wifi.nix
+    ./ssh.nix
+    ./displayManager.nix
+    ./niri.nix
   ];
 }
