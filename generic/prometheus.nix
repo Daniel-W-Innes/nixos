@@ -21,7 +21,7 @@
         openFirewall = true;
         firewallFilter = "-i enp8s0 -p tcp -m tcp --dport 9633";
       };
-      nvidia-gpu = lib.mkIf config.hardware.graphics.enable {
+      nvidia-gpu = lib.mkIf config.hardware.nvidia.nvidiaSettings {
         enable = true;
         port = 9835;
         openFirewall = true;
