@@ -128,13 +128,16 @@
             vpn-confinement.nixosModules.default # TODO: This should be in the server module not here.
           ];
         };
-
         onion = {
           type = "desktop";
           stateVersion = "25.05";
           extraModules = [
             ./generic/zsa.nix
           ];
+        };
+        cucamelon = {
+          type = "laptop";
+          stateVersion = "26.05";
         };
       };
     in

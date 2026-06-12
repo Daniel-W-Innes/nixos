@@ -9,7 +9,9 @@
 }:
 
 {
-  imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
+  imports = [
+    (modulesPath + "/installer/scan/not-detected.nix")
+  ];
 
   boot.initrd.availableKernelModules = [
     "xhci_pci"
@@ -23,31 +25,36 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/dd92f7d5-2cce-4a87-bea3-6c8f9c966ee3";
-    fsType = "ext4";
+    device = "/dev/mapper/cryptroot";
+    fsType = "btrfs";
+    options = [ "subvol=@" ];
   };
 
-  boot.initrd.luks.devices."luks-5b042176-3a76-4ad1-bbc3-6f2a0676e72b".device =
-    "/dev/disk/by-uuid/5b042176-3a76-4ad1-bbc3-6f2a0676e72b";
+  boot.initrd.luks.devices."cryptroot".device =
+    "/dev/disk/by-uuid/76913389-545c-4eed-837b-789124328c18";
+
+  fileSystems."/home" = {
+    device = "/dev/mapper/cryptroot";
+    fsType = "btrfs";
+    options = [ "subvol=@home" ];
+  };
+
+  fileSystems."/nix" = {
+    device = "/dev/mapper/cryptroot";
+    fsType = "btrfs";
+    options = [ "subvol=@nix" ];
+  };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/6EC4-88F3";
+    device = "/dev/disk/by-uuid/6910-DC62";
     fsType = "vfat";
     options = [
-      "fmask=0077"
-      "dmask=0077"
+      "fmask=0022"
+      "dmask=0022"
     ];
   };
 
-  swapDevices = [ { device = "/dev/disk/by-uuid/9ef0bddc-24fe-43ab-aeb2-4b124bc36bae"; } ];
-
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp0s31f6.useDHCP = lib.mkDefault true;
-  # networking.interfaces.wlp1s0.useDHCP = lib.mkDefault true;
+  swapDevices = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
