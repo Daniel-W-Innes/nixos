@@ -10,5 +10,6 @@ _:
     ./prometheus.nix
     ./avahi.nix
     ./smartd.nix
+    ./wifi.nix
   ];
 }
