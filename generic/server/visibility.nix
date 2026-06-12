@@ -219,6 +219,7 @@
           static_configs = [
             {
               targets = [
+                "cucamelon.lc.brotherwolf.ca:9100"
                 "onion.lc.brotherwolf.ca:9100"
                 "localhost:9100"
               ];
@@ -230,6 +231,7 @@
           static_configs = [
             {
               targets = [
+                "cucamelon.lc.brotherwolf.ca:9633"
                 "onion.lc.brotherwolf.ca:9633"
               ];
             }
@@ -240,6 +242,7 @@
           static_configs = [
             {
               targets = [
+                "cucamelon.lc.brotherwolf.ca:9256"
                 "onion.lc.brotherwolf.ca:9256"
                 "localhost:9256"
               ];
@@ -303,6 +306,7 @@
           static_configs = [
             {
               targets = [
+                "cucamelon.lc.brotherwolf.ca"
                 "onion.lc.brotherwolf.ca"
                 "pumpkin.lc.brotherwolf.ca"
               ];
