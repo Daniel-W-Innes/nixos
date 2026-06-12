@@ -1,7 +1,7 @@
 let
   danielAtOnion = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOhOXM61fK+PiqPSD8eZ+cW0ACcl8IeBJO14odVsmVU";
   danielAtMelon = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID8N4zSVA9MvNfdBlloRyFCazPH09qlkyCZ+6xTe2Cce";
-  danielAtCucamelon = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIARzPP4niZBSH5Eg4Rd5WfNbtU02TJ1TvhmO3RBUEfI2";
+  danielAtCucamelon = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGsC8nOkFrvAzgNU/B2LE4ETtioDii+i/P1lV+ksWl6P";
   users = [
     danielAtOnion
     danielAtMelon
