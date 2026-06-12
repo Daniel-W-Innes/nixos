@@ -7,5 +7,7 @@ _:
     ./term.nix
     ./dark.nix
     ./niri.nix
+    ./gui.nix
+    ./vscode.nix
   ];
 }
