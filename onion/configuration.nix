@@ -16,7 +16,6 @@
   hardware = {
     graphics.enable = true;
     nvidia = {
-      enabled = true;
       prime.offload.enable = false;
       modesetting.enable = true;
       powerManagement.enable = true;
