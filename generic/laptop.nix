@@ -1,8 +1,8 @@
 _:
 
 {
-    imports = [
-        ./min.nix
-        ./wifi.nix
-    ];
+  imports = [
+    ./min.nix
+    ./wifi.nix
+  ];
 }
