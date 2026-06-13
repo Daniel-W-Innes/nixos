@@ -17,7 +17,7 @@
         enable = true;
         pkiBundle = "/var/lib/sbctl";
       };
-      loader.systemd-boot.enable = false;
+      loader.systemd-boot.enable = lib.mkForce false;
     })
   ];
   nix.settings.experimental-features = [
