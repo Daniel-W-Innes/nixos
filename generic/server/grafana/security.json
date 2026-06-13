@@ -1,790 +1,627 @@
 {
-  "annotations": [
+  "__inputs": [
     {
-      "kind": "AnnotationQuery",
-      "spec": {
-        "builtIn": true,
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    },
+    {
+      "name": "DS_INFLUXDB",
+      "label": "InfluxDB",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "13.0.1+security-01"
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
-        "query": {
-          "datasource": {
-            "name": "-- Grafana --"
-          },
-          "group": "grafana",
-          "kind": "DataQuery",
-          "spec": {},
-          "version": "v0"
-        }
+        "type": "dashboard"
       }
-    }
-  ],
-  "cursorSync": "Off",
+    ]
+  },
   "editable": true,
-  "elements": {
-    "panel-1": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "P951FEA4DE68E13C5"
-                    },
-                    "group": "influxdb",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "query": "from(bucket: \"konnected\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"Frontdoor\" and\n    r._field == \"value\"\n  )"
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
-              }
-            ],
-            "queryOptions": {},
-            "transformations": []
-          }
-        },
-        "description": "",
-        "id": 1,
-        "links": [],
-        "title": "Frontdoor",
-        "vizConfig": {
-          "group": "stat",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {
-                "color": {
-                  "mode": "thresholds"
-                },
-                "mappings": [
-                  {
-                    "options": {
-                      "match": "false",
-                      "result": {
-                        "color": "green",
-                        "index": 0,
-                        "text": "Closed"
-                      }
-                    },
-                    "type": "special"
-                  },
-                  {
-                    "options": {
-                      "match": "true",
-                      "result": {
-                        "color": "red",
-                        "index": 1,
-                        "text": "Open"
-                      }
-                    },
-                    "type": "special"
-                  }
-                ],
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": 0
-                    }
-                  ]
-                }
-              },
-              "overrides": []
-            },
-            "options": {
-              "colorMode": "value",
-              "graphMode": "area",
-              "justifyMode": "auto",
-              "orientation": "auto",
-              "percentChangeColorMode": "standard",
-              "reduceOptions": {
-                "calcs": [
-                  "lastNotNull"
-                ],
-                "fields": "/^value$/",
-                "values": false
-              },
-              "showPercentChange": false,
-              "textMode": "auto",
-              "wideLayout": true
-            }
-          },
-          "version": "13.0.1+security-01"
-        }
-      }
-    },
-    "panel-2": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "P951FEA4DE68E13C5"
-                    },
-                    "group": "influxdb",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "query": "from(bucket: \"konnected\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"Backdoor\" and\n    r._field == \"value\"\n  )"
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
-              }
-            ],
-            "queryOptions": {},
-            "transformations": []
-          }
-        },
-        "description": "",
-        "id": 2,
-        "links": [],
-        "title": "Backdoor",
-        "vizConfig": {
-          "group": "stat",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {
-                "color": {
-                  "mode": "thresholds"
-                },
-                "mappings": [
-                  {
-                    "options": {
-                      "match": "false",
-                      "result": {
-                        "color": "green",
-                        "index": 0,
-                        "text": "Closed"
-                      }
-                    },
-                    "type": "special"
-                  },
-                  {
-                    "options": {
-                      "match": "true",
-                      "result": {
-                        "color": "red",
-                        "index": 1,
-                        "text": "Open"
-                      }
-                    },
-                    "type": "special"
-                  }
-                ],
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": 0
-                    }
-                  ]
-                }
-              },
-              "overrides": []
-            },
-            "options": {
-              "colorMode": "value",
-              "graphMode": "area",
-              "justifyMode": "auto",
-              "orientation": "auto",
-              "percentChangeColorMode": "standard",
-              "reduceOptions": {
-                "calcs": [
-                  "lastNotNull"
-                ],
-                "fields": "/^value$/",
-                "values": false
-              },
-              "showPercentChange": false,
-              "textMode": "auto",
-              "wideLayout": true
-            }
-          },
-          "version": "13.0.1+security-01"
-        }
-      }
-    },
-    "panel-4": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "P951FEA4DE68E13C5"
-                    },
-                    "group": "influxdb",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "query": "from(bucket: \"konnected\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"Frontdoor\" and\n    r._field == \"value\" and r._value == true\n  )"
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
-              }
-            ],
-            "queryOptions": {},
-            "transformations": []
-          }
-        },
-        "description": "",
-        "id": 4,
-        "links": [],
-        "title": "Frontdoor",
-        "vizConfig": {
-          "group": "table",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {
-                "color": {
-                  "mode": "thresholds"
-                },
-                "custom": {
-                  "align": "auto",
-                  "cellOptions": {
-                    "type": "auto"
-                  },
-                  "footer": {
-                    "reducers": []
-                  },
-                  "inspect": false
-                },
-                "mappings": [
-                  {
-                    "options": {
-                      "match": "false",
-                      "result": {
-                        "color": "green",
-                        "index": 0,
-                        "text": "Closed"
-                      }
-                    },
-                    "type": "special"
-                  },
-                  {
-                    "options": {
-                      "match": "true",
-                      "result": {
-                        "color": "red",
-                        "index": 1,
-                        "text": "Open"
-                      }
-                    },
-                    "type": "special"
-                  }
-                ],
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": 0
-                    }
-                  ]
-                }
-              },
-              "overrides": []
-            },
-            "options": {
-              "cellHeight": "sm",
-              "showHeader": true
-            }
-          },
-          "version": "13.0.1+security-01"
-        }
-      }
-    },
-    "panel-5": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "P951FEA4DE68E13C5"
-                    },
-                    "group": "influxdb",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "query": "from(bucket: \"konnected\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"Backdoor\" and\n    r._field == \"value\" and r._value == true\n  )"
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
-              }
-            ],
-            "queryOptions": {},
-            "transformations": []
-          }
-        },
-        "description": "",
-        "id": 5,
-        "links": [],
-        "title": "Backdoor",
-        "vizConfig": {
-          "group": "table",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {
-                "color": {
-                  "mode": "thresholds"
-                },
-                "custom": {
-                  "align": "auto",
-                  "cellOptions": {
-                    "type": "auto"
-                  },
-                  "footer": {
-                    "reducers": []
-                  },
-                  "inspect": false
-                },
-                "mappings": [
-                  {
-                    "options": {
-                      "match": "false",
-                      "result": {
-                        "color": "green",
-                        "index": 0,
-                        "text": "Closed"
-                      }
-                    },
-                    "type": "special"
-                  },
-                  {
-                    "options": {
-                      "match": "true",
-                      "result": {
-                        "color": "red",
-                        "index": 1,
-                        "text": "Open"
-                      }
-                    },
-                    "type": "special"
-                  }
-                ],
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": 0
-                    }
-                  ]
-                }
-              },
-              "overrides": []
-            },
-            "options": {
-              "cellHeight": "sm",
-              "showHeader": true
-            }
-          },
-          "version": "13.0.1+security-01"
-        }
-      }
-    },
-    "panel-6": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "PBFA97CFB590B2093"
-                    },
-                    "group": "prometheus",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "editorMode": "builder",
-                      "expr": "konnected_scrape_ok",
-                      "legendFormat": "__auto",
-                      "range": true
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
-              }
-            ],
-            "queryOptions": {},
-            "transformations": []
-          }
-        },
-        "description": "",
-        "id": 6,
-        "links": [],
-        "title": "Scrape",
-        "vizConfig": {
-          "group": "stat",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {
-                "color": {
-                  "mode": "thresholds"
-                },
-                "mappings": [
-                  {
-                    "options": {
-                      "0": {
-                        "index": 1,
-                        "text": "Bad"
-                      },
-                      "1": {
-                        "index": 0,
-                        "text": "OK"
-                      }
-                    },
-                    "type": "value"
-                  }
-                ],
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": 0
-                    }
-                  ]
-                }
-              },
-              "overrides": []
-            },
-            "options": {
-              "colorMode": "background",
-              "graphMode": "none",
-              "justifyMode": "auto",
-              "orientation": "auto",
-              "percentChangeColorMode": "standard",
-              "reduceOptions": {
-                "calcs": [
-                  "lastNotNull"
-                ],
-                "fields": "",
-                "values": false
-              },
-              "showPercentChange": false,
-              "textMode": "auto",
-              "wideLayout": true
-            }
-          },
-          "version": "13.0.1+security-01"
-        }
-      }
-    },
-    "panel-7": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "PBFA97CFB590B2093"
-                    },
-                    "group": "prometheus",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "editorMode": "builder",
-                      "expr": "konnected_uptime_seconds",
-                      "legendFormat": "__auto",
-                      "range": true
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
-              }
-            ],
-            "queryOptions": {},
-            "transformations": []
-          }
-        },
-        "description": "",
-        "id": 7,
-        "links": [],
-        "title": "Uptime",
-        "vizConfig": {
-          "group": "stat",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {
-                "color": {
-                  "mode": "palette-classic"
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": 0
-                    }
-                  ]
-                },
-                "unit": "s"
-              },
-              "overrides": []
-            },
-            "options": {
-              "colorMode": "value",
-              "graphMode": "area",
-              "justifyMode": "auto",
-              "orientation": "auto",
-              "percentChangeColorMode": "standard",
-              "reduceOptions": {
-                "calcs": [
-                  "lastNotNull"
-                ],
-                "fields": "",
-                "values": false
-              },
-              "showPercentChange": false,
-              "textMode": "auto",
-              "wideLayout": true
-            }
-          },
-          "version": "13.0.1+security-01"
-        }
-      }
-    },
-    "panel-8": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "PBFA97CFB590B2093"
-                    },
-                    "group": "prometheus",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "editorMode": "builder",
-                      "expr": "konnected_entity_state_timestamp{name_id=~\"binary_sensor/Backdoor|binary_sensor/Frontdoor\"}",
-                      "legendFormat": "[{{name_id}}] {{state}}",
-                      "range": true
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
-              }
-            ],
-            "queryOptions": {},
-            "transformations": []
-          }
-        },
-        "description": "",
-        "id": 8,
-        "links": [],
-        "title": "",
-        "vizConfig": {
-          "group": "stat",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {
-                "color": {
-                  "fixedColor": "blue",
-                  "mode": "continuous-RdYlGr"
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": 0
-                    }
-                  ]
-                },
-                "unit": "dateTimeFromNow"
-              },
-              "overrides": []
-            },
-            "options": {
-              "colorMode": "value",
-              "graphMode": "area",
-              "justifyMode": "auto",
-              "orientation": "auto",
-              "percentChangeColorMode": "standard",
-              "reduceOptions": {
-                "calcs": [
-                  "lastNotNull"
-                ],
-                "fields": "",
-                "values": false
-              },
-              "showPercentChange": false,
-              "textMode": "auto",
-              "wideLayout": true
-            }
-          },
-          "version": "13.0.1+security-01"
-        }
-      }
-    }
-  },
-  "layout": {
-    "kind": "GridLayout",
-    "spec": {
-      "items": [
-        {
-          "kind": "GridLayoutItem",
-          "spec": {
-            "element": {
-              "kind": "ElementReference",
-              "name": "panel-6"
-            },
-            "height": 6,
-            "width": 3,
-            "x": 0,
-            "y": 0
-          }
-        },
-        {
-          "kind": "GridLayoutItem",
-          "spec": {
-            "element": {
-              "kind": "ElementReference",
-              "name": "panel-7"
-            },
-            "height": 6,
-            "width": 3,
-            "x": 3,
-            "y": 0
-          }
-        },
-        {
-          "kind": "GridLayoutItem",
-          "spec": {
-            "element": {
-              "kind": "ElementReference",
-              "name": "panel-8"
-            },
-            "height": 6,
-            "width": 12,
-            "x": 6,
-            "y": 0
-          }
-        },
-        {
-          "kind": "GridLayoutItem",
-          "spec": {
-            "element": {
-              "kind": "ElementReference",
-              "name": "panel-1"
-            },
-            "height": 6,
-            "width": 3,
-            "x": 18,
-            "y": 0
-          }
-        },
-        {
-          "kind": "GridLayoutItem",
-          "spec": {
-            "element": {
-              "kind": "ElementReference",
-              "name": "panel-2"
-            },
-            "height": 6,
-            "width": 3,
-            "x": 21,
-            "y": 0
-          }
-        },
-        {
-          "kind": "GridLayoutItem",
-          "spec": {
-            "element": {
-              "kind": "ElementReference",
-              "name": "panel-4"
-            },
-            "height": 15,
-            "width": 12,
-            "x": 0,
-            "y": 6
-          }
-        },
-        {
-          "kind": "GridLayoutItem",
-          "spec": {
-            "element": {
-              "kind": "ElementReference",
-              "name": "panel-5"
-            },
-            "height": 15,
-            "width": 12,
-            "x": 12,
-            "y": 6
-          }
-        }
-      ]
-    }
-  },
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
   "links": [],
   "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "index": 1,
+                  "text": "Bad"
+                },
+                "1": {
+                  "index": 0,
+                  "text": "OK"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 0,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "13.0.1+security-01",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "builder",
+          "expr": "konnected_scrape_ok",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Scrape",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 3,
+        "y": 0
+      },
+      "id": 7,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "13.0.1+security-01",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "builder",
+          "expr": "konnected_uptime_seconds",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Uptime",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "blue",
+            "mode": "continuous-RdYlGr"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "dateTimeFromNow"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 6,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "13.0.1+security-01",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "builder",
+          "expr": "konnected_entity_state_timestamp{name_id=~\"binary_sensor/Backdoor|binary_sensor/Frontdoor\"}",
+          "legendFormat": "[{{name_id}}] {{state}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "false",
+                "result": {
+                  "color": "green",
+                  "index": 0,
+                  "text": "Closed"
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "match": "true",
+                "result": {
+                  "color": "red",
+                  "index": 1,
+                  "text": "Open"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 18,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^value$/",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "13.0.1+security-01",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "from(bucket: \"konnected\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"Frontdoor\" and\n    r._field == \"value\"\n  )",
+          "refId": "A"
+        }
+      ],
+      "title": "Frontdoor",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "false",
+                "result": {
+                  "color": "green",
+                  "index": 0,
+                  "text": "Closed"
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "match": "true",
+                "result": {
+                  "color": "red",
+                  "index": 1,
+                  "text": "Open"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 21,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^value$/",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "13.0.1+security-01",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "from(bucket: \"konnected\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"Backdoor\" and\n    r._field == \"value\"\n  )",
+          "refId": "A"
+        }
+      ],
+      "title": "Backdoor",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "false",
+                "result": {
+                  "color": "green",
+                  "index": 0,
+                  "text": "Closed"
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "match": "true",
+                "result": {
+                  "color": "red",
+                  "index": 1,
+                  "text": "Open"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 15,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      },
+      "id": 4,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "13.0.1+security-01",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "from(bucket: \"konnected\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"Frontdoor\" and\n    r._field == \"value\" and r._value == true\n  )",
+          "refId": "A"
+        }
+      ],
+      "title": "Frontdoor",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "false",
+                "result": {
+                  "color": "green",
+                  "index": 0,
+                  "text": "Closed"
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "match": "true",
+                "result": {
+                  "color": "red",
+                  "index": 1,
+                  "text": "Open"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 15,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      },
+      "id": 5,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "13.0.1+security-01",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "from(bucket: \"konnected\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"Backdoor\" and\n    r._field == \"value\" and r._value == true\n  )",
+          "refId": "A"
+        }
+      ],
+      "title": "Backdoor",
+      "type": "table"
+    }
+  ],
   "preload": false,
+  "refresh": "auto",
+  "schemaVersion": 42,
   "tags": [],
-  "timeSettings": {
-    "autoRefresh": "auto",
-    "autoRefreshIntervals": [
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
       "5s",
       "10s",
       "30s",
@@ -795,13 +632,11 @@
       "1h",
       "2h",
       "1d"
-    ],
-    "fiscalYearStartMonth": 0,
-    "from": "now-24h",
-    "hideTimepicker": false,
-    "timezone": "browser",
-    "to": "now"
+    ]
   },
+  "timezone": "browser",
   "title": "Security",
-  "variables": []
+  "uid": "adv5bl8",
+  "version": 11,
+  "weekStart": ""
 }
