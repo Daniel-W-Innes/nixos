@@ -147,7 +147,15 @@
             }
           ];
         };
-        dashboards.settings.providers = [ ];
+        dashboards.settings.providers = [
+          {
+            name = "provisioned-dashboards";
+            options = {
+              path = "/etc/grafana";
+              foldersFromFilesStructure = true;
+            };
+          }
+        ];
       };
     };
     prometheus = {
