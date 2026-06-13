@@ -101,10 +101,10 @@
     "grafana/v2/traefik_exporter.json".source = ./grafana/traefik_exporter.json;
     "grafana/provisioning/resources/v2-dashboards.yaml".text = builtins.toJSON {
       apiVersion = 1;
-      resources = [
+      providers = [
         {
           name = "v2-provisioned-dashboards";
-          type = "dashboard";
+          type = "file";
           options.path = "/etc/grafana/v2";
         }
       ];
