@@ -23,7 +23,7 @@
         autoGenerateKeys.enable = true;
         autoEnrollKeys = {
           enable = true;
-          allowUntrusted = true;
+          autoReboot = true;
         };
         pkiBundle = "/var/lib/sbctl";
       };
