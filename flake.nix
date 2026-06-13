@@ -28,6 +28,10 @@
         home-manager.follows = "home-manager";
       };
     };
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v1.0.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
   };
@@ -42,6 +46,7 @@
       nixos-facter-modules,
       pre-commit-hooks,
       vpn-confinement,
+      lanzaboote,
       ...
     }:
     let
@@ -95,6 +100,7 @@
         {
           type,
           stateVersion,
+          secureBoot,
           extraModules ? [ ],
         }:
         nixpkgs.lib.nixosSystem {
@@ -106,6 +112,17 @@
               (./. + "/${name}/configuration.nix")
               (./. + "/generic/${type}.nix")
               (mkHomeManagerModule (./. + "/home/${type}.nix"))
+              ({ pkgs, lib, ... }: lib.mkIf secureBoot {
+                boot.lanzaboote = {
+                  enable = true;
+                  pkiBundle = "/var/lib/sbctl";
+                };
+                environment.systemPackages = [
+                  pkgs.sbctl
+                ];
+              }
+              lib.mkIf secureBoot lanzaboote.nixosModules.lanzaboote
+              )
               {
                 # This value determines the NixOS release from which the default
                 # settings for stateful data, like file locations and database versions
@@ -136,6 +153,7 @@
           ];
         };
         cucamelon = {
+          secureBoot = true;
           type = "laptop";
           stateVersion = "26.05";
         };
