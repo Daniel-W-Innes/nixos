@@ -98,6 +98,7 @@
     "grafana/navidrome_exporter.json".source = ./grafana/navidrome_exporter.json;
     "grafana/exportarr_exporter.json".source = ./grafana/exportarr_exporter.json;
     "grafana/traefik_exporter.json".source = ./grafana/traefik_exporter.json;
+    "grafana/security.json".source = ./grafana/security.json;
   };
   services = {
     grafana = {
@@ -135,72 +136,11 @@
         };
         dashboards.settings.providers = [
           {
-            name = "node-exporter-full";
-            options.path = "/etc/grafana/node_exporter.json";
-          }
-          {
-            name = "SMARTctl-exporter";
-            options.path = "/etc/grafana/SMARTctl_exporter.json";
-          }
-          {
-            name = "unpoller-exporter-network";
-            options.path = "/etc/grafana/unpoller_exporter_network.json";
-          }
-          {
-            name = "unpoller-exporter-uap";
-            options.path = "/etc/grafana/unpoller_exporter_uap.json";
-          }
-          {
-            name = "unpoller-exporter-clients";
-            options.path = "/etc/grafana/unpoller_exporter_clients.json";
-          }
-          {
-            name = "unpoller-exporter-dpi";
-            options.path = "/etc/grafana/unpoller_exporter_dpi.json";
-          }
-          {
-            name = "unpoller-exporter-usw";
-            options.path = "/etc/grafana/unpoller_exporter_usw.json";
-          }
-          {
-            name = "unpoller-exporter-pdu";
-            options.path = "/etc/grafana/unpoller_exporter_pdu.json";
-          }
-          {
-            name = "unpoller-exporter-usg";
-            options.path = "/etc/grafana/unpoller_exporter_usg.json";
-          }
-          {
-            name = "smokeping";
-            options.path = "/etc/grafana/smokeping_exporter.json";
-          }
-          {
-            name = "nvidia-gpu-exporter";
-            options.path = "/etc/grafana/nvidia_gpu_exporter.json";
-          }
-          {
-            name = "iperf3-exporter";
-            options.path = "/etc/grafana/iperf3_exporter.json";
-          }
-          {
-            name = "mc-monitor-exporter";
-            options.path = "/etc/grafana/mc_monitor_exporter.json";
-          }
-          {
-            name = "openweathermap-exporter";
-            options.path = "/etc/grafana/openweathermap_exporter.json";
-          }
-          {
-            name = "navidrome-exporter";
-            options.path = "/etc/grafana/navidrome_exporter.json";
-          }
-          {
-            name = "exportarr-exporter";
-            options.path = "/etc/grafana/exportarr_exporter.json";
-          }
-          {
-            name = "traefik-exporter";
-            options.path = "/etc/grafana/traefik_exporter.json";
+            name = "provisioned-dashboards";
+            options = {
+              path = "/etc/grafana";
+              foldersFromFilesStructure = true;
+            };
           }
         ];
       };
