@@ -81,6 +81,18 @@
   };
 
   environment.etc = {
+    "grafana/v2/security.json".source = ./grafana/security.json;
+    "grafana/provisioning/resources/v2-dashboards.yaml".text = builtins.toJSON {
+      apiVersion = 1;
+      resources = [
+        {
+          name = "v2-provisioned-dashboards";
+          type = "dashboard";
+          options.path = "/etc/grafana/v2";
+        }
+      ];
+    };
+
     "grafana/node_exporter.json".source = ./grafana/node_exporter.json;
     "grafana/SMARTctl_exporter.json".source = ./grafana/SMARTctl_exporter.json;
     "grafana/unpoller_exporter_network.json".source = ./grafana/unpoller_exporter_network.json;
@@ -98,7 +110,6 @@
     "grafana/navidrome_exporter.json".source = ./grafana/navidrome_exporter.json;
     "grafana/exportarr_exporter.json".source = ./grafana/exportarr_exporter.json;
     "grafana/traefik_exporter.json".source = ./grafana/traefik_exporter.json;
-    "grafana/security.json".source = ./grafana/security.json;
   };
   services = {
     grafana = {
@@ -108,6 +119,9 @@
           admin_user = "admin";
           admin_password = "$__file{${config.age.secrets.grafana-admin-password.path}}";
           secret_key = "$__file{${config.age.secrets.grafana-secret-key.path}}";
+        };
+        feature_toggles = {
+          enable = "dashboardScene,nestedProvisioning";
         };
       };
       provision = {
