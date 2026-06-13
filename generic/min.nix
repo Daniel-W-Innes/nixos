@@ -22,7 +22,6 @@
         enable = true;
         pkiBundle = "/var/lib/sbctl";
       };
-      environment.systemPackages = [ pkgs.sbctl ];
       loader.systemd-boot.enable = lib.mkForce false;
     })
   ];
@@ -66,6 +65,6 @@
   };
   users.defaultUserShell = pkgs.zsh;
   environment.shells = with pkgs; [ zsh ];
-  environment.systemPackages = with pkgs; [ git ];
+  environment.systemPackages = with pkgs; [ git sbctl ];
   fonts.packages = with pkgs; [ nerd-fonts.roboto-mono ];
 }
