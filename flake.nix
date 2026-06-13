@@ -112,16 +112,18 @@
               (./. + "/${name}/configuration.nix")
               (./. + "/generic/${type}.nix")
               (mkHomeManagerModule (./. + "/home/${type}.nix"))
-              ({ pkgs, lib, ... }: lib.mkIf secureBoot {
-                boot.lanzaboote = {
-                  enable = true;
-                  pkiBundle = "/var/lib/sbctl";
-                };
-                environment.systemPackages = [
-                  pkgs.sbctl
-                ];
-              }
-              lib.mkIf secureBoot lanzaboote.nixosModules.lanzaboote
+              (
+                { pkgs, lib, ... }:
+                lib.mkIf secureBoot {
+                  imports = [ lanzaboote.nixosModules.lanzaboote ];
+                  boot.lanzaboote = {
+                    enable = true;
+                    pkiBundle = "/var/lib/sbctl";
+                  };
+                  environment.systemPackages = [
+                    pkgs.sbctl
+                  ];
+                }
               )
               {
                 # This value determines the NixOS release from which the default
