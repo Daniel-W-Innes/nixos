@@ -101,12 +101,11 @@
     "grafana/v2/traefik_exporter.json".source = ./grafana/traefik_exporter.json;
     "grafana/provisioning/resources/v2-dashboards.yaml".text = builtins.toJSON {
       apiVersion = 1;
-      providers = [
+      resources = [
         {
           name = "v2-provisioned-dashboards";
-          type = "file";
+          type = "dashboard";
           options.path = "/etc/grafana/v2";
-          options.foldersFromFilesStructure = true; # Explicitly enable folder structure scanning
         }
       ];
     };
@@ -148,6 +147,15 @@
             }
           ];
         };
+        dashboards.settings.providers = [
+          {
+            name = "provisioned-dashboards";
+            options = {
+              path = "/etc/grafana";
+              foldersFromFilesStructure = true;
+            };
+          }
+        ];
       };
     };
     prometheus = {
