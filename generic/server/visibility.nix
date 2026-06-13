@@ -106,6 +106,7 @@
           name = "v2-provisioned-dashboards";
           type = "file";
           options.path = "/etc/grafana/v2";
+          options.foldersFromFilesStructure = true; # Explicitly enable folder structure scanning
         }
       ];
     };
