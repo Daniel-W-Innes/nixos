@@ -20,6 +20,11 @@
     (lib.mkIf secureBoot {
       lanzaboote = {
         enable = true;
+        autoGenerateKeys.enable = true;
+        autoEnrollKeys = {
+          enable = true;
+          allowUntrusted = true;
+        };
         pkiBundle = "/var/lib/sbctl";
       };
       loader.systemd-boot.enable = lib.mkForce false;
