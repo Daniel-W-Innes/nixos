@@ -1,4 +1,9 @@
-{ pkgs, lib, secureBoot, ... }:
+{
+  pkgs,
+  lib,
+  secureBoot,
+  ...
+}:
 
 {
   boot = lib.mkMerge [
@@ -17,6 +22,7 @@
         enable = true;
         pkiBundle = "/var/lib/sbctl";
       };
+      environment.systemPackages = [ pkgs.sbctl ];
       loader.systemd-boot.enable = lib.mkForce false;
     })
   ];
