@@ -1,11 +1,24 @@
-{ pkgs, ... }:
+{ pkgs, lib, secureBoot, ... }:
 
 {
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.loader.systemd-boot = {
-    editor = false;
-    configurationLimit = 10;
-  };
+  boot = lib.mkMerge [
+    {
+      kernelPackages = pkgs.linuxPackages_latest;
+    }
+    (lib.mkIf (!secureBoot) {
+      loader.systemd-boot = {
+        enable = true;
+        editor = false;
+        configurationLimit = 10;
+      };
+    })
+    (lib.mkIf secureBoot {
+      lanzaboote = {
+        enable = true;
+        pkiBundle = "/var/lib/sbctl";
+      };
+    })
+  ];
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"

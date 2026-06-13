@@ -76,15 +76,16 @@
         nixos-facter-modules.nixosModules.facter
         ./modules/airzone-exporter.nix
         ./modules/openweathermap-exporter.nix
-        { _module.args.secretsDir = ./secrets; }
+        home-manager.nixosModules.home-manager
+        nix-index-database.nixosModules.nix-index
+        lanzaboote.nixosModules.lanzaboote
         {
+          _module.args.secretsDir = ./secrets;
+          programs.nix-index-database.comma.enable = true;
           environment.systemPackages = preCommitCheck.enabledPackages ++ [
             pkgs.prek
           ];
         }
-        home-manager.nixosModules.home-manager
-        nix-index-database.nixosModules.nix-index
-        { programs.nix-index-database.comma.enable = true; }
       ];
 
       mkHomeManagerModule = homeFile: {
@@ -100,7 +101,7 @@
         {
           type,
           stateVersion,
-          secureBoot,
+          secureBoot ? false,
           extraModules ? [ ],
         }:
         nixpkgs.lib.nixosSystem {
@@ -112,19 +113,7 @@
               (./. + "/${name}/configuration.nix")
               (./. + "/generic/${type}.nix")
               (mkHomeManagerModule (./. + "/home/${type}.nix"))
-              (
-                { pkgs, lib, ... }:
-                lib.mkIf secureBoot {
-                  imports = [ lanzaboote.nixosModules.lanzaboote ];
-                  boot.lanzaboote = {
-                    enable = true;
-                    pkiBundle = "/var/lib/sbctl";
-                  };
-                  environment.systemPackages = [
-                    pkgs.sbctl
-                  ];
-                }
-              )
+              { _module.args.secureBoot = secureBoot; }
               {
                 # This value determines the NixOS release from which the default
                 # settings for stateful data, like file locations and database versions
