@@ -9,9 +9,12 @@
   };
 
   boot.supportedFilesystems = [ "cifs" ];
-  users.groups.media = { };
+  users.groups.media = {
+    gid = 987;
+  };
   users.users.media = {
     isSystemUser = true;
+    uid = 990;
     group = "media";
   };
 }

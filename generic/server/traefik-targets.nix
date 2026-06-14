@@ -46,6 +46,9 @@ in
   calibre = {
     inherit (config.services.calibre-server) enable host port;
   };
+  bookorbit = {
+    inherit (config.services.bookorbit) enable host port;
+  };
   jellyfin = {
     inherit (config.services.jellyfin) enable;
     # The NixOS jellyfin module does not expose its HTTP port as a configurable option.

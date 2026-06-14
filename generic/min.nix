@@ -70,6 +70,9 @@
   };
   users.defaultUserShell = pkgs.zsh;
   environment.shells = with pkgs; [ zsh ];
-  environment.systemPackages = with pkgs; [ git sbctl ];
+  environment.systemPackages = with pkgs; [
+    git
+    sbctl
+  ];
   fonts.packages = with pkgs; [ nerd-fonts.roboto-mono ];
 }
