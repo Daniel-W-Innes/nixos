@@ -57,9 +57,6 @@ in
   };
 
   config = mkIf cfg.enable {
-
-    virtualisation.docker.enable = true;
-
     systemd.tmpfiles.rules = [
       "d /var/lib/bookorbit/app 0770 ${cfg.user} ${cfg.group} -"
       "d /var/lib/bookorbit/postgres 0770 ${cfg.user} ${cfg.group} -"
