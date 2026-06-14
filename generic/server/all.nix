@@ -9,6 +9,7 @@ _:
     ./dawarich.nix
     # TODO: Fix calibre the SQLite database doesn't work with CIFS.
     # ./calibre.nix
+    ./bookorbit.nix
     ./immich.nix
     ./traefik.nix
     ./meilisearch.nix
