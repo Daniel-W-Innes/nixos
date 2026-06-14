@@ -75,7 +75,6 @@ in
     };
 
     virtualisation.oci-containers = {
-      backend = "docker";
       containers = {
         bookorbit-db = {
           image = "pgvector/pgvector:pg16";
