@@ -32,6 +32,6 @@
     enable = true;
     libraryPath = "/mnt/references";
     environmentFile = config.age.secrets.bookorbit-env.path;
-    readOnly = true;
+    readOnly = false;
   };
 }
