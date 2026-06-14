@@ -64,7 +64,7 @@ in
   config = mkIf cfg.enable {
     systemd.tmpfiles.rules = [
       "d /var/lib/bookorbit/app 0770 ${cfg.user} ${cfg.group} -"
-      "d /var/lib/bookorbit/postgres 0770 ${cfg.user} ${cfg.group} -"
+      "d /var/lib/bookorbit/postgres 0700 999 999 -"
     ];
 
     systemd.services = {
@@ -113,12 +113,7 @@ in
           };
           environmentFiles = [ cfg.environmentFile ];
           volumes = [ "/var/lib/bookorbit/postgres:/var/lib/postgresql/data" ];
-          extraOptions = [
-            "--network=bookorbit-net"
-            "--userns=keep-id:uid=${toString config.users.users.${cfg.user}.uid},gid=${
-              toString config.users.groups.${cfg.group}.gid
-            }"
-          ];
+          extraOptions = [ "--network=bookorbit-net" ];
         };
         bookorbit-app = {
           image = "ghcr.io/bookorbit/bookorbit:latest";
