@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
@@ -90,7 +95,10 @@ in
           };
           environmentFiles = [ cfg.environmentFile ];
           volumes = [ "/var/lib/bookorbit/postgres:/var/lib/postgresql/data" ];
-          extraOptions = [ "--network=bookorbit-net" ];
+          extraOptions = [
+            "--network=bookorbit-net"
+            "--userns=keep-id:uid=${toString config.users.users.${cfg.user}.uid},gid=${toString config.users.groups.${cfg.group}.gid}"
+          ];
         };
         bookorbit-app = {
           image = "ghcr.io/bookorbit/bookorbit:latest";
