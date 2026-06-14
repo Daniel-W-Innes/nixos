@@ -67,22 +67,36 @@ in
       "d /var/lib/bookorbit/postgres 0770 ${cfg.user} ${cfg.group} -"
     ];
 
-    systemd.services.init-bookorbit-network =
-      let
-        inherit (config.virtualisation.oci-containers) backend;
-        bin = if backend == "podman" then "${pkgs.podman}/bin/podman" else "${pkgs.docker}/bin/docker";
-      in
-      {
-        description = "Create isolated BookOrbit ${backend} Network";
-        after = [ "${backend}.service" ];
-        requires = [ "${backend}.service" ];
-        wantedBy = [ "multi-user.target" ];
-        serviceConfig.Type = "oneshot";
-        script = ''
-          ${bin} network inspect bookorbit-net >/dev/null 2>&1 || \
-          ${bin} network create bookorbit-net
-        '';
-      };
+    systemd.services = {
+      init-bookorbit-network =
+        let
+          inherit (config.virtualisation.oci-containers) backend;
+          bin = if backend == "podman" then "${pkgs.podman}/bin/podman" else "${pkgs.docker}/bin/docker";
+        in
+        {
+          description = "Create isolated BookOrbit ${backend} Network";
+          after = [ "${backend}.service" ];
+          requires = [ "${backend}.service" ];
+          wantedBy = [ "multi-user.target" ];
+          serviceConfig.Type = "oneshot";
+          script = ''
+            ${bin} network inspect bookorbit-net >/dev/null 2>&1 || \
+            ${bin} network create bookorbit-net
+          '';
+        };
+      "${config.virtualisation.oci-containers.backend}-bookorbit-db".after = [
+        "init-bookorbit-network.service"
+      ];
+      "${config.virtualisation.oci-containers.backend}-bookorbit-db".requires = [
+        "init-bookorbit-network.service"
+      ];
+      "${config.virtualisation.oci-containers.backend}-bookorbit-app".after = [
+        "init-bookorbit-network.service"
+      ];
+      "${config.virtualisation.oci-containers.backend}-bookorbit-app".requires = [
+        "init-bookorbit-network.service"
+      ];
+    };
 
     virtualisation.oci-containers = {
       containers = {
@@ -97,7 +111,9 @@ in
           volumes = [ "/var/lib/bookorbit/postgres:/var/lib/postgresql/data" ];
           extraOptions = [
             "--network=bookorbit-net"
-            "--userns=keep-id:uid=${toString config.users.users.${cfg.user}.uid},gid=${toString config.users.groups.${cfg.group}.gid}"
+            "--userns=keep-id:uid=${toString config.users.users.${cfg.user}.uid},gid=${
+              toString config.users.groups.${cfg.group}.gid
+            }"
           ];
         };
         bookorbit-app = {
