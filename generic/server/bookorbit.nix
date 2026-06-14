@@ -6,7 +6,7 @@
 }:
 
 {
-  bookorbit-env = lib.mkIf config.services.bookorbit.enable {
+  age.secrets.bookorbit-env = lib.mkIf config.services.bookorbit.enable {
     file = secretsDir + /bookorbit-env.age;
     owner = "${config.services.bookorbit.user}";
     group = "${config.services.bookorbit.group}";
