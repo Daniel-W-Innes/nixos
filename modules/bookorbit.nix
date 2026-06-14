@@ -84,18 +84,22 @@ in
             ${bin} network create bookorbit-net
           '';
         };
-      "${config.virtualisation.oci-containers.backend}-bookorbit-db".after = [
-        "init-bookorbit-network.service"
-      ];
-      "${config.virtualisation.oci-containers.backend}-bookorbit-db".requires = [
-        "init-bookorbit-network.service"
-      ];
-      "${config.virtualisation.oci-containers.backend}-bookorbit-app".after = [
-        "init-bookorbit-network.service"
-      ];
-      "${config.virtualisation.oci-containers.backend}-bookorbit-app".requires = [
-        "init-bookorbit-network.service"
-      ];
+      "${config.virtualisation.oci-containers.backend}-bookorbit-db" = {
+        after = [
+          "init-bookorbit-network.service"
+        ];
+        requires = [
+          "init-bookorbit-network.service"
+        ];
+      };
+      "${config.virtualisation.oci-containers.backend}-bookorbit-app" = {
+        after = [
+          "init-bookorbit-network.service"
+        ];
+        requires = [
+          "init-bookorbit-network.service"
+        ];
+      };
     };
 
     virtualisation.oci-containers = {
