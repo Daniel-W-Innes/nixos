@@ -122,4 +122,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "bookorbit-env.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }

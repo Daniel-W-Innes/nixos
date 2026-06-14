@@ -546,7 +546,7 @@
             auths = {
               "grafana" = {
                 tokenFile = config.age.secrets.influxdb-visibility-token.path;
-                allAccess = true; 
+                allAccess = true;
               };
             };
           };
