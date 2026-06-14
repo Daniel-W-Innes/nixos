@@ -62,17 +62,22 @@ in
       "d /var/lib/bookorbit/postgres 0770 ${cfg.user} ${cfg.group} -"
     ];
 
-    systemd.services.init-bookorbit-network = {
-      description = "Create isolated BookOrbit Docker Network";
-      after = [ "docker.service" ];
-      requires = [ "docker.service" ];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig.Type = "oneshot";
-      script = ''
-        ${pkgs.docker}/bin/docker network inspect bookorbit-net >/dev/null 2>&1 || \
-        ${pkgs.docker}/bin/docker network create bookorbit-net
-      '';
-    };
+    systemd.services.init-bookorbit-network =
+      let
+        inherit (config.virtualisation.oci-containers) backend;
+        bin = if backend == "podman" then "${pkgs.podman}/bin/podman" else "${pkgs.docker}/bin/docker";
+      in
+      {
+        description = "Create isolated BookOrbit ${backend} Network";
+        after = [ "${backend}.service" ];
+        requires = [ "${backend}.service" ];
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig.Type = "oneshot";
+        script = ''
+          ${bin} network inspect bookorbit-net >/dev/null 2>&1 || \
+          ${bin} network create bookorbit-net
+        '';
+      };
 
     virtualisation.oci-containers = {
       containers = {
