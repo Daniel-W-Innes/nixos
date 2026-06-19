@@ -27,6 +27,7 @@ _:
     daniel.openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOhOXM61fK+PiqPSD8eZ+cW0ACcl8IeBJO14odVsmVU daniel@onion"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID8N4zSVA9MvNfdBlloRyFCazPH09qlkyCZ+6xTe2Cce daniel@melon"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGsC8nOkFrvAzgNU/B2LE4ETtioDii+i/P1lV+ksWl6P daniel@cucamelon"
     ];
   };
 }
