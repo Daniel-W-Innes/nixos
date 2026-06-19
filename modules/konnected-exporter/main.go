@@ -210,20 +210,29 @@ func (e *exporter) Collect(ch chan<- prometheus.Metric) {
 }
 
 func (e *exporter) Run(ctx context.Context) {
-	if err := e.clientEvents.SubscribeWithContext(ctx, "", func(msg *sse.Event) {
-		err := e.refresh(ctx, msg)
-		e.mu.Lock()
-		defer e.mu.Unlock()
-		e.lastAttempt = time.Now()
-		if err != nil {
-			e.scrapeOK = false
-			e.logger.Printf("Error processing event: %v\n", err)
-		} else {
-			e.scrapeOK = true
-			e.lastUpdate = time.Now()
+	for {
+		select {
+		case <-ctx.Done():
+			e.logger.Println("Shutting down exporter")
+			return
+		default:
+			if err := e.clientEvents.SubscribeWithContext(ctx, "", func(msg *sse.Event) {
+				err := e.refresh(ctx, msg)
+				e.mu.Lock()
+				defer e.mu.Unlock()
+				e.lastAttempt = time.Now()
+				if err != nil {
+					e.scrapeOK = false
+					e.logger.Printf("Error processing event: %v\n", err)
+				} else {
+					e.scrapeOK = true
+					e.lastUpdate = time.Now()
+				}
+			}); err != nil {
+				e.logger.Printf("Error subscribing to events: %v\n", err)
+			}
+			time.Sleep(time.Second)
 		}
-	}); err != nil {
-		e.logger.Printf("Error subscribing to events: %v\n", err)
 	}
 }
 
