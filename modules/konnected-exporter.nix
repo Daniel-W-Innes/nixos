@@ -10,7 +10,7 @@ let
 
   package = pkgs.buildGoModule {
     pname = "konnected-exporter";
-    version = "0.2.1";
+    version = "0.2.2";
     src = ./konnected-exporter;
     vendorHash = "sha256-tgCJavFf3HIyDHk5/SHql7EHy2Pc/RDVOAGys9hS9Kk=";
   };

@@ -34,6 +34,7 @@ type (
 		lastUpdate     time.Time
 		lastAttempt    time.Time
 		scrapeOK       bool
+		connected      bool
 		Uptime         int
 		DeviceID       string
 		ESPHomeVersion string
@@ -207,9 +208,29 @@ func (e *exporter) Collect(ch chan<- prometheus.Metric) {
 			fmt.Sprintf("%v", state.value),
 		)
 	}
+	ch <- prometheus.MustNewConstMetric(
+		prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "connected"),
+			"Whether the exporter is currently connected to the event stream",
+			nil, nil,
+		),
+		prometheus.GaugeValue,
+		func() float64 {
+			if e.connected {
+				return 1
+			}
+			return 0
+		}(),
+	)
 }
 
 func (e *exporter) Run(ctx context.Context) {
+	e.clientEvents.ReconnectNotify = func(err error, next time.Duration) {
+		e.logger.Printf("Disconnected from event stream: %v. Reconnecting in %s...\n", err, next)
+		e.mu.Lock()
+		e.connected = false
+		e.mu.Unlock()
+	}
 	for {
 		select {
 		case <-ctx.Done():
@@ -220,6 +241,7 @@ func (e *exporter) Run(ctx context.Context) {
 				err := e.refresh(ctx, msg)
 				e.mu.Lock()
 				defer e.mu.Unlock()
+				e.connected = true
 				e.lastAttempt = time.Now()
 				if err != nil {
 					e.scrapeOK = false
@@ -230,6 +252,9 @@ func (e *exporter) Run(ctx context.Context) {
 				}
 			}); err != nil {
 				e.logger.Printf("Error subscribing to events: %v\n", err)
+				e.mu.Lock()
+				e.connected = false
+				e.mu.Unlock()
 			}
 			time.Sleep(time.Second)
 		}
