@@ -76,6 +76,7 @@
         nixos-facter-modules.nixosModules.facter
         ./modules/airzone-exporter.nix
         ./modules/openweathermap-exporter.nix
+        ./modules/google-health-exporter.nix
         ./modules/konnected-exporter.nix
         ./modules/bookorbit.nix
         home-manager.nixosModules.home-manager
