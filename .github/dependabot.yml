@@ -1,0 +1,13 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "gomod"
+    directories:
+      - "/modules/airzone-exporter"
+      - "/modules/konnected-exporter"
+      - "/modules/openweathermap-exporter"
+    schedule:
+      interval: "weekly"
