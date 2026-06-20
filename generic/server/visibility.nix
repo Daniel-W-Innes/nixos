@@ -80,36 +80,6 @@
     };
   };
 
-  environment.etc = {
-    "grafana/v2/security.json".source = ./grafana/security.json;
-    "grafana/v2/node_exporter.json".source = ./grafana/node_exporter.json;
-    "grafana/v2/SMARTctl_exporter.json".source = ./grafana/SMARTctl_exporter.json;
-    "grafana/v2/unpoller_exporter_network.json".source = ./grafana/unpoller_exporter_network.json;
-    "grafana/v2/unpoller_exporter_uap.json".source = ./grafana/unpoller_exporter_uap.json;
-    "grafana/v2/unpoller_exporter_clients.json".source = ./grafana/unpoller_exporter_clients.json;
-    "grafana/v2/unpoller_exporter_dpi.json".source = ./grafana/unpoller_exporter_dpi.json;
-    "grafana/v2/unpoller_exporter_usw.json".source = ./grafana/unpoller_exporter_usw.json;
-    "grafana/v2/unpoller_exporter_pdu.json".source = ./grafana/unpoller_exporter_pdu.json;
-    "grafana/v2/unpoller_exporter_usg.json".source = ./grafana/unpoller_exporter_usg.json;
-    "grafana/v2/smokeping_exporter.json".source = ./grafana/smokeping_exporter.json;
-    "grafana/v2/nvidia_gpu_exporter.json".source = ./grafana/nvidia_gpu_exporter.json;
-    "grafana/v2/iperf3_exporter.json".source = ./grafana/iperf3_exporter.json;
-    "grafana/v2/mc_monitor_exporter.json".source = ./grafana/mc_monitor_exporter.json;
-    "grafana/v2/openweathermap_exporter.json".source = ./grafana/openweathermap_exporter.json;
-    "grafana/v2/navidrome_exporter.json".source = ./grafana/navidrome_exporter.json;
-    "grafana/v2/exportarr_exporter.json".source = ./grafana/exportarr_exporter.json;
-    "grafana/v2/traefik_exporter.json".source = ./grafana/traefik_exporter.json;
-    "grafana/provisioning/resources/v2-dashboards.yaml".text = builtins.toJSON {
-      apiVersion = 1;
-      resources = [
-        {
-          name = "v2-provisioned-dashboards";
-          type = "dashboard";
-          options.path = "/etc/grafana/v2";
-        }
-      ];
-    };
-  };
   services = {
     grafana = {
       enable = true;
@@ -147,15 +117,6 @@
             }
           ];
         };
-        dashboards.settings.providers = [
-          {
-            name = "provisioned-dashboards";
-            options = {
-              path = "/etc/grafana";
-              foldersFromFilesStructure = true;
-            };
-          }
-        ];
       };
     };
     prometheus = {
