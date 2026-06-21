@@ -25,10 +25,10 @@
       #   "/mnt/archive-box:/data:rw"
       # ];
       # user = "${toString config.users.users.media.uid}:${toString config.users.groups.media.gid}";
-      # environment = {
-      #   BASE_URL = "https://archivebox.lc.brotherwolf.ca";
-      # };
-      # environmentFiles = [ config.age.secrets.archivebox-env.path ];
+      environment = {
+        BASE_URL = "https://archivebox.lc.brotherwolf.ca";
+      };
+      environmentFiles = [ config.age.secrets.archivebox-env.path ];
     };
   };
 }
