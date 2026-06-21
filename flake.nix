@@ -34,6 +34,11 @@
     };
 
     vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
+
+    akvorado = {
+      url = "github:akvorado/akvorado/v2.4.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

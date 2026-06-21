@@ -25,6 +25,47 @@
         "type": "github"
       }
     },
+    "akvorado": {
+      "inputs": {
+        "asn2org": "asn2org",
+        "flake-utils": "flake-utils",
+        "iana-assignments": "iana-assignments",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1779902937,
+        "narHash": "sha256-U8VcYedSwlVHAIMJpacI4HZ+g76lT90Fwik+U4VIL1s=",
+        "owner": "akvorado",
+        "repo": "akvorado",
+        "rev": "709a57cfdd75bdc25b247004753a20f5c0d51f52",
+        "type": "github"
+      },
+      "original": {
+        "owner": "akvorado",
+        "ref": "v2.4.0",
+        "repo": "akvorado",
+        "type": "github"
+      }
+    },
+    "asn2org": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1778838649,
+        "narHash": "sha256-SJLzkRpeK/n2Ve6MNrwLoLDY9pZ9JfjbiAauyEFJRqI=",
+        "owner": "vincentbernat",
+        "repo": "asn2org",
+        "rev": "3d6a5a05bf75accfc7151f60cb6f4850c7636ad3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vincentbernat",
+        "ref": "gh-pages",
+        "repo": "asn2org",
+        "type": "github"
+      }
+    },
     "crane": {
       "locked": {
         "lastModified": 1765145449,
@@ -94,6 +135,24 @@
         "type": "github"
       }
     },
+    "flake-utils": {
+      "inputs": {
+        "systems": "systems_2"
+      },
+      "locked": {
+        "lastModified": 1681202837,
+        "narHash": "sha256-H+Rh19JDwRtpVPAWp64F+rlEtxUWBAQW28eAi3SRSzg=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "cfacdce06f30d2b68473a46042957675eebb3401",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "gitignore": {
       "inputs": {
         "nixpkgs": [
@@ -155,6 +214,22 @@
         "owner": "nix-community",
         "ref": "release-26.05",
         "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "iana-assignments": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1779505195,
+        "narHash": "sha256-PRphCq8drn5gbWNy1PbOEQQBrzSEvhgtUAQspFdp/mc=",
+        "owner": "larseggert",
+        "repo": "iana-assignments",
+        "rev": "dd006908e29a0ab3bdb40c201f1e50aafddcbfe9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "larseggert",
+        "repo": "iana-assignments",
         "type": "github"
       }
     },
@@ -281,6 +356,7 @@
     "root": {
       "inputs": {
         "agenix": "agenix",
+        "akvorado": "akvorado",
         "home-manager": "home-manager",
         "lanzaboote": "lanzaboote",
         "nix-index-database": "nix-index-database",
@@ -312,6 +388,21 @@
       }
     },
     "systems": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_2": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
