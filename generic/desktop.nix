@@ -13,5 +13,6 @@ _:
     ./avahi.nix
     ./smartd.nix
     ./borgmatic.nix
+    ./podman.nix
   ];
 }

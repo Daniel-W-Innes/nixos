@@ -43,6 +43,10 @@ let
   );
 in
 {
+  archivebox = {
+    enable = true;
+    port = 9099;
+  };
   calibre = {
     inherit (config.services.calibre-server) enable host port;
   };

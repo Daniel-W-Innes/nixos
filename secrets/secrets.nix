@@ -126,4 +126,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "archivebox-env.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
