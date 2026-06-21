@@ -24,7 +24,7 @@
       volumes = [
         "/mnt/archive-box:/data:rw"
       ];
-      user = "media:media";
+      user = "${config.users.users.media.uid}:${config.users.groups.media.gid}";
       environment = {
         BASE_URL = "https://archivebox.lc.brotherwolf.ca";
       };
