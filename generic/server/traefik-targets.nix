@@ -126,7 +126,7 @@ in
   };
   karakeep = {
     inherit (config.services.karakeep) enable;
-    port = 3000;
+    port = config.services.karakeep.extraEnvironment.PORT;
   };
 }
 // arrTargetData
