@@ -28,7 +28,7 @@
       environment = {
         BASE_URL = "https://archivebox.lc.brotherwolf.ca";
       };
-      environmentFiles = [ config.age.secrets.archivebox-env.path ];
+      # environmentFiles = [ config.age.secrets.archivebox-env.path ];
     };
   };
 }
