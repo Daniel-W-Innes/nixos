@@ -83,6 +83,7 @@
         ./modules/openweathermap-exporter.nix
         ./modules/konnected-exporter.nix
         ./modules/bookorbit.nix
+        ./modules/akvorado.nix
         home-manager.nixosModules.home-manager
         nix-index-database.nixosModules.nix-index
         lanzaboote.nixosModules.lanzaboote
