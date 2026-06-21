@@ -1,7 +1,7 @@
 { config, lib, ...}:
 
 {
-  service.karakeep = {
+  services.karakeep = {
     enable = true;
     extraEnvironment = lib.mkIf config.services.meilisearch.enable {
       MEILI_ADDR = "https://meilisearch.lc.brotherwolf.ca";
