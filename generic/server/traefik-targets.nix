@@ -124,5 +124,9 @@ in
     inherit (config.services.influxdb2) enable;
     port = 8086;
   };
+  karakeep = {
+    inherit (config.services.karakeep) enable;
+    port = 3000;
+  };
 }
 // arrTargetData
