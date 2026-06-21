@@ -7,7 +7,7 @@
 
 {
   systemd.tmpfiles.rules = [
-    "d /mnt/archive-box 0755 media media -"
+    "d /mnt/archive-box 0750 media media -"
   ];
 
   age.secrets.archivebox-env = lib.mkIf config.services.bookorbit.enable {
@@ -21,12 +21,13 @@
     archive-box = {
       image = "archivebox/archivebox:latest";
       ports = [ "127.0.0.1:9099:8000/tcp" ];
-      # volumes = [
-      #   "/mnt/archive-box:/data:rw"
-      # ];
-      # user = "${toString config.users.users.media.uid}:${toString config.users.groups.media.gid}";
+      volumes = [
+        "/mnt/archive-box:/data:rw"
+      ];
       environment = {
         BASE_URL = "https://archivebox.lc.brotherwolf.ca";
+        UID = toString config.users.users.media.uid;
+        GID = toString config.users.groups.media.gid;
       };
       environmentFiles = [ config.age.secrets.archivebox-env.path ];
     };
