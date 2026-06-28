@@ -127,6 +127,12 @@
               jsonData.version = "Flux";
               jsonData.organization = "visibility";
             }
+            {
+              name = "Alertmanager";
+              type = "alertmanager";
+              access = "proxy";
+              url = "http://localhost:${toString config.services.prometheus.alertmanager.port}";
+            }
           ];
         };
       };
