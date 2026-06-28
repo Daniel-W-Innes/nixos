@@ -78,12 +78,17 @@
       group = "influxdb2";
       mode = "0400";
     };
+    gotify-bridge-token = lib.mkIf config.services.gotify.enable {
+      file = secretsDir + /gotify-bridge-token.age;
+      owner = "alertmanager-gotify";
+      group = "alertmanager-gotify";
+      mode = "0400";
+    };
   };
 
   services = {
     gotify = {
       enable = true;
-      environmentFile = config.age.secrets.gotify-bridge-token.path;
       environment = {
         GOTIFY_SERVER_PORT = 60266;
       };
@@ -532,7 +537,7 @@
             name = "gotify-bridge";
             webhook_configs = [
               {
-                url = "http://localhost:${toString config.services.alertmanagerGotify.port}/gotify_webhook";
+                url = "http://localhost:${toString config.services.prometheus.alertmanagerGotify.port}/gotify_webhook";
                 send_resolved = true;
               }
             ];
