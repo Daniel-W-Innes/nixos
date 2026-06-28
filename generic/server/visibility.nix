@@ -518,6 +518,7 @@
       alertmanagerGotify = {
         enable = true;
         port = 49217;
+        debug = true;
         extendedDetails = true;
         dispatchErrors = true;
 
