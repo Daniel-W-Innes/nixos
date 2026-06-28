@@ -138,9 +138,11 @@
         alerting.contactPoints.settings = {
           contactPoints = [
             {
+              orgId = 1;
               name = "alertmanager";
               receivers = [
                 {
+                  uid = "am-receiver-1";
                   type = "alertmanager";
                   settings = {
                     url = "http://localhost:${toString config.services.prometheus.alertmanager.port}/api/v2/alerts";
