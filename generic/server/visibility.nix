@@ -88,42 +88,6 @@
         GOTIFY_SERVER_PORT = 60266;
       };
     };
-    alertmanagerGotify = {
-      enable = true;
-      extendedDetails = true;
-      dispatchErrors = true;
-
-      gotifyEndpoint = {
-        host = "gotify.lc.brotherwolf.ca";
-        port = 443;
-        tls = true;
-      };
-      metrics.username = "admin";
-      environmentFile = config.age.secrets.gotify-bridge-token.path;
-    };
-    alertmanager = {
-      enable = true;
-      configuration = {
-        route = {
-          group_by = [ "alertname" ];
-          group_wait = "30s";
-          group_interval = "5m";
-          repeat_interval = "4h";
-          receiver = "gotify-bridge";
-        };
-        receivers = [
-          {
-            name = "gotify-bridge";
-            webhook_configs = [
-              {
-                url = "http://localhost:${toString config.services.alertmanagerGotify.port}/gotify_webhook";
-                send_resolved = true;
-              }
-            ];
-          }
-        ];
-      };
-    };
     grafana = {
       enable = true;
       settings = {
@@ -540,6 +504,42 @@
           dbTokenPath = config.age.secrets.konnected-influxdb-token.path;
         };
       };
+    alertmanagerGotify = {
+      enable = true;
+      extendedDetails = true;
+      dispatchErrors = true;
+
+      gotifyEndpoint = {
+        host = "gotify.lc.brotherwolf.ca";
+        port = 443;
+        tls = true;
+      };
+      metrics.username = "admin";
+      environmentFile = config.age.secrets.gotify-bridge-token.path;
+    };
+    alertmanager = {
+      enable = true;
+      configuration = {
+        route = {
+          group_by = [ "alertname" ];
+          group_wait = "30s";
+          group_interval = "5m";
+          repeat_interval = "4h";
+          receiver = "gotify-bridge";
+        };
+        receivers = [
+          {
+            name = "gotify-bridge";
+            webhook_configs = [
+              {
+                url = "http://localhost:${toString config.services.alertmanagerGotify.port}/gotify_webhook";
+                send_resolved = true;
+              }
+            ];
+          }
+        ];
+      };
+    };
     };
     influxdb2 = {
       enable = true;
