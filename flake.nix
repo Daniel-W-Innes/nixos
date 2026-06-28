@@ -111,8 +111,8 @@
           modules =
             sharedModules
             ++ [
-              { config.facter.reportPath = ./. + "/${name}/facter.json"; }
-              (./. + "/${name}/configuration.nix")
+              { config.facter.reportPath = ./. + "/hosts/${name}/facter.json"; }
+              (./. + "/hosts/${name}/configuration.nix")
               (./. + "/generic/${type}.nix")
               (mkHomeManagerModule (./. + "/home/${type}.nix"))
               { _module.args.secureBoot = secureBoot; }
