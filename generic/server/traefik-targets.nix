@@ -124,14 +124,14 @@ in
     inherit (config.services.influxdb2) enable;
     port = 8086;
   };
-  # gotify = {
-  #   inherit (config.services.gotify) enable;
-  #   port = 60266;
-  #   healthCheck = pingHealthCheck;
-  # };
-  # alertmanager = {
-  #   inherit (config.services.prometheus.alertmanager) enable port;
-  #   healthCheck = readyHealthCheck;
-  # };
+  gotify = {
+    inherit (config.services.gotify) enable;
+    port = 60266;
+    healthCheck = pingHealthCheck;
+  };
+  alertmanager = {
+    inherit (config.services.prometheus.alertmanager) enable port;
+    healthCheck = readyHealthCheck;
+  };
 }
 // arrTargetData
