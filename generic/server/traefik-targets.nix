@@ -129,7 +129,7 @@ in
     port = 60266;
   };
   alertmanager = {
-    inherit (config.services.alertmanager) enable port;
+    inherit (config.services.prometheus.alertmanager) enable port;
   };
 }
 // arrTargetData
