@@ -10,7 +10,7 @@ let
 
   package = pkgs.buildGoModule {
     pname = "konnected-exporter";
-    version = "0.3.0";
+    version = "0.3.1";
     src = ./konnected-exporter;
     vendorHash = "sha256-y6XrU+3q8qTrABhHulrJYFLT96SI3OytOk7mFqsQC60=";
   };
@@ -37,10 +37,10 @@ in
       description = "URL of the Gotify server to send notifications to.";
     };
 
-    gotifyToken = lib.mkOption {
-      type = lib.types.str;
-      default = "";
-      description = "Gotify application token for sending notifications.";
+    gotifyTokenPath = lib.mkOption {
+      type = lib.types.path;
+      default = "/run/secrets/gotify_token";
+      description = "Path to a file containing the Gotify application token.";
     };
 
     gotifyPriority = lib.mkOption {
