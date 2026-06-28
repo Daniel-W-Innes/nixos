@@ -9,11 +9,17 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/gotify/go-api-client/v2/auth"
+	gotifyClient "github.com/gotify/go-api-client/v2/client"
+	"github.com/gotify/go-api-client/v2/client/message"
+	"github.com/gotify/go-api-client/v2/gotify"
+	"github.com/gotify/go-api-client/v2/models"
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
 	"github.com/influxdata/influxdb-client-go/v2/api"
 	"github.com/prometheus/client_golang/prometheus"
@@ -28,6 +34,9 @@ type (
 		debug          bool
 		clientEvents   *sse.Client
 		clientDB       influxdb2.Client
+		clientGotify   *gotifyClient.GotifyREST
+		gotifyToken    string
+		gotifyPriority int
 		writeAPI       api.WriteAPIBlocking
 		logger         *log.Logger
 		mu             sync.RWMutex
@@ -94,15 +103,22 @@ type (
 	}
 )
 
-func newExporter(logger *log.Logger, eventsURL, dbURL, token, org, bucket string, debug bool) *exporter {
+func newExporter(logger *log.Logger, gotifyURL *url.URL, gotifyToken string, gotifyPriority int, eventsURL, dbURL, token, org, bucket string, debug bool) *exporter {
+	var clientGotify *gotifyClient.GotifyREST
+	if gotifyURL != nil {
+		clientGotify = gotify.NewClient(gotifyURL, &http.Client{})
+	}
 	db := influxdb2.NewClient(dbURL, token)
 	return &exporter{
-		logger:       logger,
-		clientEvents: sse.NewClient(eventsURL),
-		clientDB:     db,
-		writeAPI:     db.WriteAPIBlocking(org, bucket),
-		debug:        debug,
-		LastState:    make(map[string]point),
+		logger:         logger,
+		clientGotify:   clientGotify,
+		clientEvents:   sse.NewClient(eventsURL),
+		clientDB:       db,
+		writeAPI:       db.WriteAPIBlocking(org, bucket),
+		debug:          debug,
+		gotifyToken:    gotifyToken,
+		gotifyPriority: gotifyPriority,
+		LastState:      make(map[string]point),
 	}
 }
 
@@ -337,6 +353,19 @@ func (e *exporter) binary_sensor(ctx context.Context, name string, msg *sse.Even
 	if e.LastState[binaryState.NameID].value != binaryState.Value {
 		e.LastState[binaryState.NameID] = point{value: binaryState.Value, time: now}
 	}
+	if e.clientGotify != nil && binaryState.Value {
+		params := message.NewCreateMessageParams()
+		params.Body = &models.MessageExternal{
+			Title:    fmt.Sprintf("%s Opened", name),
+			Message:  fmt.Sprintf("%s was opened at %s", name, now.Format(time.RFC1123)),
+			Priority: e.gotifyPriority,
+		}
+		_, err := e.clientGotify.Message.CreateMessage(params, auth.TokenAuth(e.gotifyToken))
+		if err != nil {
+			return fmt.Errorf("error sending Gotify notification for %q: %w", name, err)
+		}
+	}
+
 	return nil
 }
 
@@ -435,14 +464,18 @@ func readToken(path string) (string, error) {
 
 func main() {
 	var (
-		host        = flag.String("web.host", "127.0.0.1", "Host or IP address to listen on for Prometheus scrapes.")
-		port        = flag.String("web.port", "9923", "TCP port to listen on for Prometheus scrapes.")
-		eventsURL   = flag.String("events.url", "", "URL to subscribe to for receiving events.")
-		dbURL       = flag.String("db.url", "", "InfluxDB URL.")
-		dbTokenPath = flag.String("db.token-path", "/run/secrets/influxdb_token", "Path to file containing InfluxDB token.")
-		dbOrg       = flag.String("db.org", "my-org", "InfluxDB organization.")
-		dbBucket    = flag.String("db.bucket", "my-bucket", "InfluxDB bucket.")
-		debug       = flag.Bool("debug", false, "Enable debug logging.")
+		host            = flag.String("web.host", "127.0.0.1", "Host or IP address to listen on for Prometheus scrapes.")
+		port            = flag.String("web.port", "9923", "TCP port to listen on for Prometheus scrapes.")
+		gotifyURL       = flag.String("gotify.url", "", "URL to Gotify server.")
+		gotifyEnable    = flag.Bool("gotify.enable", false, "Enable Gotify notifications.")
+		gotifyTokenPath = flag.String("gotify.token-path", "/run/secrets/gotify_token", "Path to file containing Gotify token.")
+		gotifyPriority  = flag.Int("gotify.priority", 5, "Priority of Gotify notifications.")
+		eventsURL       = flag.String("events.url", "", "URL to subscribe to for receiving events.")
+		dbURL           = flag.String("db.url", "", "InfluxDB URL.")
+		dbTokenPath     = flag.String("db.token-path", "/run/secrets/influxdb_token", "Path to file containing InfluxDB token.")
+		dbOrg           = flag.String("db.org", "my-org", "InfluxDB organization.")
+		dbBucket        = flag.String("db.bucket", "my-bucket", "InfluxDB bucket.")
+		debug           = flag.Bool("debug", false, "Enable debug logging.")
 	)
 	logger := log.New(os.Stdout, "konnected-exporter: ", log.LstdFlags)
 	flag.Parse()
@@ -453,12 +486,30 @@ func main() {
 	if *dbURL == "" {
 		logger.Fatal("db.url is required")
 	}
+	if *gotifyEnable && *gotifyURL == "" {
+		logger.Fatal("gotify.url is required when gotify.enable is true")
+	}
 
 	token, err := readToken(*dbTokenPath)
 	if err != nil {
 		logger.Fatalf("Error reading InfluxDB token: %v", err)
 	}
-	exp := newExporter(logger, *eventsURL, *dbURL, token, *dbOrg, *dbBucket, *debug)
+
+	var gotifyToken string
+	if *gotifyEnable {
+		gotifyToken, err = readToken(*gotifyTokenPath)
+		if err != nil {
+			logger.Fatalf("Error reading Gotify token: %v", err)
+		}
+	}
+	var gotifyURLParsed *url.URL
+	if *gotifyURL != "" {
+		gotifyURLParsed, err = url.Parse(*gotifyURL)
+		if err != nil {
+			logger.Fatalf("Error parsing Gotify URL: %v", err)
+		}
+	}
+	exp := newExporter(logger, gotifyURLParsed, gotifyToken, *gotifyPriority, *eventsURL, *dbURL, token, *dbOrg, *dbBucket, *debug)
 
 	ctx := context.Background()
 	go exp.Run(ctx)
