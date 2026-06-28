@@ -135,6 +135,21 @@
             }
           ];
         };
+        alerting.contactPoints.settings = {
+          contactPoints = [
+            {
+              name = "alertmanager";
+              receivers = [
+                {
+                  type = "alertmanager";
+                  settings = {
+                    url = "http://localhost:${toString config.services.prometheus.alertmanager.port}/api/v2/alerts";
+                  };
+                }
+              ];
+            }
+          ];
+        };
       };
     };
     prometheus = {
