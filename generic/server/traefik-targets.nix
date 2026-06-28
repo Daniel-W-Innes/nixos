@@ -124,5 +124,12 @@ in
     inherit (config.services.influxdb2) enable;
     port = 8086;
   };
+  gotify = {
+    inherit (config.services.gotify) enable;
+    port = 60266;
+  };
+  alertmanager = {
+    inherit (config.services.alertmanager) enable port;
+  };
 }
 // arrTargetData

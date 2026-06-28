@@ -126,4 +126,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "gotify-bridge-token.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
