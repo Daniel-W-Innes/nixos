@@ -143,9 +143,25 @@
               receivers = [
                 {
                   uid = "am-receiver-1";
-                  type = "alertmanager";
+                  type = "webhook";
                   settings = {
                     url = "http://localhost:${toString config.services.prometheus.alertmanager.port}/api/v2/alerts";
+                    httpMethod = "POST";
+                    contentType = "application/json";
+                    body = ''[
+                      {
+                        "labels": {
+                          "alertname": "{{ .CommonLabels.alertname }}",
+                          "grafana_folder": "{{ .DashboardURL }}"
+                        },
+                        "annotations": {
+                          "summary": "{{ .CommonAnnotations.summary }}",
+                          "description": "{{ .CommonAnnotations.description }}"
+                        },
+                        "generatorURL": "{{ .GeneratorURL }}",
+                        "startsAt": "{{ .StartsAt }}"
+                      }
+                    ]'';
                   };
                 }
               ];
