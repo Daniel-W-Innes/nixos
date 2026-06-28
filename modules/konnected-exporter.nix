@@ -10,7 +10,7 @@ let
 
   package = pkgs.buildGoModule {
     pname = "konnected-exporter";
-    version = "0.2.2";
+    version = "0.3.0";
     src = ./konnected-exporter;
     vendorHash = "sha256-tgCJavFf3HIyDHk5/SHql7EHy2Pc/RDVOAGys9hS9Kk=";
   };
@@ -29,6 +29,30 @@ in
       type = lib.types.port;
       default = 9877;
       description = "Port to bind the exporter to.";
+    };
+
+    gotifyURL = lib.mkOption {
+      type = lib.types.str;
+      default = "";
+      description = "URL of the Gotify server to send notifications to.";
+    };
+
+    gotifyToken = lib.mkOption {
+      type = lib.types.str;
+      default = "";
+      description = "Gotify application token for sending notifications.";
+    };
+
+    gotifyPriority = lib.mkOption {
+      type = lib.types.int;
+      default = 5;
+      description = "Priority of the Gotify messages sent by the exporter.";
+    };
+
+    gotifyEnabled = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Whether to enable Gotify notifications.";
     };
 
     eventsURL = lib.mkOption {
@@ -87,10 +111,15 @@ in
           "--db.token-path=%d/db-token"
           "--db.org=${cfg.dbOrg}"
           "--db.bucket=${cfg.dbBucket}"
+          (lib.optionalString cfg.gotifyEnabled "--gotify.url=${cfg.gotifyURL}")
+          (lib.optionalString cfg.gotifyEnabled "--gotify.token-path=%d/gotify-token")
+          (lib.optionalString cfg.gotifyEnabled "--gotify.priority=${toString cfg.gotifyPriority}")
+          (lib.optionalString cfg.gotifyEnabled "--gotify.enable")
           (lib.optionalString cfg.debug "--debug")
         ];
         LoadCredential = [
           "db-token:${cfg.dbTokenPath}"
+          (lib.optionalString cfg.gotifyEnabled "gotify-token:${cfg.gotifyTokenPath}")
         ];
         Restart = "on-failure";
         RestartSec = 5;
