@@ -127,9 +127,11 @@ in
   gotify = {
     inherit (config.services.gotify) enable;
     port = 60266;
+    healthCheck = pingHealthCheck;
   };
   alertmanager = {
     inherit (config.services.prometheus.alertmanager) enable port;
+    healthCheck = readyHealthCheck;
   };
 }
 // arrTargetData

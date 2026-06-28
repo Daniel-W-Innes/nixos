@@ -527,6 +527,7 @@
       };
       alertmanager = {
         enable = true;
+        port = 49218;
         configuration = {
           route = {
             group_by = [ "alertname" ];
