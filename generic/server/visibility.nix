@@ -90,6 +90,12 @@
       group = "alertmanager-gotify";
       mode = "0400";
     };
+    grafana-gotify-token = lib.mkIf config.services.gotify.enable {
+      file = secretsDir + /grafana-gotify-token.age;
+      owner = "grafana";
+      group = "grafana";
+      mode = "0400";
+    };
   };
 
   services = {
@@ -145,29 +151,17 @@
           contactPoints = [
             {
               orgId = 1;
-              name = "alertmanager";
+              name = "gotify-direct";
               receivers = [
                 {
-                  uid = "am-receiver-1";
-                  type = "webhook";
+                  uid = "gotify-direct-uid";
+                  type = "gotify";
                   settings = {
-                    url = "http://localhost:${toString config.services.prometheus.alertmanager.port}/api/v2/alerts";
-                    httpMethod = "POST";
-                    contentType = "application/json";
-                    body = ''[
-                      {
-                        "labels": {
-                          "alertname": "{{ .CommonLabels.alertname }}",
-                          "grafana_folder": "{{ .DashboardURL }}"
-                        },
-                        "annotations": {
-                          "summary": "{{ .CommonAnnotations.summary }}",
-                          "description": "{{ .CommonAnnotations.description }}"
-                        },
-                        "generatorURL": "{{ .GeneratorURL }}",
-                        "startsAt": "{{ .StartsAt }}"
-                      }
-                    ]'';
+                    url = "https://gotify.lc.brotherwolf.ca";
+                    token = "$__file{${config.age.secrets.grafana-gotify-token.path}}";
+                    priority = "2";
+                    title = "{{ .CommonAnnotations.summary }}";
+                    message = "{{ .CommonAnnotations.description }}";
                   };
                 }
               ];
