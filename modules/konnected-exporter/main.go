@@ -355,11 +355,6 @@ func (e *exporter) binary_sensor(ctx context.Context, name string, msg *sse.Even
 	if err := e.writeAPI.WritePoint(ctx, influxdb2.NewPointWithMeasurement(name).AddField("value", binaryState.Value).SetTime(now)); err != nil {
 		return fmt.Errorf("error writing point to InfluxDB for %q: %w", name, err)
 	}
-	e.mu.Lock()
-	defer e.mu.Unlock()
-	if e.LastState[binaryState.NameID].value != binaryState.Value {
-		e.LastState[binaryState.NameID] = point{value: binaryState.Value, time: now}
-	}
 	if e.clientGotify != nil && binaryState.Value {
 		params := message.NewCreateMessageParams()
 		params.Body = &models.MessageExternal{
@@ -371,6 +366,11 @@ func (e *exporter) binary_sensor(ctx context.Context, name string, msg *sse.Even
 		if err != nil {
 			return fmt.Errorf("error sending Gotify notification for %q: %w", name, err)
 		}
+	}
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	if e.LastState[binaryState.NameID].value != binaryState.Value {
+		e.LastState[binaryState.NameID] = point{value: binaryState.Value, time: now}
 	}
 
 	return nil
