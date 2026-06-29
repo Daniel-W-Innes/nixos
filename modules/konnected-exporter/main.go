@@ -117,6 +117,10 @@ func newExporter(logger *log.Logger, gotifyURL *url.URL, gotifyToken string, got
 		clientGotify = gotify.NewClient(gotifyURL, &http.Client{})
 	}
 	db := influxdb2.NewClient(dbURL, token)
+	list := []string{}
+	if gotifyAllowList != "" {
+		list = strings.Split(gotifyAllowList, ",")
+	}
 	return &exporter{
 		logger:          logger,
 		clientGotify:    clientGotify,
@@ -126,7 +130,7 @@ func newExporter(logger *log.Logger, gotifyURL *url.URL, gotifyToken string, got
 		debug:           debug,
 		gotifyToken:     gotifyToken,
 		gotifyPriority:  gotifyPriority,
-		gotifyAllowList: strings.Split(gotifyAllowList, ","),
+		gotifyAllowList: list,
 		LastState:       make(map[string]point),
 	}
 }
