@@ -38,25 +38,26 @@ type (
 	}
 
 	exporter struct {
-		debug          bool
-		clientEvents   *sse.Client
-		clientDB       influxdb2.Client
-		clientGotify   *gotifyClient.GotifyREST
-		gotifyToken    string
-		gotifyPriority int
-		writeAPI       api.WriteAPIBlocking
-		logger         *log.Logger
-		mu             sync.RWMutex
-		lastUpdate     time.Time
-		lastAttempt    time.Time
-		scrapeOK       bool
-		connected      bool
-		Uptime         int
-		DeviceID       string
-		ESPHomeVersion string
-		ProjectVersion string
-		IPAddress      string
-		LastState      map[string]point
+		debug           bool
+		clientEvents    *sse.Client
+		clientDB        influxdb2.Client
+		clientGotify    *gotifyClient.GotifyREST
+		gotifyToken     string
+		gotifyPriority  int
+		gotifyAllowList []string
+		writeAPI        api.WriteAPIBlocking
+		logger          *log.Logger
+		mu              sync.RWMutex
+		lastUpdate      time.Time
+		lastAttempt     time.Time
+		scrapeOK        bool
+		connected       bool
+		Uptime          int
+		DeviceID        string
+		ESPHomeVersion  string
+		ProjectVersion  string
+		IPAddress       string
+		LastState       map[string]point
 	}
 
 	point struct {
@@ -110,22 +111,23 @@ type (
 	}
 )
 
-func newExporter(logger *log.Logger, gotifyURL *url.URL, gotifyToken string, gotifyPriority int, eventsURL, dbURL, token, org, bucket string, debug bool) *exporter {
+func newExporter(logger *log.Logger, gotifyURL *url.URL, gotifyToken string, gotifyPriority int, gotifyAllowList string, eventsURL, dbURL, token, org, bucket string, debug bool) *exporter {
 	var clientGotify *gotifyClient.GotifyREST
 	if gotifyURL != nil {
 		clientGotify = gotify.NewClient(gotifyURL, &http.Client{})
 	}
 	db := influxdb2.NewClient(dbURL, token)
 	return &exporter{
-		logger:         logger,
-		clientGotify:   clientGotify,
-		clientEvents:   sse.NewClient(eventsURL),
-		clientDB:       db,
-		writeAPI:       db.WriteAPIBlocking(org, bucket),
-		debug:          debug,
-		gotifyToken:    gotifyToken,
-		gotifyPriority: gotifyPriority,
-		LastState:      make(map[string]point),
+		logger:          logger,
+		clientGotify:    clientGotify,
+		clientEvents:    sse.NewClient(eventsURL),
+		clientDB:        db,
+		writeAPI:        db.WriteAPIBlocking(org, bucket),
+		debug:           debug,
+		gotifyToken:     gotifyToken,
+		gotifyPriority:  gotifyPriority,
+		gotifyAllowList: strings.Split(gotifyAllowList, ","),
+		LastState:       make(map[string]point),
 	}
 }
 
@@ -356,15 +358,26 @@ func (e *exporter) binary_sensor(ctx context.Context, name string, msg *sse.Even
 		return fmt.Errorf("error writing point to InfluxDB for %q: %w", name, err)
 	}
 	if e.clientGotify != nil && binaryState.Value {
-		params := message.NewCreateMessageParams()
-		params.Body = &models.MessageExternal{
-			Title:    fmt.Sprintf("%s Opened", name),
-			Message:  fmt.Sprintf("%s was opened at %s", name, now.Format(time.RFC1123)),
-			Priority: e.gotifyPriority,
+		allow := len(e.gotifyAllowList) == 0
+		for _, allowed := range e.gotifyAllowList {
+			if strings.TrimSpace(allowed) == binaryState.NameID {
+				allow = true
+				break
+			}
 		}
-		_, err := e.clientGotify.Message.CreateMessage(params, auth.TokenAuth(e.gotifyToken))
-		if err != nil {
-			return fmt.Errorf("error sending Gotify notification for %q: %w", name, err)
+		if allow {
+			params := message.NewCreateMessageParams()
+			params.Body = &models.MessageExternal{
+				Title:    fmt.Sprintf("%s Opened", name),
+				Message:  fmt.Sprintf("%s was opened at %s", name, now.Format(time.RFC1123)),
+				Priority: e.gotifyPriority,
+			}
+			_, err := e.clientGotify.Message.CreateMessage(params, auth.TokenAuth(e.gotifyToken))
+			if err != nil {
+				return fmt.Errorf("error sending Gotify notification for %q: %w", name, err)
+			}
+		} else if e.debug {
+			e.logger.Printf("Gotify notification for %q not allowed by allowlist\n", name)
 		}
 	}
 	e.mu.Lock()
@@ -477,6 +490,7 @@ func main() {
 		gotifyEnable    = flag.Bool("gotify.enable", false, "Enable Gotify notifications.")
 		gotifyTokenPath = flag.String("gotify.token-path", "/run/secrets/gotify_token", "Path to file containing Gotify token.")
 		gotifyPriority  = flag.Int("gotify.priority", 5, "Priority of Gotify notifications.")
+		gotifyAllowList = flag.String("gotify.allowlist", "", "Comma-separated list of entity names to allow Gotify notifications for. If empty, all entities are allowed.")
 		eventsURL       = flag.String("events.url", "", "URL to subscribe to for receiving events.")
 		dbURL           = flag.String("db.url", "", "InfluxDB URL.")
 		dbTokenPath     = flag.String("db.token-path", "/run/secrets/influxdb_token", "Path to file containing InfluxDB token.")
@@ -516,7 +530,7 @@ func main() {
 			logger.Fatalf("Error parsing Gotify URL: %v", err)
 		}
 	}
-	exp := newExporter(logger, gotifyURLParsed, gotifyToken, *gotifyPriority, *eventsURL, *dbURL, token, *dbOrg, *dbBucket, *debug)
+	exp := newExporter(logger, gotifyURLParsed, gotifyToken, *gotifyPriority, *gotifyAllowList, *eventsURL, *dbURL, token, *dbOrg, *dbBucket, *debug)
 
 	ctx := context.Background()
 	go exp.Run(ctx)
