@@ -30,6 +30,13 @@ import (
 const namespace = "konnected"
 
 type (
+	Health struct {
+		Ok               bool   `json:"ok"`
+		Uptime           int    `json:"uptime"`
+		GotifyVersion    string `json:"gotify_version,omitempty"`
+		Influxdb2Version string `json:"influxdb2_version,omitempty"`
+	}
+
 	exporter struct {
 		debug          bool
 		clientEvents   *sse.Client
@@ -519,8 +526,35 @@ func main() {
 
 	http.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
 	http.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("ok\n"))
+		health := Health{
+			Ok:     true,
+			Uptime: exp.Uptime,
+		}
+		if exp.clientGotify != nil {
+			if versionResponse, err := exp.clientGotify.Version.GetVersion(nil); err != nil {
+				logger.Printf("Error getting Gotify version: %v", err)
+				health.GotifyVersion = err.Error()
+				health.Ok = false
+			} else {
+				health.GotifyVersion = versionResponse.Payload.Version
+			}
+		}
+		if exp.clientDB != nil {
+			if healthResponse, err := exp.clientDB.Health(ctx); err != nil {
+				logger.Printf("Error getting InfluxDB health: %v", err)
+				health.Influxdb2Version = err.Error()
+				health.Ok = false
+			} else {
+				health.Influxdb2Version = *healthResponse.Version
+			}
+		}
+		if !health.Ok {
+			w.WriteHeader(http.StatusServiceUnavailable)
+		} else {
+			w.WriteHeader(http.StatusOK)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(health)
 	})
 
 	listenAddress := net.JoinHostPort(*host, *port)
