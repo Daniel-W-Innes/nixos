@@ -77,17 +77,11 @@
       owner = "influxdb2";
       group = "influxdb2";
       mode = "0400";
-    };  
+    };
     konnected-gotify-token = lib.mkIf config.services.prometheus.exporters.konnected.enable {
       file = secretsDir + /konnected-gotify-token.age;
       owner = "root";
       group = "root";
-      mode = "0400";
-    };
-    gotify-bridge-token = lib.mkIf config.services.gotify.enable {
-      file = secretsDir + /gotify-bridge-token.age;
-      owner = "alertmanager-gotify";
-      group = "alertmanager-gotify";
       mode = "0400";
     };
     grafana-gotify-token = lib.mkIf config.services.gotify.enable {
@@ -139,12 +133,6 @@
               jsonData.version = "Flux";
               jsonData.organization = "visibility";
             }
-            {
-              name = "Alertmanager";
-              type = "alertmanager";
-              access = "proxy";
-              url = "http://localhost:${toString config.services.prometheus.alertmanager.port}";
-            }
           ];
         };
         alerting.contactPoints.settings = {
@@ -160,11 +148,12 @@
                     url = "https://gotify.lc.brotherwolf.ca/message?token=$__file{${config.age.secrets.grafana-gotify-token.path}}";
                     httpMethod = "POST";
                     contentType = "application/json";
-                    body = ''{
-                      "title": "{{ .CommonAnnotations.summary }}",
-                      "message": "{{ .CommonAnnotations.description }}",
-                      "priority": 2
-                    }'';
+                    body = ''
+                      {
+                        "title": "{{ .CommonAnnotations.summary }}",
+                        "message": "{{ .CommonAnnotations.description }}",
+                        "priority": 2
+                      }'';
                   };
                 }
               ];
@@ -553,47 +542,6 @@
           gotifyURL = "https://gotify.lc.brotherwolf.ca";
           gotifyTokenPath = config.age.secrets.konnected-gotify-token.path;
           gotifyAllowList = "Frontdoor,Backdoor";
-        };
-      };
-      alertmanagerGotify = {
-        enable = true;
-        port = 49217;
-        extendedDetails = true;
-        dispatchErrors = true;
-
-        messageAnnotation = "description";
-        titleAnnotation = "summary";
-
-        gotifyEndpoint = {
-          host = "gotify.lc.brotherwolf.ca";
-          port = 443;
-          tls = true;
-        };
-        metrics.username = "admin";
-        environmentFile = config.age.secrets.gotify-bridge-token.path;
-      };
-      alertmanager = {
-        enable = true;
-        port = 49218;
-        configuration = {
-          route = {
-            group_by = [ "alertname" ];
-            group_wait = "30s";
-            group_interval = "5m";
-            repeat_interval = "4h";
-            receiver = "gotify-bridge";
-          };
-          receivers = [
-            {
-              name = "gotify-bridge";
-              webhook_configs = [
-                {
-                  url = "http://localhost:${toString config.services.prometheus.alertmanagerGotify.port}/gotify_webhook";
-                  send_resolved = true;
-                }
-              ];
-            }
-          ];
         };
       };
     };
