@@ -10,7 +10,7 @@ let
 
   package = pkgs.buildGoModule {
     pname = "konnected-exporter";
-    version = "0.3.1";
+    version = "0.3.2";
     src = ./konnected-exporter;
     vendorHash = "sha256-y6XrU+3q8qTrABhHulrJYFLT96SI3OytOk7mFqsQC60=";
   };
@@ -119,7 +119,8 @@ in
         ];
         LoadCredential = [
           "db-token:${cfg.dbTokenPath}"
-          (lib.optionalString cfg.gotifyEnabled "gotify-token:${cfg.gotifyTokenPath}")
+        ] ++ lib.optionals cfg.gotifyEnabled [
+          "gotify-token:${cfg.gotifyTokenPath}"
         ];
         Restart = "on-failure";
         RestartSec = 5;
