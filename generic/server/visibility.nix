@@ -548,7 +548,6 @@
         };
         konnected = {
           enable = true;
-          debug = true;
           eventsURL = "http://alarm.lc.brotherwolf.ca/events";
           dbOrg = "visibility";
           dbBucket = "konnected";
@@ -556,6 +555,7 @@
           gotifyEnabled = true;
           gotifyURL = "https://gotify.lc.brotherwolf.ca";
           gotifyTokenPath = config.age.secrets.konnected-gotify-token.path;
+          gotifyAllowList = "Frontdoor,Backdoor";
         };
       };
       alertmanagerGotify = {
