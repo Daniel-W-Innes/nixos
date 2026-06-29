@@ -364,7 +364,7 @@ func (e *exporter) binary_sensor(ctx context.Context, name string, msg *sse.Even
 	if e.clientGotify != nil && binaryState.Value {
 		allow := len(e.gotifyAllowList) == 0
 		for _, allowed := range e.gotifyAllowList {
-			if strings.TrimSpace(allowed) == binaryState.NameID {
+			if strings.TrimSpace(allowed) == name {
 				allow = true
 				break
 			}
