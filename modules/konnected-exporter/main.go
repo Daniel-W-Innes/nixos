@@ -377,7 +377,7 @@ func (e *exporter) binary_sensor(ctx context.Context, name string, msg *sse.Even
 				return fmt.Errorf("error sending Gotify notification for %q: %w", name, err)
 			}
 		} else if e.debug {
-			e.logger.Printf("Gotify notification for %q not allowed by allowlist\n", name)
+			e.logger.Printf("Gotify notification for %q not allowed by allowlist %q\n", name, e.gotifyAllowList)
 		}
 	}
 	e.mu.Lock()
