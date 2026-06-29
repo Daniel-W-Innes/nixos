@@ -10,7 +10,7 @@ let
 
   package = pkgs.buildGoModule {
     pname = "konnected-exporter";
-    version = "0.5.0";
+    version = "0.5.1";
     src = ./konnected-exporter;
     vendorHash = "sha256-y6XrU+3q8qTrABhHulrJYFLT96SI3OytOk7mFqsQC60=";
   };
@@ -29,6 +29,12 @@ in
       type = lib.types.port;
       default = 9877;
       description = "Port to bind the exporter to.";
+    };
+
+    gotifyAllowList = lib.mkOption {
+      type = lib.types.str;
+      default = "";
+      description = "Comma-separated list of entity names to allow Gotify notifications for. If empty, all entities are allowed.";
     };
 
     gotifyURL = lib.mkOption {
@@ -111,6 +117,7 @@ in
           "--db.token-path=%d/db-token"
           "--db.org=${cfg.dbOrg}"
           "--db.bucket=${cfg.dbBucket}"
+          (lib.optionalString cfg.gotifyEnabled "--gotify.allowlist=${cfg.gotifyAllowList}")
           (lib.optionalString cfg.gotifyEnabled "--gotify.url=${cfg.gotifyURL}")
           (lib.optionalString cfg.gotifyEnabled "--gotify.token-path=%d/gotify-token")
           (lib.optionalString cfg.gotifyEnabled "--gotify.priority=${toString cfg.gotifyPriority}")
