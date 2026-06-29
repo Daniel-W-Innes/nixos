@@ -155,13 +155,16 @@
               receivers = [
                 {
                   uid = "gotify-direct-uid";
-                  type = "gotify";
+                  type = "webhook";
                   settings = {
-                    url = "https://gotify.lc.brotherwolf.ca";
-                    token = "$__file{${config.age.secrets.grafana-gotify-token.path}}";
-                    priority = "2";
-                    title = "{{ .CommonAnnotations.summary }}";
-                    message = "{{ .CommonAnnotations.description }}";
+                    url = "https://gotify.lc.brotherwolf.ca/message?token=$__file{${config.age.secrets.grafana-gotify-token.path}}";
+                    httpMethod = "POST";
+                    contentType = "application/json";
+                    body = ''{
+                      "title": "{{ .CommonAnnotations.summary }}",
+                      "message": "{{ .CommonAnnotations.description }}",
+                      "priority": 2
+                    }'';
                   };
                 }
               ];
