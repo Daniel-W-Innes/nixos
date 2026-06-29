@@ -15,11 +15,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gotify/go-api-client/v2/auth"
-	gotifyClient "github.com/gotify/go-api-client/v2/client"
-	"github.com/gotify/go-api-client/v2/client/message"
-	"github.com/gotify/go-api-client/v2/gotify"
-	"github.com/gotify/go-api-client/v2/models"
+	gotifyClient "github.com/daniel-w-innes/nixos-konnected-exporter/gotify/client"
+	"github.com/daniel-w-innes/nixos-konnected-exporter/gotify/client/message"
+	"github.com/daniel-w-innes/nixos-konnected-exporter/gotify/models"
+	runtimeClient "github.com/go-openapi/runtime/client"
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
 	"github.com/influxdata/influxdb-client-go/v2/api"
 	"github.com/prometheus/client_golang/prometheus"
@@ -41,9 +40,9 @@ type (
 		debug           bool
 		clientEvents    *sse.Client
 		clientDB        influxdb2.Client
-		clientGotify    *gotifyClient.GotifyREST
+		clientGotify    *gotifyClient.GotifyRESTAPI
 		gotifyToken     string
-		gotifyPriority  int
+		gotifyPriority  int64
 		gotifyAllowList []string
 		writeAPI        api.WriteAPIBlocking
 		logger          *log.Logger
@@ -111,10 +110,11 @@ type (
 	}
 )
 
-func newExporter(logger *log.Logger, gotifyURL *url.URL, gotifyToken string, gotifyPriority int, gotifyAllowList string, eventsURL, dbURL, token, org, bucket string, debug bool) *exporter {
-	var clientGotify *gotifyClient.GotifyREST
+func newExporter(logger *log.Logger, gotifyURL *url.URL, gotifyToken string, gotifyPriority int64, gotifyAllowList string, eventsURL, dbURL, token, org, bucket string, debug bool) *exporter {
+	var clientGotify *gotifyClient.GotifyRESTAPI
 	if gotifyURL != nil {
-		clientGotify = gotify.NewClient(gotifyURL, &http.Client{})
+		runtime := runtimeClient.NewWithClient(gotifyURL.Host, gotifyURL.Path, []string{gotifyURL.Scheme}, &http.Client{})
+		clientGotify = gotifyClient.New(runtime, nil)
 	}
 	db := influxdb2.NewClient(dbURL, token)
 	list := []string{}
@@ -373,10 +373,10 @@ func (e *exporter) binary_sensor(ctx context.Context, name string, msg *sse.Even
 			params := message.NewCreateMessageParams()
 			params.Body = &models.MessageExternal{
 				Title:    fmt.Sprintf("%s Opened", name),
-				Message:  fmt.Sprintf("%s was opened at %s", name, now.Format(time.RFC1123)),
+				Message:  new(fmt.Sprintf("%s was opened at %s", name, now.Format(time.RFC1123))),
 				Priority: e.gotifyPriority,
 			}
-			_, err := e.clientGotify.Message.CreateMessage(params, auth.TokenAuth(e.gotifyToken))
+			_, err := e.clientGotify.Message.CreateMessage(params, runtimeClient.APIKeyAuth("X-Gotify-Key", "header", e.gotifyToken))
 			if err != nil {
 				return fmt.Errorf("error sending Gotify notification for %q: %w", name, err)
 			}
@@ -493,7 +493,7 @@ func main() {
 		gotifyURL       = flag.String("gotify.url", "", "URL to Gotify server.")
 		gotifyEnable    = flag.Bool("gotify.enable", false, "Enable Gotify notifications.")
 		gotifyTokenPath = flag.String("gotify.token-path", "/run/secrets/gotify_token", "Path to file containing Gotify token.")
-		gotifyPriority  = flag.Int("gotify.priority", 5, "Priority of Gotify notifications.")
+		gotifyPriority  = flag.Int64("gotify.priority", 5, "Priority of Gotify notifications.")
 		gotifyAllowList = flag.String("gotify.allowlist", "", "Comma-separated list of entity names to allow Gotify notifications for. If empty, all entities are allowed.")
 		eventsURL       = flag.String("events.url", "", "URL to subscribe to for receiving events.")
 		dbURL           = flag.String("db.url", "", "InfluxDB URL.")
@@ -554,7 +554,7 @@ func main() {
 				health.GotifyVersion = err.Error()
 				health.Ok = false
 			} else {
-				health.GotifyVersion = versionResponse.Payload.Version
+				health.GotifyVersion = *versionResponse.Payload.Version
 			}
 		}
 		if exp.clientDB != nil {

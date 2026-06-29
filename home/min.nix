@@ -70,6 +70,8 @@
         ns = "nh os switch -a";
         nt = "nh os test --dry";
         nc = "nh clean all -a -k 5 -K 5days";
+        
+        ngvh = "go mod tidy && go mod vendor && go mod verify && nix hash path vendor && rm -rf vendor";
 
         mkdir = "mkdir -p";
       };

@@ -12,7 +12,7 @@ let
     pname = "konnected-exporter";
     version = "0.5.3";
     src = ./konnected-exporter;
-    vendorHash = "sha256-y6XrU+3q8qTrABhHulrJYFLT96SI3OytOk7mFqsQC60=";
+    vendorHash = "sha256-xkCxT+hILZcN5pXp1bV2rFJQwfuUyAG04ISs9XxxOzE=";
   };
 in
 {
