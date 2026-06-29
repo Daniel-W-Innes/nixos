@@ -77,6 +77,12 @@
       owner = "influxdb2";
       group = "influxdb2";
       mode = "0400";
+    };  
+    konnected-gotify-token = lib.mkIf config.services.prometheus.exporters.konnected.enable {
+      file = secretsDir + /konnected-gotify-token.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
     };
     gotify-bridge-token = lib.mkIf config.services.gotify.enable {
       file = secretsDir + /gotify-bridge-token.age;
@@ -546,6 +552,9 @@
           dbOrg = "visibility";
           dbBucket = "konnected";
           dbTokenPath = config.age.secrets.konnected-influxdb-token.path;
+          gotifyEnabled = true;
+          gotifyURL = "https://gotify.lc.brotherwolf.ca";
+          gotifyTokenPath = config.age.secrets.konnected-gotify-token.path;
         };
       };
       alertmanagerGotify = {

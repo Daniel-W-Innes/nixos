@@ -130,4 +130,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "konnected-gotify-token.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
