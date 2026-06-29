@@ -548,6 +548,7 @@
         };
         konnected = {
           enable = true;
+          debug = true;
           eventsURL = "http://alarm.lc.brotherwolf.ca/events";
           dbOrg = "visibility";
           dbBucket = "konnected";
