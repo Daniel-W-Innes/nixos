@@ -126,7 +126,8 @@ in
         ];
         LoadCredential = [
           "db-token:${cfg.dbTokenPath}"
-        ] ++ lib.optionals cfg.gotifyEnabled [
+        ]
+        ++ lib.optionals cfg.gotifyEnabled [
           "gotify-token:${cfg.gotifyTokenPath}"
         ];
         Restart = "on-failure";
