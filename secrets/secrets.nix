@@ -134,4 +134,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "grafana-gotify-token.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
