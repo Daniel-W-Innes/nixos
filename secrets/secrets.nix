@@ -134,4 +134,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "google-oauth2.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
