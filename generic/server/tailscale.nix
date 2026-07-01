@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ lib, ... }:
 
 {
   # IP forwarding required for exit node / subnet router
@@ -35,37 +35,14 @@
       "--webclient"
     ];
   };
-  systemd.services.tailscale-dnsmasq-ip = {
-    description = "Extract Tailscale IPv4 and write dnsmasq address file";
-    after = [ "tailscaled.service" ];
-    wants = [ "tailscaled.service" ];
-    before = [ "dnsmasq.service" ];
-    requiredBy = [ "dnsmasq.service" ];
-    path = [ pkgs.tailscale ];
-    script = ''
-      set -e
-      mkdir -p /run/tailscale-dnsmasq
-      IP=$(${pkgs.tailscale}/bin/tailscale ip -4 2>/dev/null)
-      if [ -z "$IP" ]; then
-        echo "WARNING: tailscale ip -4 returned empty" >&2
-        exit 0   # don't break the boot; dnsmasq will start without the wildcard
-      fi
-      echo "address=/lc.brotherwolf.ca/$IP" > "/run/tailscale-dnsmasq/address.conf"
-    '';
-    serviceConfig = {
-      Type = "oneshot";
-      RuntimeDirectory = "tailscale-dnsmasq";
-      RemainAfterExit = true;
-    };
-  };
 
   services.dnsmasq = {
     enable = true;
     settings = {
       interface = "tailscale0";
-      bind-interfaces = true;
-      no-resolv = true;
-      conf-dir = "/run/tailscale-dnsmasq,*.conf";
+      "bind-interfaces" = true;
+      "no-resolv" = true;
+      address = "/lc.brotherwolf.ca/100.71.182.122";
     };
   };
 }
