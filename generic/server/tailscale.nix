@@ -1,8 +1,8 @@
-_:
+{ lib, ... }:
 
 {
   # IP forwarding required for exit node / subnet router
-  boot.kernel.sysctl = {
+  boot.kernel.sysctl = lib.mkDefault {
     "net.ipv4.ip_forward" = true;
     "net.ipv6.conf.all.forwarding" = true;
 
