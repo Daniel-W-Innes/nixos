@@ -33,6 +33,9 @@
       "--accept-routes=false"
       "--accept-dns=false"   
     ];
+    extraDaemonFlags = [
+      "--metrics-addr=127.0.0.1:9101"
+    ];
   };
   systemd.services.tailscale-dnsmasq-ip = {
     description = "Extract Tailscale IPv4 and write dnsmasq address file";

@@ -482,7 +482,7 @@
           job_name = "tailscale";
           static_configs = [
             {
-              targets = [ "localhost:9250" ];
+              targets = [ "localhost:9101" ];
             }
           ];
         }
@@ -562,10 +562,6 @@
         dnsmasq = {
           enable = true;
           port = 9153;
-        };
-        tailscale = {
-          enable = true;
-          port = 9250;
         };
       };
     };
