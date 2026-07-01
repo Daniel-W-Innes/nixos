@@ -15,5 +15,6 @@ _:
     ./meilisearch.nix
     ./searx.nix
     ./weather.nix
+    ./tailscale.nix
   ];
 }
