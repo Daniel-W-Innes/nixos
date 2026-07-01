@@ -30,8 +30,6 @@
     extraUpFlags = [
       "--advertise-exit-node"
       "--ssh=false"
-      "--accept-routes=false"
-      "--accept-dns=false"
       "--webclient"
     ];
   };
