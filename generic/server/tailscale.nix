@@ -31,10 +31,8 @@
       "--advertise-exit-node"
       "--ssh=false"
       "--accept-routes=false"
-      "--accept-dns=false"   
-    ];
-    extraDaemonFlags = [
-      "--metrics-addr=127.0.0.1:9101"
+      "--accept-dns=false"
+      "--webclient"
     ];
   };
   systemd.services.tailscale-dnsmasq-ip = {

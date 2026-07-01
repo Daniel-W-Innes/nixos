@@ -482,7 +482,7 @@
           job_name = "tailscale";
           static_configs = [
             {
-              targets = [ "localhost:9101" ];
+              targets = [ "localhost:5252" ];
             }
           ];
         }
