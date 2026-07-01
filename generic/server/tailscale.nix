@@ -38,7 +38,6 @@
 
   services.dnsmasq = {
     enable = true;
-    listenAddress = [];
     settings = {
       "except-interface" = "lo";
       interface = "tailscale0";
