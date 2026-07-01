@@ -470,6 +470,22 @@
             }
           ];
         }
+        {
+          job_name = "dnsmasq";
+          static_configs = [
+            {
+              targets = [ "localhost:9153" ];
+            }
+          ];
+        }
+        {
+          job_name = "tailscale";
+          static_configs = [
+            {
+              targets = [ "localhost:9250" ];
+            }
+          ];
+        }
       ];
       exporters = {
         exportarr-sonarr = {
@@ -542,6 +558,14 @@
           gotifyURL = "https://gotify.lc.brotherwolf.ca";
           gotifyTokenPath = config.age.secrets.konnected-gotify-token.path;
           gotifyAllowList = "Frontdoor,Backdoor";
+        };
+        dnsmasq = {
+          enable = true;
+          port = 9153;
+        };
+        tailscale = {
+          enable = true;
+          port = 9250;
         };
       };
     };
