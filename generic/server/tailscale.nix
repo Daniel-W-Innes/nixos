@@ -62,11 +62,7 @@
       interface = "tailscale0";
       bind-interfaces = true;
       no-resolv = true;
+      conf-dir = "/run/tailscale-dnsmasq,*.conf";
     };
-    # The dynamic file is loaded here via conf-dir
-    # (dnsmasq automatically reads all *.conf files in this directory)
-    extraConfig = ''
-      conf-dir=/run/tailscale-dnsmasq,*.conf
-    '';
   };
 }
