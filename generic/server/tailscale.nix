@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ pkgs, lib, ... }:
 
 {
   # IP forwarding required for exit node / subnet router
@@ -14,10 +14,15 @@
   };
 
   # Allow only Traefik's entry points on the Tailscale interface
-  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
-    80 # web (HTTP -> HTTPS redirect)
-    443 # websecure (HTTPS)
-  ];
+  networking.firewall.interfaces.tailscale0 = {
+    allowedTCPPorts = [
+      80 # web (HTTP -> HTTPS redirect)
+      443 # websecure (HTTPS)
+    ];
+    allowedUDPPorts = [
+      53 # DNS
+    ];
+  };
 
   services.tailscale = {
     enable = true;
@@ -25,7 +30,43 @@
     extraUpFlags = [
       "--advertise-exit-node"
       "--ssh=false"
-      # "--advertise-routes=192.168.1.0/24"
     ];
+  };
+  systemd.services.tailscale-dnsmasq-ip = {
+    description = "Extract Tailscale IPv4 and write dnsmasq address file";
+    after = [ "tailscaled.service" ];
+    wants = [ "tailscaled.service" ];
+    before = [ "dnsmasq.service" ];
+    requiredBy = [ "dnsmasq.service" ];
+    path = [ pkgs.tailscale ];
+    script = ''
+      set -e
+      mkdir -p /run/tailscale-dnsmasq
+      IP=$(${pkgs.tailscale}/bin/tailscale ip -4 2>/dev/null)
+      if [ -z "$IP" ]; then
+        echo "WARNING: tailscale ip -4 returned empty" >&2
+        exit 0   # don't break the boot; dnsmasq will start without the wildcard
+      fi
+      echo "address=/lc.brotherwolf.ca/$IP" > "/run/tailscale-dnsmasq/address.conf"
+    '';
+    serviceConfig = {
+      Type = "oneshot";
+      RuntimeDirectory = "tailscale-dnsmasq";
+      RemainAfterExit = true;
+    };
+  };
+
+  services.dnsmasq = {
+    enable = true;
+    settings = {
+      interface = "tailscale0";
+      bind-interfaces = true;
+      no-resolv = true;
+    };
+    # The dynamic file is loaded here via conf-dir
+    # (dnsmasq automatically reads all *.conf files in this directory)
+    extraConfig = ''
+      conf-dir=/run/tailscale-dnsmasq,*.conf
+    '';
   };
 }
