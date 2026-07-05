@@ -134,4 +134,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "mosquitto-hashed-passwd-shelly.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }

@@ -1,8 +1,8 @@
 { config, secretsDir, ... }:
 
 {
-  age.secrets.mosquitto-passwd = {
-    file = secretsDir + "/mosquitto-passwd.age";
+  age.secrets.mosquitto-hashed-passwd-shelly = {
+    file = secretsDir + "/mosquitto-hashed-passwd-shelly.age";
     mode = "0400";
     owner = "mosquitto";
     group = "mosquitto";
@@ -15,7 +15,7 @@
         port = 1883;
         settings.allow_anonymous = false;
         users."myuser" = {
-          hashedPasswordFile = config.age.secrets.mosquitto-passwd.path;
+          hashedPasswordFile = config.age.secrets.mosquitto-hashed-passwd-shelly;
           acl = [ "readwrite #" ];
         };
       }
