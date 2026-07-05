@@ -134,4 +134,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "shelly-metrics.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }

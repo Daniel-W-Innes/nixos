@@ -90,6 +90,12 @@
       group = "grafana";
       mode = "0400";
     };
+    shelly-metrics = lib.mkIf config.services.prometheus.exporters.shelly.enable {
+      file = secretsDir + /shelly-metrics.age;
+      owner = "root";
+      group = "root"; 
+      mode = "0400";
+    };
   };
 
   services = {
@@ -470,6 +476,14 @@
             }
           ];
         }
+        {
+          job_name = "shelly";
+          static_configs = [
+            {
+              targets = [ "localhost:9882" ];
+            }
+          ];
+        }
       ];
       exporters = {
         exportarr-sonarr = {
@@ -514,6 +528,11 @@
           enable = true;
           port = 9222;
         };
+        shelly = {
+          enable = true;
+          port = 9882;
+          metrics-file = config.age.secrets.shelly-metrics.path;
+                  };
         unpoller = {
           enable = true;
           port = 9130;
