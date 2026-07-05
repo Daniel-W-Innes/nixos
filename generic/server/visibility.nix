@@ -93,7 +93,7 @@
     shelly-metrics = lib.mkIf config.services.prometheus.exporters.shelly.enable {
       file = secretsDir + /shelly-metrics.age;
       owner = "root";
-      group = "root"; 
+      group = "root";
       mode = "0400";
     };
   };
@@ -532,7 +532,7 @@
           enable = true;
           port = 9882;
           metrics-file = config.age.secrets.shelly-metrics.path;
-                  };
+        };
         unpoller = {
           enable = true;
           port = 9130;
