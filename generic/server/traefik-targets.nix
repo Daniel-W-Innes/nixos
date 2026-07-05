@@ -135,7 +135,7 @@ in
   };
   mosquitto = {
     inherit (config.services.mosquitto) enable;
-    inherit (config.services.mosquitto.listeners [ 0 ]) port;
+    port = 1883;
   };
 }
 // arrTargetData
