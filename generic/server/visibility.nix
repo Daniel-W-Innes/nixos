@@ -531,7 +531,7 @@
         shelly = {
           enable = true;
           port = 9882;
-          metrics-file = "/run/credentials/shelly-exporter.service/shelly-metrics";
+          metrics-file = "/run/credentials/prometheus-shelly-exporter.service/shelly-metrics";
         };
         unpoller = {
           enable = true;
@@ -589,7 +589,7 @@
       };
     };
   };
-  systemd.services.shelly-exporter = lib.mkIf config.services.prometheus.exporters.shelly.enable {
+  systemd.services.prometheus-shelly-exporter = lib.mkIf config.services.prometheus.exporters.shelly.enable {
     serviceConfig.LoadCredential = [
       "shelly-metrics:${config.age.secrets.shelly-metrics.path}"
     ];
