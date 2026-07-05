@@ -133,5 +133,9 @@ in
     inherit (config.services.prometheus.alertmanager) enable port;
     healthCheck = readyHealthCheck;
   };
+  mosquitto = {
+    inherit (config.services.mosquitto) enable;
+    inherit (config.services.mosquitto.settings.listener[0]) port;
+  };
 }
 // arrTargetData
