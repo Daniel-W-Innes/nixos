@@ -10,17 +10,15 @@
 
   services.mosquitto = {
     enable = true;
-    settings = {
-      per_listener_settings = false;
-      listener = [ { port = 1883; } ];
-
-      password_file = config.age.secrets.mosquitto-passwd.path;
-      allow_anonymous = false;
-
-      prometheus = true;
-      prometheus_port = 1884;
-      prometheus_listen = "127.0.0.1";
-      prometheus_metrics_path = "/metrics";
-    };
+    listeners = [
+      {
+        port = 1883;
+        settings.allow_anonymous = false;
+        users."myuser" = {
+          hashedPasswordFile = config.age.secrets.mosquitto-passwd.path;
+          acl = [ "readwrite #" ];
+        };
+      }
+    ];
   };
 }

@@ -470,14 +470,6 @@
             }
           ];
         }
-        {
-          job_name = "mosquitto";
-          static_configs = [
-            {
-              targets = [ "localhost:1884" ];
-            }
-          ];
-        }
       ];
       exporters = {
         exportarr-sonarr = {
