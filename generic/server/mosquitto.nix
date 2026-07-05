@@ -14,8 +14,8 @@
       {
         port = 1883;
         settings.allow_anonymous = false;
-        users."myuser" = {
-          hashedPasswordFile = config.age.secrets.mosquitto-hashed-passwd-shelly;
+        users."shelly" = {
+          hashedPasswordFile = config.age.secrets.mosquitto-hashed-passwd-shelly.path;
           acl = [ "readwrite #" ];
         };
       }
