@@ -71,13 +71,16 @@
         package = pkgs.prek;
       };
 
+      discoveredModules = nixpkgs.lib.pipe (builtins.readDir ./modules) [
+        nixpkgs.lib.attrNames
+        (builtins.sort nixpkgs.lib.lessThan)
+        (builtins.filter (name: nixpkgs.lib.hasSuffix ".nix" name))
+        (map (name: ./modules + "/${name}"))
+      ];
+
       sharedModules = [
         agenix.nixosModules.default
         nixos-facter-modules.nixosModules.facter
-        ./modules/airzone-exporter.nix
-        ./modules/openweathermap-exporter.nix
-        ./modules/konnected-exporter.nix
-        ./modules/bookorbit.nix
         home-manager.nixosModules.home-manager
         nix-index-database.nixosModules.nix-index
         lanzaboote.nixosModules.lanzaboote
@@ -127,7 +130,8 @@
                 system.stateVersion = stateVersion;
               }
             ]
-            ++ extraModules;
+            ++ extraModules
+            ++ discoveredModules;
         };
 
       hosts = {
