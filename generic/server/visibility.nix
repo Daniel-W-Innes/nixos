@@ -528,11 +528,6 @@
           enable = true;
           port = 9222;
         };
-        shelly = {
-          enable = true;
-          port = 9882;
-          metrics-file = "/run/credentials/prometheus-shelly-exporter.service/shelly-metrics";
-        };
         unpoller = {
           enable = true;
           port = 9130;
@@ -588,11 +583,6 @@
         };
       };
     };
-  };
-  systemd.services.prometheus-shelly-exporter = lib.mkIf config.services.prometheus.exporters.shelly.enable {
-    serviceConfig.LoadCredential = [
-      "shelly-metrics:${config.age.secrets.shelly-metrics.path}"
-    ];
   };
   virtualisation.oci-containers.containers = {
     mc-monitor-exporter = {
