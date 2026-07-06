@@ -576,14 +576,11 @@ in
     lib.mkIf config.services.prometheus.exporters.shelly.enable
       {
         serviceConfig = {
-          LoadCredential = [
-            "shelly-account:${config.age.secrets.shelly-metrics.path}"
-          ];
           RuntimeDirectory = "prometheus-shelly-exporter";
           RuntimeDirectoryMode = "0700";
           ExecStartPre = [
             "${pkgs.jq}/bin/jq -s '.[0] * .[1]' \
-          \"/run/credentials/prometheus-shelly-exporter.service/shelly-account\" \
+          ${config.age.secrets.shelly-metrics.path} \
           ${shellyProductsMetricsFile} \
           > /run/prometheus-shelly-exporter/shelly-metrics-combined.json"
           ];
