@@ -575,6 +575,8 @@ in
   systemd.services.prometheus-shelly-exporter =
     lib.mkIf config.services.prometheus.exporters.shelly.enable
       {
+        after = [ "agenix.service" ];
+        wants = [ "agenix.service" ];
         serviceConfig = {
           RuntimeDirectory = "prometheus-shelly-exporter";
           RuntimeDirectoryMode = "0700";
