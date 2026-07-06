@@ -583,7 +583,7 @@ in
           RuntimeDirectoryMode = "0700";
           ExecStartPre = [
             "${pkgs.jq}/bin/jq -s '.[0] * .[1]' \
-          \"$CREDENTIALS_DIRECTORY/shelly-account\" \
+          \"/run/credentials/prometheus-shelly-exporter.service/shelly-account\" \
           ${shellyProductsMetricsFile} \
           > /run/prometheus-shelly-exporter/shelly-metrics-combined.json"
           ];
