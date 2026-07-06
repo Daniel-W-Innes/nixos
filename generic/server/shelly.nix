@@ -581,10 +581,10 @@ in
           RuntimeDirectory = "prometheus-shelly-exporter";
           RuntimeDirectoryMode = "0700";
           ExecStartPre = [
-            "${pkgs.jq}/bin/jq -s '.[0] * .[1]' \
-          ${config.age.secrets.shelly-metrics.path} \
-          ${shellyProductsMetricsFile} \
-          > /run/prometheus-shelly-exporter/shelly-metrics-combined.json"
+            "+${pkgs.jq}/bin/jq -s '.[0] * .[1]' \
+              ${config.age.secrets.shelly-metrics.path} \
+              ${shellyProductsMetricsFile} \
+              > /run/prometheus-shelly-exporter/shelly-metrics-combined.json"
           ];
         };
       };
