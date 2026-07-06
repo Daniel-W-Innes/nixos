@@ -578,14 +578,12 @@ in
         after = [ "agenix.service" ];
         wants = [ "agenix.service" ];
         serviceConfig = {
+          LoadCredential = "secrets.json:${config.age.secrets.shelly-metrics.path}";
           RuntimeDirectory = "prometheus-shelly-exporter";
           RuntimeDirectoryMode = "0700";
-          ExecStartPre = [
-            "+${pkgs.jq}/bin/jq -s '.[0] * .[1]' \
-              ${config.age.secrets.shelly-metrics.path} \
-              ${shellyProductsMetricsFile} \
-              > /run/prometheus-shelly-exporter/shelly-metrics-combined.json"
-          ];
+          ExecStartPre = ''
+              /bin/sh -c "${pkgs.jq}/bin/jq -s '.[0] * .[1]' ${shellyProductsMetricsFile} %d/secrets.json > /run/prometheus-shelly-exporter/shelly-metrics-combined.json"
+            '';
         };
       };
 }
