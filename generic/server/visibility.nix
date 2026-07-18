@@ -589,11 +589,13 @@
       };
     };
   };
-  systemd.services.prometheus-shelly-exporter = lib.mkIf config.services.prometheus.exporters.shelly.enable {
-    serviceConfig.LoadCredential = [
-      "shelly-metrics:${config.age.secrets.shelly-metrics.path}"
-    ];
-  };
+  systemd.services.prometheus-shelly-exporter =
+    lib.mkIf config.services.prometheus.exporters.shelly.enable
+      {
+        serviceConfig.LoadCredential = [
+          "shelly-metrics:${config.age.secrets.shelly-metrics.path}"
+        ];
+      };
   virtualisation.oci-containers.containers = {
     mc-monitor-exporter = {
       image = "docker.io/itzg/mc-monitor:latest";
