@@ -90,6 +90,12 @@
       group = "grafana";
       mode = "0400";
     };
+    google-oauth2 = lib.mkIf config.services.prometheus.exporters.google-health.enable {
+      file = secretsDir + /google-oauth2.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
   };
 
   services = {
@@ -542,6 +548,10 @@
           gotifyURL = "https://gotify.lc.brotherwolf.ca";
           gotifyTokenPath = config.age.secrets.konnected-gotify-token.path;
           gotifyAllowList = "Frontdoor,Backdoor";
+        };
+        google-health = {
+          enable = true;
+          credentialsFile = config.age.secrets.google-oauth2.path;
         };
       };
     };
