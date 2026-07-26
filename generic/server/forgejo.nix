@@ -1,4 +1,4 @@
-{ config, secretsDir, lib, ... }:
+{ config, secretsDir, lib, pkgs, ... }:
 
 {
   age.secrets = {
@@ -71,6 +71,11 @@
     after = [ "${config.virtualisation.oci-containers.backend}-forgejo-db.service" ];
     requires = [ "${config.virtualisation.oci-containers.backend}-forgejo-db.service" ];
     preStart = ''
+      until ${lib.getExe pkgs.postgresql} -h /run/forgejo-db -U forgejo -d forgejo -c "SELECT 1" &>/dev/null; do
+        echo "Waiting for PostgreSQL to be ready..."
+        sleep 1
+      done
+
       ${lib.getExe config.services.forgejo.package} admin user create \
         --admin \
         --email "root@localhost" \
