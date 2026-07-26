@@ -22,8 +22,8 @@
     };
     forgejo-runner-token = {
       file = secretsDir + /forgejo-runner-token.age;
-      owner = config.services.forgejo.user;
-      inherit (config.services.forgejo) group;
+      owner = config.services.gitea-actions-runner.instances.melon.user;
+      inherit (config.services.gitea-actions-runner.instances.melon) group;
       mode = "0400";
     };
   };
@@ -116,7 +116,7 @@
     '';
   };
 
-  systemd.services.forgejo-actions-runner = {
+  systemd.services."gitea-runner-melon" = {
     after = [ "forgejo.service" ];
     requires = [ "forgejo.service" ];
   };
