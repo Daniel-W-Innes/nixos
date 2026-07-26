@@ -12,7 +12,7 @@ let
     pname = "airzone-exporter";
     version = "0.1.1";
     src = ./airzone-exporter;
-    vendorHash = "sha256-oeCSKwDKVwvYQ1fjXXTwQSXNl/upDE3WAAk680vqh3U=";
+    vendorHash = "sha256-lreLQdUZwXlrtte/8/kvqrRqUdeh/2ynqc4XDr2sIa4=";
   };
 in
 {
