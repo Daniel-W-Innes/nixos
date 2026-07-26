@@ -86,7 +86,6 @@
       package = pkgs.forgejo-runner;
       instances.melon = {
         enable = true;
-        uuid = "021308b2-ecd1-4380-a9cb-3a0c724e8f09";
         name = "melon-forgejo-runner";
         tokenFile = config.age.secrets.forgejo-runner-token.path;
         url = "https://git.lc.brotherwolf.ca/";
@@ -96,6 +95,9 @@
           "alpine:docker://alpine:3.24"
           "melon:host"
         ];
+        settings = {
+          uuid = "021308b2-ecd1-4380-a9cb-3a0c724e8f09";
+        };
       };
     };
   };
