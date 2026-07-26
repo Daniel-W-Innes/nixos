@@ -1,17 +1,18 @@
 { config, secretsDir, lib, ... }:
 
 {
-  age.secrets.forgejo-admin-password = {
-    file = secretsDir + /forgejo-admin-password.age;
-    inherit (config.services.forgejo) user group;
-    mode = "0400";
-  };
-
-  age.secrets.forgejo-db-password = {
-    file = secretsDir + /forgejo-db-password.age;
-    owner = "999";
-    group = "999";
-    mode = "0400";
+  age.secrets = {
+    forgejo-admin-password = {
+      file = secretsDir + /forgejo-admin-password.age;
+      inherit (config.services.forgejo) user group;
+      mode = "0400";
+    };
+    forgejo-db-password = {
+      file = secretsDir + /forgejo-db-password.age;
+      user = "999";
+      group = "999";
+      mode = "0400";
+    };
   };
 
   users.users."${config.services.forgejo.user}".uid = 980;
