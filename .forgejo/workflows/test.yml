@@ -1,4 +1,4 @@
-name: Test NixOS Configurations
+name: Test Nix
 
 on:
   pull_request: {}
@@ -12,7 +12,6 @@ jobs:
         host: [melon]
     runs-on: ${{ matrix.host }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-      - name: Build system configuration for ${{ matrix.host }}
-        run: nh os build . 
+      - uses: actions/checkout@v7
+      - name: Build system configuration
+        run: nh os build .
