@@ -16,9 +16,6 @@
     };
   };
 
-  users.users."${config.services.forgejo.user}".uid = 980;
-  users.groups."${config.services.forgejo.group}".gid = 980;
-
   systemd.tmpfiles.rules = [
     "d /run/forgejo-db 0700 ${config.services.forgejo.user} ${config.services.forgejo.group}"
     "d /var/lib/forgejo/postgres 0700 999 999 -"
