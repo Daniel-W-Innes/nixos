@@ -146,4 +146,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "forgejo-runner-token.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }

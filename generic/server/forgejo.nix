@@ -14,6 +14,12 @@
       group = "999";
       mode = "0400";
     };
+    forgejo-runner-token = {
+      file = secretsDir + /forgejo-runner-token.age;
+      owner = config.services.forgejo.user;
+      inherit (config.services.forgejo) group;
+      mode = "0400";
+    };
   };
 
   systemd.tmpfiles.rules = [
@@ -65,7 +71,24 @@
         DEFAULT_ORG_VISIBILITY = "limited";
       };
       mailer.ENABLED = false;
+      actions.ENABLED = true;
     };
+  };
+
+services.gitea-actions-runner = {
+  package = pkgs.forgejo-runner;
+  instances.melon = {
+    enable = true;
+    uuid = "021308b2-ecd1-4380-a9cb-3a0c724e8f09";
+    name = "melon-forgejo-runner";
+    tokenFile = config.age.secrets.forgejo-runner-token.path;
+    url = "https://git.lc.brotherwolf.ca/";
+    labels = [
+      "golang:docker://golang:1.26.5-alpine3.24"
+      "nixos-latest:docker://nixos/nix"
+      "alpine:docker://alpine:3.24"
+      "melon:host"
+    ];
   };
 
   systemd.services.forgejo = {
@@ -83,5 +106,10 @@
         --username Daniel-W-Innes \
         --password "$(tr -d '\n' < ${config.age.secrets.forgejo-admin-password.path})" || true
     '';
+  };
+
+  systemd.services.forgejo-actions-runner = {
+    after = [ "forgejo.service" ];
+    requires = [ "forgejo.service" ];
   };
 }
