@@ -1,4 +1,10 @@
-{ config, secretsDir, lib, pkgs, ... }:
+{
+  config,
+  secretsDir,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   age.secrets = {
@@ -41,54 +47,57 @@
     ];
   };
 
-  services.forgejo = {
-    enable = true;
-    package = pkgs.forgejo;
-    database = {
-      createDatabase = false;
-      socket = "/run/forgejo-db";
-      type = "postgres";
-    };
-    dump = {
+  services = {
+    forgejo = {
       enable = true;
-      type = "tar.zst";
-      age = "7d";
-      interval = "02:00";
-    };
-    settings = {
-      server = {
-        DOMAIN = "git.lc.brotherwolf.ca";
-        ROOT_URL = "https://git.lc.brotherwolf.ca/";
-        HTTP_PORT = 53505;
-        HTTP_ADDR = "127.0.0.1";
-        SSH_PORT = lib.head config.services.openssh.ports;
+      package = pkgs.forgejo;
+      database = {
+        createDatabase = false;
+        socket = "/run/forgejo-db";
+        type = "postgres";
       };
-      service = {
-        DISABLE_REGISTRATION = true;
-        REQUIRE_SIGNIN_VIEW = true;
-        ENABLE_BASIC_AUTHENTICATION = false;
-        DEFAULT_USER_VISIBILITY = "limited";
-        DEFAULT_ORG_VISIBILITY = "limited";
+      dump = {
+        enable = true;
+        type = "tar.zst";
+        age = "7d";
+        interval = "02:00";
       };
-      mailer.ENABLED = false;
-      actions.ENABLED = true;
+      settings = {
+        server = {
+          DOMAIN = "git.lc.brotherwolf.ca";
+          ROOT_URL = "https://git.lc.brotherwolf.ca/";
+          HTTP_PORT = 53505;
+          HTTP_ADDR = "127.0.0.1";
+          SSH_PORT = lib.head config.services.openssh.ports;
+        };
+        service = {
+          DISABLE_REGISTRATION = true;
+          REQUIRE_SIGNIN_VIEW = true;
+          ENABLE_BASIC_AUTHENTICATION = false;
+          DEFAULT_USER_VISIBILITY = "limited";
+          DEFAULT_ORG_VISIBILITY = "limited";
+        };
+        mailer.ENABLED = false;
+        actions.ENABLED = true;
+      };
     };
-  };
 
-services.gitea-actions-runner = {
-  package = pkgs.forgejo-runner;
-  instances.melon = {
-    enable = true;
-    uuid = "021308b2-ecd1-4380-a9cb-3a0c724e8f09";
-    name = "melon-forgejo-runner";
-    tokenFile = config.age.secrets.forgejo-runner-token.path;
-    url = "https://git.lc.brotherwolf.ca/";
-    labels = [
-      "golang:docker://golang:1.26.5-alpine3.24"
-      "nixos-latest:docker://nixos/nix"
-      "alpine:docker://alpine:3.24"
-      "melon:host"
-    ];
+    gitea-actions-runner = {
+      package = pkgs.forgejo-runner;
+      instances.melon = {
+        enable = true;
+        uuid = "021308b2-ecd1-4380-a9cb-3a0c724e8f09";
+        name = "melon-forgejo-runner";
+        tokenFile = config.age.secrets.forgejo-runner-token.path;
+        url = "https://git.lc.brotherwolf.ca/";
+        labels = [
+          "golang:docker://golang:1.26.5-alpine3.24"
+          "nixos-latest:docker://nixos/nix"
+          "alpine:docker://alpine:3.24"
+          "melon:host"
+        ];
+      };
+    };
   };
 
   systemd.services.forgejo = {
