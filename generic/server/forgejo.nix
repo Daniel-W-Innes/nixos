@@ -4,12 +4,13 @@
   age.secrets = {
     forgejo-admin-password = {
       file = secretsDir + /forgejo-admin-password.age;
-      inherit (config.services.forgejo) user group;
+      owner = config.services.forgejo.user;
+      inherit (config.services.forgejo) group;
       mode = "0400";
     };
     forgejo-db-password = {
       file = secretsDir + /forgejo-db-password.age;
-      user = "999";
+      owner = "999";
       group = "999";
       mode = "0400";
     };
