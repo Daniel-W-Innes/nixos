@@ -22,8 +22,8 @@
     };
     forgejo-runner-token = {
       file = secretsDir + /forgejo-runner-token.age;
-      owner = config.services.gitea-actions-runner.instances.melon.user;
-      inherit (config.services.gitea-actions-runner.instances.melon) group;
+      owner = "root";
+      group = "root";
       mode = "0400";
     };
   };
