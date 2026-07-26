@@ -79,10 +79,6 @@
         --email "root@localhost" \
         --username daniel \
         --password "$(tr -d '\n' < ${config.age.secrets.forgejo-admin-password.path})" || true
-
-      ${lib.getExe config.services.forgejo.package} admin user change-password \
-        --username daniel \
-        --password "$(tr -d '\n' < ${config.age.secrets.forgejo-admin-password.path})" || true
     '';
   };
 }
