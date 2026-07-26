@@ -63,7 +63,6 @@
         DISABLE_REGISTRATION = true;
         REQUIRE_SIGNIN_VIEW = true;
         ENABLE_BASIC_AUTHENTICATION = false;
-        ENABLE_TIMETRACKING = false;
         DEFAULT_USER_VISIBILITY = "limited";
         DEFAULT_ORG_VISIBILITY = "limited";
       };
