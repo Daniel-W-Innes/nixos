@@ -74,7 +74,7 @@
       ${lib.getExe config.services.forgejo.package} admin user create \
         --admin \
         --email "root@localhost" \
-        --username daniel \
+        --username Daniel-W-Innes \
         --password "$(tr -d '\n' < ${config.age.secrets.forgejo-admin-password.path})" || true
     '';
   };
