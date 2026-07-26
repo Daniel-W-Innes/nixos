@@ -10,7 +10,7 @@ let
 
   package = pkgs.buildGoModule {
     pname = "airzone-exporter";
-    version = "0.1.0";
+    version = "0.1.1";
     src = ./airzone-exporter;
     vendorHash = "sha256-oeCSKwDKVwvYQ1fjXXTwQSXNl/upDE3WAAk680vqh3U=";
   };
