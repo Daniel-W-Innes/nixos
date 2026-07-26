@@ -133,5 +133,10 @@ in
     inherit (config.services.prometheus.alertmanager) enable port;
     healthCheck = readyHealthCheck;
   };
+  git = {
+    inherit (config.services.forgejo) enable;
+    port = config.services.forgejo.settings.server.HTTP_PORT;
+    healthCheck = pingHealthCheck;
+  };
 }
 // arrTargetData

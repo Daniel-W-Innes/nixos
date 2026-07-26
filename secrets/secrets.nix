@@ -138,4 +138,12 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "forgejo-db-password.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
+  "forgejo-admin-password.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
