@@ -55,6 +55,7 @@
         ROOT_URL = "https://git.lc.brotherwolf.ca/";
         HTTP_PORT = 53505;
         HTTP_ADDR = "127.0.0.1";
+        SSH_PORT = lib.head config.services.openssh.ports;
       };
       service = {
         DISABLE_REGISTRATION = true;
