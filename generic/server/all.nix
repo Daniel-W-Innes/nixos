@@ -15,6 +15,5 @@ _:
     ./meilisearch.nix
     ./searx.nix
     ./weather.nix
-    ./forgejo.nix
   ];
 }
