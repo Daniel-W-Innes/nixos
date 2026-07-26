@@ -86,13 +86,14 @@
       package = pkgs.forgejo-runner;
       instances.melon = {
         enable = true;
-        name = "melon-forgejo-runner";
+        name = "melon";
         tokenFile = config.age.secrets.forgejo-runner-token.path;
         url = "https://git.lc.brotherwolf.ca/";
         labels = [
           "golang:docker://golang:1.26.5-alpine3.24"
           "nixos-latest:docker://nixos/nix"
           "alpine:docker://alpine:3.24"
+          "native:host"
           "melon:host"
         ];
       };
