@@ -37,6 +37,7 @@
 
   services.forgejo = {
     enable = true;
+    package = pkgs.forgejo;
     database = {
       createDatabase = false;
       socket = "/run/forgejo-db";
