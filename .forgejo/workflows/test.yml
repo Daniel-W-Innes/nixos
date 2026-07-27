@@ -12,6 +12,6 @@ jobs:
         host: [melon]
     runs-on: ${{ matrix.host }}
     steps:
-      - uses: https://github.com/actions/checkout@v7
+      - uses: https://github.com/actions/checkout@v4
       - name: Build system configuration
         run: nh os build .
