@@ -17,6 +17,22 @@ jobs:
         with:
           path: pr
 
+      - name: Build PR configuration
+        id: build-pr
+        run: |
+          cd pr
+          new=$(nixos-rebuild build --flake . 2>&1 | tail -1 | awk '{print $NF}')
+          echo "NEW_PATH=$new" >> "$GITHUB_OUTPUT"
+        env:
+          PATH: /run/current-system/sw/bin:$PATH
+
+      - name: Diff from current system to PR
+        run: |
+          nix-shell -p dix --run "dix /run/current-system ${{ steps.build-pr.outputs.NEW_PATH }}"
+        env:
+          PATH: /run/current-system/sw/bin:$PATH
+          NIX_PATH: nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos
+
       - name: Checkout base branch (master)
         uses: https://github.com/actions/checkout@v4
         with:
@@ -32,16 +48,7 @@ jobs:
         env:
           PATH: /run/current-system/sw/bin:$PATH
 
-      - name: Build PR configuration
-        id: build-pr
-        run: |
-          cd pr
-          new=$(nixos-rebuild build --flake . 2>&1 | tail -1 | awk '{print $NF}')
-          echo "NEW_PATH=$new" >> "$GITHUB_OUTPUT"
-        env:
-          PATH: /run/current-system/sw/bin:$PATH
-
-      - name: Diff using dix
+      - name: Diff from master to PR
         run: |
           nix-shell -p dix --run "dix ${{ steps.build-base.outputs.OLD_PATH }} ${{ steps.build-pr.outputs.NEW_PATH }}"
         env:
