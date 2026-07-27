@@ -1,0 +1,28 @@
+name: Update Nix
+
+on:
+  schedule:
+    # Runs daily at midnight (UTC). Adjust as needed.
+    - cron: '0 0 * * *'
+  workflow_dispatch: {}  # allows manual triggering
+
+jobs:
+  update:
+    runs-on: nixos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Run nix flake update
+        run: nix flake update
+        env:
+          PATH: /run/current-system/sw/bin:$PATH
+
+      - name: Create/Update Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: 'flake: update inputs'
+          title: 'flake: update inputs'
+          branch: update/flake-inputs
+          base: master
+          delete-branch: true
