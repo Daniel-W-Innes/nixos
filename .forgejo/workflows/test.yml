@@ -14,4 +14,4 @@ jobs:
     steps:
       - uses: https://github.com/actions/checkout@v4
       - name: Build system configuration
-        run: nh os build .
+        run: nix-shell -p nh --run "nh os build ."
