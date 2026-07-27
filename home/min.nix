@@ -12,9 +12,6 @@
         name = "Daniel Innes";
         email = "daniel@brotherwolf.ca";
       };
-      config = {
-        url."git@git.lc.brotherwolf.ca:".insteadOf = "https://git.lc.brotherwolf.ca/";
-      };
     };
 
     starship = {
