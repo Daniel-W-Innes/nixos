@@ -12,13 +12,39 @@ jobs:
         host: [melon]
     runs-on: ${{ matrix.host }}
     steps:
-      - uses: https://github.com/actions/checkout@v4
-      - name: Build system configuration
+      - name: Checkout PR branch
+        uses: https://github.com/actions/checkout@v4
+        with:
+          path: pr
+
+      - name: Checkout base branch (master)
+        uses: https://github.com/actions/checkout@v4
+        with:
+          ref: master
+          path: base
+
+      - name: Build base configuration (master)
+        id: build-base
         run: |
-          nixos-rebuild build --flake .
-          NEW="$(readlink -f /nix/var/nix/profiles/system)"
-          OLD="$(readlink -f /run/current-system)"
-          nix-shell -p dix --run "dix $OLD $NEW"
+          cd base
+          old=$(nixos-rebuild build --flake . 2>&1 | tail -1)
+          echo "OLD_PATH=$old" >> "$GITHUB_OUTPUT"
         env:
           PATH: /run/current-system/sw/bin:$PATH
           NIX_PATH: nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos
+
+      - name: Build PR configuration
+        id: build-pr
+        run: |
+          cd pr
+          new=$(nixos-rebuild build --flake . 2>&1 | tail -1)
+          echo "NEW_PATH=$new" >> "$GITHUB_OUTPUT"
+        env:
+          PATH: /run/current-system/sw/bin:$PATH
+          NIX_PATH: nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos
+
+      - name: Diff using dix
+        run: |
+          nix-shell -p dix --run "dix ${{ steps.build-base.outputs.OLD_PATH }} ${{ steps.build-pr.outputs.NEW_PATH }}"
+        env:
+          PATH: /run/current-system/sw/bin:$PATH
