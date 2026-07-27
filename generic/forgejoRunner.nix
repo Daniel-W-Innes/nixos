@@ -20,9 +20,9 @@
       tokenFile = config.age.secrets.forgejo-runner-token.path;
       url = "https://git.lc.brotherwolf.ca/";
       labels = [
-        "golang:docker://golang:1.26.5-alpine3.24"
-        "nixos-latest:docker://nixos/nix"
-        "alpine:docker://alpine:3.24"
+        "golang:docker://docker.io/golang:1.26.5-alpine3.24"
+        "nixos:docker://docker.io/nixos/nix:2.35.1"
+        "alpine:docker://docker.io/alpine:3.24"
         "native:host"
         "${config.networking.hostName}:host"
       ];
