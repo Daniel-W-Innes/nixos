@@ -8,7 +8,7 @@ on:
 
 jobs:
   update:
-    runs-on: nixos-latest
+    runs-on: nixos
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
