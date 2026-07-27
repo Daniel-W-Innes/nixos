@@ -31,7 +31,6 @@ jobs:
           echo "OLD_PATH=$old" >> "$GITHUB_OUTPUT"
         env:
           PATH: /run/current-system/sw/bin:$PATH
-          NIX_PATH: nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos
 
       - name: Build PR configuration
         id: build-pr
@@ -41,10 +40,10 @@ jobs:
           echo "NEW_PATH=$new" >> "$GITHUB_OUTPUT"
         env:
           PATH: /run/current-system/sw/bin:$PATH
-          NIX_PATH: nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos
 
       - name: Diff using dix
         run: |
           nix-shell -p dix --run "dix ${{ steps.build-base.outputs.OLD_PATH }} ${{ steps.build-pr.outputs.NEW_PATH }}"
         env:
           PATH: /run/current-system/sw/bin:$PATH
+          NIX_PATH: nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos
