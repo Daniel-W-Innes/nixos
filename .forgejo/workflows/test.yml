@@ -9,7 +9,7 @@ jobs:
   test:
     strategy:
       matrix:
-        host: [melon]
+        host: [ melon, onion ]
     runs-on: ${{ matrix.host }}
     steps:
       - name: Checkout PR branch
