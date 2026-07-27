@@ -12,6 +12,14 @@ jobs:
         host: [ melon, onion ]
     runs-on: ${{ matrix.host }}
     steps:
+      - name: Debug nixpkgs used by nix-shell
+        run: |
+          nix-shell -p nix-info --run "nix-info -m"
+          nix-instantiate --eval -E '(import <nixpkgs> {}).dix or "dix NOT FOUND"'
+        env:
+          PATH: /run/current-system/sw/bin:$PATH
+          NIX_PATH: nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos
+
       - name: Checkout PR branch
         uses: actions/checkout@v5
         with:
