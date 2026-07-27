@@ -20,6 +20,8 @@
       tokenFile = config.age.secrets.forgejo-runner-token.path;
       url = "https://git.lc.brotherwolf.ca/";
       labels = [
+        "debian:docker://docker.io/library/node:lts"
+        "ubuntu-latest:docker://ghcr.io/catthehacker/ubuntu:act-22.04"
         "golang:docker://docker.io/golang:1.26.5-alpine3.24"
         "alpine:docker://docker.io/alpine:3.24"
         "native:host"
