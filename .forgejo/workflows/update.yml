@@ -15,13 +15,10 @@ jobs:
     runs-on: debian
     steps:
       - uses: actions/checkout@v5
-
       - uses: https://github.com/DeterminateSystems/nix-installer-action@v22
-
       - name: Run nix flake update
         run: nix flake update
-
-      - name: fetch jwt
+      - name: Fetch jwt
         id: jwt
         env:
           AUD: u:1:1020a296-c478-4c7e-bfa2-15e584090441
@@ -29,12 +26,11 @@ jobs:
           jwt=$( \
             curl --fail \
             -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUD&scope=write:repository%20read:repository" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUD" \
             | python3 -c "import sys,json; print(json.load(sys.stdin)['value'])" \
           )
           echo "::add-mask::$jwt"
           echo "jwt=$jwt" >> $FORGEJO_OUTPUT
-
       - name: Create/Update Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
