@@ -13,5 +13,7 @@ jobs:
     runs-on: ${{ matrix.host }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          token: ${{ secrets.CHECKOUT_TOKEN }}
       - name: Build system configuration
         run: nh os build .

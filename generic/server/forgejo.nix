@@ -99,15 +99,6 @@
       };
     };
   };
-  environment.etc."root/.gitconfig" = {
-    text = ''
-      [url "git@git.lc.brotherwolf.ca:"]
-        insteadOf = https://git.lc.brotherwolf.ca/
-    '';
-    mode = "0644";
-    user = "root";
-    group = "root";
-  };
 
   systemd.services.forgejo = {
     after = [ "${config.virtualisation.oci-containers.backend}-forgejo-db.service" ];
