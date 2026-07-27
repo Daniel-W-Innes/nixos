@@ -27,7 +27,7 @@ jobs:
         id: build-base
         run: |
           cd base
-          old=$(nixos-rebuild build --flake . 2>&1 | tail -1)
+          old=$(nixos-rebuild build --flake . 2>&1 | tail -1 | awk '{print $NF}')
           echo "OLD_PATH=$old" >> "$GITHUB_OUTPUT"
         env:
           PATH: /run/current-system/sw/bin:$PATH
@@ -36,7 +36,7 @@ jobs:
         id: build-pr
         run: |
           cd pr
-          new=$(nixos-rebuild build --flake . 2>&1 | tail -1)
+          new=$(nixos-rebuild build --flake . 2>&1 | tail -1 | awk '{print $NF}')
           echo "NEW_PATH=$new" >> "$GITHUB_OUTPUT"
         env:
           PATH: /run/current-system/sw/bin:$PATH
