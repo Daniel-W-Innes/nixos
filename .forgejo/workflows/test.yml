@@ -20,8 +20,10 @@ jobs:
             exit 1
           fi
           echo "Token is available (length: ${#CHECKOUT_TOKEN})"
-          # Quick authentication test: fetch the repo info using the token
-          curl -fsS -H "Authorization: token $CHECKOUT_TOKEN" https://git.lc.brotherwolf.ca/api/v1/user | grep "<your username>" || echo "Token test failed"
+          # Test that the token can read the repository
+          curl -fsS -H "Authorization: token $CHECKOUT_TOKEN" \
+            "https://git.lc.brotherwolf.ca/api/v1/repos/Daniel-W-Innes/nixos" \
+            | grep -q '"name":"nixos"' && echo "Repository access OK" || echo "Repository access FAILED"
         env:
           CHECKOUT_TOKEN: ${{ secrets.CHECKOUT_TOKEN }}
       - uses: actions/checkout@v7
