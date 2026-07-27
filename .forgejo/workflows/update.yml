@@ -28,10 +28,8 @@ jobs:
             curl --fail \
             -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
             "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUD" \
-            | jq -r ".value" \
+            | python3 -c "import sys,json; print(json.load(sys.stdin)['value'])" \
           )
-          # ::add-mask:: tells Forgejo Runner that the JWT
-          # is a secret which should be masked in the logs.
           echo "::add-mask::$jwt"
           echo "jwt=$jwt" >> $FORGEJO_OUTPUT
 
