@@ -4,7 +4,9 @@ on:
   schedule:
     - cron: '0 15 * * *'
   workflow_dispatch: {}
-  pull_request: {}
+  push:
+    branches:
+      - update-workflow
 
 enable-openid-connect: true
 
@@ -14,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: https://github.com/DeterminateSystems/nix-installer-action@main
+      - uses: https://github.com/DeterminateSystems/nix-installer-action@v22
 
       - name: Run nix flake update
         run: nix flake update
@@ -27,7 +29,7 @@ jobs:
           jwt=$( \
             curl --fail \
             -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUD" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUD&scope=write:repository%20read:repository" \
             | python3 -c "import sys,json; print(json.load(sys.stdin)['value'])" \
           )
           echo "::add-mask::$jwt"
