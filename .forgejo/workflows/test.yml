@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.host }}
     steps:
       - name: Checkout PR branch
-        uses: https://github.com/actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: pr
 
@@ -34,7 +34,7 @@ jobs:
           NIX_PATH: nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos
 
       - name: Checkout base branch (master)
-        uses: https://github.com/actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: master
           path: base
