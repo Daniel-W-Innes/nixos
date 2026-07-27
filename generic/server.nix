@@ -6,6 +6,7 @@ _:
     ./avahi.nix
     ./ssh.nix
     ./prometheus.nix
+    ./forgejoRunner.nix
     ./server/all.nix
   ];
 }
