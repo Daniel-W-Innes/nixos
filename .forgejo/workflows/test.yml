@@ -28,7 +28,7 @@ jobs:
 
       - name: Diff from current system to PR
         run: |
-          nix shell pr#nixpkgs#dix -c dix /run/current-system ${{ steps.build-pr.outputs.NEW_PATH }}
+          nix shell pr#nixpkgs.legacyPackages.x86_64-linux.dix -c dix /run/current-system ${{ steps.build-pr.outputs.NEW_PATH }}
         env:
           PATH: /run/current-system/sw/bin:$PATH
 
@@ -49,6 +49,6 @@ jobs:
 
       - name: Diff from master to PR
         run: |
-          nix shell pr#nixpkgs#dix -c dix ${{ steps.build-base.outputs.OLD_PATH }} ${{ steps.build-pr.outputs.NEW_PATH }}
+          nix shell pr#nixpkgs.legacyPackages.x86_64-linux.dix -c dix ${{ steps.build-base.outputs.OLD_PATH }} ${{ steps.build-pr.outputs.NEW_PATH }}
         env:
           PATH: /run/current-system/sw/bin:$PATH
