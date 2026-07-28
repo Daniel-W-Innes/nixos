@@ -13,11 +13,13 @@ enable-openid-connect: true
 jobs:
   update:
     runs-on: debian
+    container: nixos/nix
     steps:
       - uses: actions/checkout@v5
-      - uses: https://github.com/DeterminateSystems/nix-installer-action@v22
+
       - name: Run nix flake update
         run: nix flake update
+
       - name: fetch jwt
         id: jwt
         env:
@@ -31,6 +33,7 @@ jobs:
           )
           echo "::add-mask::$jwt"
           echo "jwt=$jwt" >> $FORGEJO_OUTPUT
+
       - name: Push and create Pull Request
         env:
           JWT: ${{ steps.jwt.outputs.jwt }}
