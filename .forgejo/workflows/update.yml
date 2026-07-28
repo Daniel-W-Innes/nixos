@@ -4,9 +4,6 @@ on:
   schedule:
     - cron: '0 15 * * *'
   workflow_dispatch: {}
-  push:
-    branches:
-      - update-workflow
 
 enable-openid-connect: true
 
@@ -20,8 +17,6 @@ jobs:
 
       - name: Run nix flake update
         run: nix flake update
-
-      - uses: https://github.com/DeterminateSystems/flake-checker-action@v13
 
       - name: fetch jwt
         id: jwt
