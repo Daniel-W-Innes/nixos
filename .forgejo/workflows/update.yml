@@ -13,9 +13,33 @@ jobs:
     runs-on: debian
     steps:
       - uses: actions/checkout@v5
+
       - uses: https://github.com/DeterminateSystems/nix-installer-action@v22
+
       - name: Run nix flake update
         run: nix flake update
+
+      # Debug: check runner environment
+      - name: Debug environment
+        run: |
+          echo "GITHUB_SERVER_URL=$GITHUB_SERVER_URL"
+          echo "GITHUB_API_URL=$GITHUB_API_URL"
+          echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
+          echo "GITHUB_REF_NAME=$GITHUB_REF_NAME"
+          echo "GITHUB_REF=$GITHUB_REF"
+          git remote -v
+
+      # Test token validity against the Forgejo API
+      - name: Test token
+        run: |
+          curl -sf -H "Authorization: token ${{ secrets.UPDATE_TOKEN }}" \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY" || {
+            echo "Token failed to access the repo API"
+            exit 1
+          }
+          curl -sf -H "Authorization: token ${{ secrets.UPDATE_TOKEN }}" \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/branches" | python3 -c "import sys,json; [print(b['name']) for b in json.load(sys.stdin)]"
+
       - name: Create/Update Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
@@ -25,3 +49,5 @@ jobs:
           base: master
           delete-branch: true
           token: ${{ secrets.UPDATE_TOKEN }}
+          # Fallback: force the repository name
+          repository: ${{ github.repository }}
