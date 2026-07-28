@@ -50,8 +50,11 @@ jobs:
             git commit -m "flake: update inputs"
           fi
 
+          # Ensure we know the current state of the remote branch
+          git fetch origin "refs/heads/${BRANCH}"
+
           # Push using the JWT as a Bearer token
-          # Git will send the header: Authorization: Bearer <jwt>
+          # The fetch above makes --force-with-lease succeed even if the remote has moved
           git -c "http.${SERVER_URL}/.extraHeader=Authorization: Bearer ${JWT}" \
             push "https://git.lc.brotherwolf.ca/${REPO}.git" \
             "HEAD:refs/heads/${BRANCH}" --force-with-lease
