@@ -68,12 +68,12 @@ jobs:
               "${API_URL}/repos/${REPO}/pulls/${PR_NUMBER}"
           else
             echo "Creating new pull request..."
+            PAYLOAD=$(printf \
+              '{"title":"flake: update inputs","head":"%s","base":"%s","body":"Automated flake update."}' \
+              "${BRANCH}" "${BASE}")
             curl -sf -X POST \
               -H "Authorization: Bearer ${JWT}" \
               -H "Content-Type: application/json" \
-              -d "$(jq -n --arg title "flake: update inputs" \
-                        --arg head  "${BRANCH}" \
-                        --arg base  "${BASE}" \
-                        '{title:$title, head:$head, base:$base, body:"Automated flake update."}')" \
+              -d "${PAYLOAD}" \
               "${API_URL}/repos/${REPO}/pulls"
           fi
