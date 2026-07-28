@@ -40,14 +40,53 @@ jobs:
           curl -sf -H "Authorization: token ${{ secrets.UPDATE_TOKEN }}" \
             "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/branches" | python3 -c "import sys,json; [print(b['name']) for b in json.load(sys.stdin)]"
 
-      - name: Create/Update Pull Request
-        uses: peter-evans/create-pull-request@v7
-        with:
-          commit-message: 'flake: update inputs'
-          title: 'flake: update inputs'
-          branch: update/flake-inputs
-          base: master
-          delete-branch: true
-          token: ${{ secrets.UPDATE_TOKEN }}
-          # Fallback: force the repository name
-          repository: ${{ github.repository }}
+      - name: Push and create Pull Request
+        env:
+          TOKEN: ${{ secrets.UPDATE_TOKEN }}
+          BRANCH: update/flake-inputs
+          BASE: master
+          REPO: ${{ github.repository }}
+          API_URL: ${{ github.api_url }}
+        run: |
+          set -euo pipefail
+
+          # Configure git to use the token for push
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Commit changes (if any)
+          if ! git diff --quiet || ! git diff --cached --quiet; then
+            git add -A
+            git commit -m "flake: update inputs"
+          fi
+
+          # Push using token authentication
+          # Forgejo accepts token as username with empty password
+          git push \
+            "https://${TOKEN}@git.lc.brotherwolf.ca/${REPO}.git" \
+            "HEAD:refs/heads/${BRANCH}" --force-with-lease
+
+          # Check if a PR already exists for this branch
+          PR_NUMBER=$(curl -sf -H "Authorization: token ${TOKEN}" \
+            "${API_URL}/repos/${REPO}/pulls?state=open&head=Daniel-W-Innes:${BRANCH}" \
+            | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['number'])" 2>/dev/null || true)
+
+          if [ -n "${PR_NUMBER}" ]; then
+            echo "Pull request #${PR_NUMBER} already exists — updating..."
+            # Update PR title/body if needed (optional)
+            curl -sf -X PATCH \
+              -H "Authorization: token ${TOKEN}" \
+              -H "Content-Type: application/json" \
+              -d '{"title":"flake: update inputs"}' \
+              "${API_URL}/repos/${REPO}/pulls/${PR_NUMBER}"
+          else
+            echo "Creating new pull request..."
+            curl -sf -X POST \
+              -H "Authorization: token ${TOKEN}" \
+              -H "Content-Type: application/json" \
+              -d "$(jq -n --arg title "flake: update inputs" \
+                        --arg head  "${BRANCH}" \
+                        --arg base  "${BASE}" \
+                        '{title:$title, head:$head, base:$base, body:"Automated flake update."}')" \
+              "${API_URL}/repos/${REPO}/pulls"
+          fi
