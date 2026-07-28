@@ -16,69 +16,71 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: https://github.com/DeterminateSystems/nix-installer-action@main
-      - uses: https://github.com/DeterminateSystems/magic-nix-cache-action@main
+      - uses: https://github.com/DeterminateSystems/nix-installer-action@v22
+      - uses: https://github.com/DeterminateSystems/magic-nix-cache-action@v14
 
-      # - name: Run nix flake update
-      #   run: nix flake update
+      - name: Run nix flake update
+        run: nix flake update
 
-      # - name: fetch jwt
-      #   id: jwt
-      #   env:
-      #     AUD: u:1:1020a296-c478-4c7e-bfa2-15e584090441
-      #   run: |
-      #     jwt=$( \
-      #       curl --fail \
-      #       -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-      #       "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUD" \
-      #       | python3 -c "import sys,json; print(json.load(sys.stdin)['value'])" \
-      #     )
-      #     echo "::add-mask::$jwt"
-      #     echo "jwt=$jwt" >> $FORGEJO_OUTPUT
+      - uses: https://github.com/DeterminateSystems/flake-checker-action@v13
 
-      # - name: Push and create Pull Request
-      #   env:
-      #     JWT: ${{ steps.jwt.outputs.jwt }}
-      #     BRANCH: update/flake-inputs
-      #     BASE: master
-      #     REPO: ${{ github.repository }}
-      #     API_URL: ${{ github.api_url }}
-      #     SERVER_URL: ${{ github.server_url }}
-      #   run: |
-      #     set -euo pipefail
+      - name: fetch jwt
+        id: jwt
+        env:
+          AUD: u:1:1020a296-c478-4c7e-bfa2-15e584090441
+        run: |
+          jwt=$( \
+            curl --fail \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUD" \
+            | python3 -c "import sys,json; print(json.load(sys.stdin)['value'])" \
+          )
+          echo "::add-mask::$jwt"
+          echo "jwt=$jwt" >> $FORGEJO_OUTPUT
 
-      #     git config user.name  "github-actions[bot]"
-      #     git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Push and create Pull Request
+        env:
+          JWT: ${{ steps.jwt.outputs.jwt }}
+          BRANCH: update/flake-inputs
+          BASE: master
+          REPO: ${{ github.repository }}
+          API_URL: ${{ github.api_url }}
+          SERVER_URL: ${{ github.server_url }}
+        run: |
+          set -euo pipefail
 
-      #     if ! git diff --quiet || ! git diff --cached --quiet; then
-      #       git add -A
-      #       git commit -m "flake: update inputs"
-      #     fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      #     # Force-push the updated lockfile to the PR branch
-      #     git -c "http.${SERVER_URL}/.extraHeader=Authorization: Bearer ${JWT}" \
-      #       push origin "HEAD:refs/heads/${BRANCH}" --force
+          if ! git diff --quiet || ! git diff --cached --quiet; then
+            git add -A
+            git commit -m "flake: update inputs"
+          fi
 
-      #     # PR creation / update using Forgejo REST API
-      #     PR_NUMBER=$(curl -sf -H "Authorization: Bearer ${JWT}" \
-      #       "${API_URL}/repos/${REPO}/pulls?state=open&head=Daniel-W-Innes:${BRANCH}" \
-      #       | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['number'])" 2>/dev/null || true)
+          # Force-push the updated lockfile to the PR branch
+          git -c "http.${SERVER_URL}/.extraHeader=Authorization: Bearer ${JWT}" \
+            push origin "HEAD:refs/heads/${BRANCH}" --force
 
-      #     if [ -n "${PR_NUMBER}" ]; then
-      #       echo "Pull request #${PR_NUMBER} already exists — updating..."
-      #       curl -sf -X PATCH \
-      #         -H "Authorization: Bearer ${JWT}" \
-      #         -H "Content-Type: application/json" \
-      #         -d '{"title":"flake: update inputs"}' \
-      #         "${API_URL}/repos/${REPO}/pulls/${PR_NUMBER}"
-      #     else
-      #       echo "Creating new pull request..."
-      #       PAYLOAD=$(printf \
-      #         '{"title":"flake: update inputs","head":"%s","base":"%s","body":"Automated flake update."}' \
-      #         "${BRANCH}" "${BASE}")
-      #       curl -sf -X POST \
-      #         -H "Authorization: Bearer ${JWT}" \
-      #         -H "Content-Type: application/json" \
-      #         -d "${PAYLOAD}" \
-      #         "${API_URL}/repos/${REPO}/pulls"
-      #     fi
+          # PR creation / update using Forgejo REST API
+          PR_NUMBER=$(curl -sf -H "Authorization: Bearer ${JWT}" \
+            "${API_URL}/repos/${REPO}/pulls?state=open&head=Daniel-W-Innes:${BRANCH}" \
+            | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['number'])" 2>/dev/null || true)
+
+          if [ -n "${PR_NUMBER}" ]; then
+            echo "Pull request #${PR_NUMBER} already exists — updating..."
+            curl -sf -X PATCH \
+              -H "Authorization: Bearer ${JWT}" \
+              -H "Content-Type: application/json" \
+              -d '{"title":"flake: update inputs"}' \
+              "${API_URL}/repos/${REPO}/pulls/${PR_NUMBER}"
+          else
+            echo "Creating new pull request..."
+            PAYLOAD=$(printf \
+              '{"title":"flake: update inputs","head":"%s","base":"%s","body":"Automated flake update."}' \
+              "${BRANCH}" "${BASE}")
+            curl -sf -X POST \
+              -H "Authorization: Bearer ${JWT}" \
+              -H "Content-Type: application/json" \
+              -d "${PAYLOAD}" \
+              "${API_URL}/repos/${REPO}/pulls"
+          fi
