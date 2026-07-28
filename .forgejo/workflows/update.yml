@@ -13,7 +13,6 @@ enable-openid-connect: true
 jobs:
   update:
     runs-on: debian
-    container: nixos/nix
     steps:
       - uses: actions/checkout@v5
 
