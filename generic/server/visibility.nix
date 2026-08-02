@@ -121,29 +121,51 @@
 
           loki.source.journal "journal" {
             format_as_json = true
-            max_age        = "12h"
-            labels         = {"job" = "systemd-journal"}
             relabel_rules = [
               {
-                source_labels = ["__journal__systemd_unit"],
-                target_label  = "unit",
+                "source_labels" = [
+                "__journal__systemd_unit",
+              ],
+                "target_label" = "unit",
               },
               {
-                source_labels = ["__journal__hostname"],
-                target_label  = "hostname",
+                "source_labels" = [
+                "__journal__hostname",
+              ],
+                "target_label" = "hostname",
               },
               {
-                source_labels = ["__journal_priority_keyword"],
-                target_label  = "level",
+                "source_labels" = [
+                "__journal_priority_keyword",
+              ],
+                "target_label" = "level",
               },
             ]
+            forward_to = [
+              loki.write.local_loki.receiver,
+            ]
+            labels = {
+              "job" = "systemd-journal",
+            }
+          }
+
+          loki.source.docker "default" {
+            forward_to = [
+              loki.write.local_loki.receiver,
+            ]
+            labels = {
+            }
+            host = "unix:///run/podman/podman.sock"
+          }
+
+          discovery.docker "default" {
+            host = "unix:///run/podman/podman.sock"
           }
 
           loki.write "local_loki" {
             endpoint {
               url = "http://localhost:3100/loki/api/v1/push"
             }
-            external_labels = {}
           }
           prometheus.exporter.self "alloy_self" {}
         ''
