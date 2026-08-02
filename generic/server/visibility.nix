@@ -163,6 +163,14 @@
       configuration = {
         auth_enabled = false;
         server.http_listen_port = 3100;
+
+        query_scheduler = {
+          max_outstanding_requests_per_tenant = 2048;
+        };
+        frontend_worker = {
+          scheduler_address = "127.0.0.1:9095";
+        };
+
         ingester = {
           lifecycler = {
             address = "127.0.0.1";
