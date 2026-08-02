@@ -162,12 +162,12 @@
       enable = true;
       configuration = {
         auth_enabled = false;
-        server.http_listen_port = 3100;
+        server = {
+          http_listen_port = 3100;
+          grpc_server_max_recv_msg_size = 10485760;  # 10 MB
+        };
         pattern_ingester = {
           enabled = true;
-          server = {
-            grpc_server_max_recv_msg_size = 10485760;  # 10 MB
-          };
           lifecycler = {
             ring = {
               kvstore = {
