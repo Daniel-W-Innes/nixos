@@ -108,7 +108,7 @@
     };
     alloy = {
       enable = true;
-      configFile = builtins.toString (
+      configPath = builtins.toString (
         pkgs.writeText "alloy-config.alloy" ''
           logging {
             level  = "info"
