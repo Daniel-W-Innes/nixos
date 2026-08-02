@@ -165,6 +165,9 @@
         server.http_listen_port = 3100;
         pattern_ingester = {
           enabled = true;
+          server = {
+            grpc_server_max_recv_msg_size = 10485760;  # 10 MB
+          };
           lifecycler = {
             ring = {
               kvstore = {
@@ -210,6 +213,8 @@
           reject_old_samples_max_age = "168h";
           allow_structured_metadata = false;
           retention_period = "1440h";
+          ingestion_rate_mb = 16;
+          ingestion_burst_size_mb = 32;
         };
         compactor = {
           working_directory = "/var/lib/loki/compactor";
