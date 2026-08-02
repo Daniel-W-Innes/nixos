@@ -139,6 +139,7 @@
             }
             external_labels = {}
           }
+          prometheus.exporter.self "alloy_self" {}
         ''
       );
     };
@@ -575,6 +576,22 @@
           static_configs = [
             {
               targets = [ "localhost:9882" ];
+            }
+          ];
+        }
+        {
+          job_name = "loki";
+          static_configs = [
+            {
+              targets = [ "localhost:3100" ];
+            }
+          ];
+        }
+        {
+          job_name = "alloy";
+          static_configs = [
+            {
+              targets = [ "localhost:12345" ];
             }
           ];
         }
