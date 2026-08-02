@@ -25,6 +25,7 @@
   systemd.tmpfiles.rules = [
     "d /run/forgejo-db 0700 ${config.services.forgejo.user} ${config.services.forgejo.group}"
     "d /var/lib/forgejo/postgres 0700 999 999 -"
+    "Z /var/lib/forgejo/postgres - 999 999 - -"
   ];
 
   virtualisation.oci-containers.containers.forgejo-db = {
