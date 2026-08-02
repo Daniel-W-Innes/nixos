@@ -138,10 +138,5 @@ in
     port = config.services.forgejo.settings.server.HTTP_PORT;
     healthCheck = pingHealthCheck;
   };
-  loki = {
-    inherit (config.services.loki) enable;
-    port = config.services.loki.configuration.server.http_listen_port;
-    healthCheck = readyHealthCheck;
-  };
 }
 // arrTargetData
