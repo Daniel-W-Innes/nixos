@@ -122,32 +122,31 @@
           loki.source.journal "journal" {
             format_as_json = true
             labels         = {"job" = "systemd-journal"}
-            forward_to = [loki.process.journal_relabel.receiver]
+            forward_to = [loki.relabel.journal_labels.receiver]
           }
 
-          loki.process "journal_relabel" {
-            stage.relabel {
+          loki.relabel "journal_labels" {
+            forward_to = [loki.write.local_loki.receiver]
+
+            rule {
               source_labels = ["__journal__systemd_unit"]
               target_label  = "unit"
             }
-            stage.relabel {
+            rule {
               source_labels = ["__journal__hostname"]
               target_label  = "hostname"
             }
-            stage.relabel {
+            rule {
               source_labels = ["__journal_priority_keyword"]
               target_label  = "level"
             }
-            forward_to = [loki.write.local_loki.receiver]
           }
 
           loki.source.docker "default" {
-            forward_to = [
-              loki.write.local_loki.receiver,
-            ]
-            labels = {
-            }
-            host = "unix:///run/podman/podman.sock"
+            forward_to = [loki.write.local_loki.receiver]
+            labels = {}
+            host   = "unix:///run/podman/podman.sock"
+            targets = []
           }
 
           discovery.docker "default" {
