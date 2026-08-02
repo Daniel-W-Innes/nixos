@@ -99,6 +99,10 @@
     };
   };
 
+  systemd.services.alloy.serviceConfig.SupplementaryGroups = [
+    "systemd-journal"
+  ];
+
   services = {
     gotify = {
       enable = true;
