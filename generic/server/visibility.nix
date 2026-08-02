@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   secretsDir,
   ...
 }:
@@ -105,6 +106,93 @@
         GOTIFY_SERVER_PORT = 60266;
       };
     };
+    alloy = {
+      enable = true;
+      configFile = builtins.toString (
+        pkgs.writeText "alloy-config.alloy" ''
+          logging {
+            level  = "info"
+            format = "logfmt"
+          }
+
+          loki.source.journal "journal" {
+            format_as_json = true
+            max_age        = "12h"
+            labels         = {"job" = "systemd-journal"}
+            relabel_rules {
+              source_labels = ["__journal__systemd_unit"]
+              target_label  = "unit"
+            }
+            relabel_rules {
+              source_labels = ["__journal__hostname"]
+              target_label  = "hostname"
+            }
+            relabel_rules {
+              source_labels = ["__journal_priority_keyword"]
+              target_label  = "level"
+            }
+          }
+
+          loki.write "local_loki" {
+            endpoint {
+              url = "http://localhost:3100/loki/api/v1/push"
+            }
+            external_labels = {}
+          }
+        ''
+      );
+    };
+    loki = {
+      enable = true;
+      configuration = {
+        auth_enabled = false;
+        server.http_listen_port = 3100;
+        ingester = {
+          lifecycler = {
+            address = "127.0.0.1";
+            ring = {
+              kvstore.store = "inmemory";
+              replication_factor = 1;
+            };
+          };
+          chunk_idle_period = "5m";
+          chunk_retain_period = "30s";
+          chunk_encoding = "zstd";
+        };
+        schema_config.configs = [
+          {
+            from = "2024-01-01";
+            store = "tsdb";
+            object_store = "filesystem";
+            schema = "v13";
+            index = {
+              prefix = "index_";
+              period = "24h";
+            };
+          }
+        ];
+        storage_config = {
+          boltdb_shipper = {
+            active_index_directory = "/var/lib/loki/index";
+            cache_location = "/var/lib/loki/cache";
+          };
+          filesystem.directory = "/var/lib/loki/chunks";
+        };
+        limits_config = {
+          reject_old_samples = true;
+          reject_old_samples_max_age = "168h";
+          allow_structured_metadata = false;
+          retention_period = "1440h";
+        };
+        compactor = {
+          working_directory = "/var/lib/loki/compactor";
+          shared_store = "filesystem";
+          retention_enabled = true;
+          retention_delete_delay = "2h";
+          retention_delete_worker_count = 150;
+        };
+      };
+    };
     grafana = {
       enable = true;
       settings = {
@@ -138,6 +226,12 @@
               secureJsonData.token = "$__file{${config.age.secrets.influxdb-visibility-token.path}}";
               jsonData.version = "Flux";
               jsonData.organization = "visibility";
+            }
+            {
+              name = "Loki";
+              type = "loki";
+              access = "proxy";
+              url = "http://localhost:3100";
             }
           ];
         };
