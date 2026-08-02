@@ -172,7 +172,7 @@
           }
         ];
         storage_config = {
-          boltdb_shipper = {
+          tsdb_shipper = {
             active_index_directory = "/var/lib/loki/index";
             cache_location = "/var/lib/loki/cache";
           };
@@ -186,7 +186,6 @@
         };
         compactor = {
           working_directory = "/var/lib/loki/compactor";
-          shared_store = "filesystem";
           retention_enabled = true;
           retention_delete_delay = "2h";
           retention_delete_worker_count = 150;
