@@ -121,32 +121,22 @@
 
           loki.source.journal "journal" {
             format_as_json = true
+            labels         = {"job" = "systemd-journal"}
             relabel_rules = [
               {
-                "source_labels" = [
-                "__journal__systemd_unit",
-              ],
-                "target_label" = "unit",
+                source_labels = ["__journal__systemd_unit"]
+                target_label  = "unit"
               },
               {
-                "source_labels" = [
-                "__journal__hostname",
-              ],
-                "target_label" = "hostname",
+                source_labels = ["__journal__hostname"]
+                target_label  = "hostname"
               },
               {
-                "source_labels" = [
-                "__journal_priority_keyword",
-              ],
-                "target_label" = "level",
+                source_labels = ["__journal_priority_keyword"]
+                target_label  = "level"
               },
             ]
-            forward_to = [
-              loki.write.local_loki.receiver,
-            ]
-            labels = {
-              "job" = "systemd-journal",
-            }
+            forward_to = [loki.write.local_loki.receiver]
           }
 
           loki.source.docker "default" {
