@@ -165,6 +165,14 @@
         server.http_listen_port = 3100;
         pattern_ingester = {
           enabled = true;
+          lifecycler = {
+            ring = {
+              kvstore = {
+                store = "inmemory";
+              };
+              replication_factor = 1;
+            };
+          };
         };
         ingester = {
           lifecycler = {
