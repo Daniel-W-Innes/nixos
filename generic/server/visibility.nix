@@ -149,10 +149,6 @@
             targets = []
           }
 
-          discovery.docker "default" {
-            host = "unix:///run/podman/podman.sock"
-          }
-
           loki.write "local_loki" {
             endpoint {
               url = "http://localhost:3100/loki/api/v1/push"
