@@ -11,5 +11,6 @@ _:
     ./avahi.nix
     ./smartd.nix
     ./wifi.nix
+    ./lokiShipper.nix
   ];
 }
