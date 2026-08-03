@@ -9,9 +9,16 @@
 {
   age.secrets.loki-shipper-password = {
     file = secretsDir + /loki-password.age;
-    owner = "alloy";
-    group = "alloy";
+    owner = "root";
+    group = "root";
     mode = "0400";
+  };
+
+  systemd.services.alloy.serviceConfig = {
+    LoadCredential = [
+      "loki-shipper-password:${config.age.secrets.loki-shipper-password.path}"
+    ];
+    SupplementaryGroups = [ "systemd-journal" ];
   };
 
   services.alloy = {
@@ -78,7 +85,7 @@
             url = "https://loki.lc.brotherwolf.ca/loki/api/v1/push"
             basic_auth {
               username      = "admin"
-              password_file = "${config.age.secrets.loki-shipper-password.path}"
+              password_file = "%d/loki-shipper-password"
             }
           }
           external_labels = {
@@ -90,6 +97,4 @@
       ''
     );
   };
-
-  systemd.services.alloy.serviceConfig.SupplementaryGroups = [ "systemd-journal" ];
 }
