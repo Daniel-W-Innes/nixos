@@ -28,6 +28,7 @@ let
       port,
       host ? "127.0.0.1",
       healthCheck ? null,
+      middleware ? null,
     }:
     {
       inherit enable;
@@ -35,6 +36,9 @@ let
     }
     // lib.optionalAttrs (healthCheck != null) {
       inherit healthCheck;
+    }
+    // lib.optionalAttrs (middleware != null) {
+      inherit middleware;
     };
 
   targetData = import ./traefik-targets.nix {
@@ -46,9 +50,11 @@ let
     (lib.mapAttrs (_: mkTarget))
   ];
 
-  routers = lib.mapAttrs (name: _: {
+  routers = lib.mapAttrs (name: target: {
     rule = mkHostRule name;
     service = name;
+  } // lib.optionalAttrs (target ? middleware) {
+    middlewares = [ target.middleware ];
   }) traefikTargets;
 
   services = lib.mapAttrs (_: target: {
@@ -65,5 +71,12 @@ in
 {
   http = {
     inherit routers services;
+    middlewares = lib.mkIf config.services.loki.enable {
+      loki-auth = {
+        basicAuth = {
+          usersFile = "/run/traefik-loki-htpasswd";
+        };
+      };
+    };
   };
 }

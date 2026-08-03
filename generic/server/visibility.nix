@@ -105,14 +105,24 @@
     };
   };
 
-  systemd.services.alloy.serviceConfig = {
+  systemd.services = {
+    alloy.serviceConfig = {
     SupplementaryGroups = [ "systemd-journal" ];
-    LoadCredential = [
-      "loki-tenant-id:${config.age.secrets.loki-password.path}"
-    ];
-    Environment = [
-      "LOKI_TENANT_ID=%d/loki-tenant-id"
-    ];
+  };
+
+ traefik-loki-htpasswd = lib.mkIf config.services.loki.enable {
+    description = "Generate htpasswd file for Loki Traefik basic auth";
+    before = [ "traefik.service" ];
+    requiredBy = [ "traefik.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      ${pkgs.apacheHttpd}/bin/htpasswd -bc /run/traefik-loki-htpasswd admin "$(cat ${config.age.secrets.loki-password.path})"
+      ${pkgs.coreutils}/bin/chmod 644 /run/traefik-loki-htpasswd
+    '';
+  };
   };
 
   services = {
@@ -164,9 +174,6 @@
           loki.write "local_loki" {
             endpoint {
               url = "http://localhost:3100/loki/api/v1/push"
-              headers = {
-                "X-Scope-OrgID" = env("LOKI_TENANT_ID")
-              }
             }
           }
           prometheus.exporter.self "alloy_self" {}
@@ -176,7 +183,7 @@
     loki = {
       enable = true;
       configuration = {
-        auth_enabled = true;
+        auth_enabled = false;
         server = {
           http_listen_port = 3100;
           grpc_server_max_recv_msg_size = 10485760;  # 10 MB
@@ -279,8 +286,6 @@
               type = "loki";
               access = "proxy";
               url = "http://localhost:3100";
-              jsonData.httpHeaderName1 = "X-Scope-OrgID";
-              secureJsonData.httpHeaderValue1 = "$__file{${config.age.secrets.loki-password.path}}";
             }
           ];
         };
