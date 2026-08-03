@@ -140,7 +140,8 @@ in
   };
   loki = {
     inherit (config.services.loki) enable;
-    port = 3100;
+    port = config.services.loki.configuration.server.http_listen_port;
+    healthCheck = pingHealthCheck;
     middleware = "loki-auth";
   };
 }
