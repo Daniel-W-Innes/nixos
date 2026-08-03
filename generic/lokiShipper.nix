@@ -52,34 +52,14 @@
             target_label  = "level"
           }
         }
-      ''
-      + (
-        if config.virtualisation.oci-containers.backend == "docker" then
-          ''
-            loki.source.docker "docker" {
-              forward_to = [loki.write.remote_loki.receiver]
-              labels     = {
-                "job"      = "docker",
-                "hostname" = "${config.networking.hostName}",
-              }
-              host       = "unix:///var/run/docker.sock"
-            }
-          ''
-        else if config.virtualisation.oci-containers.backend == "podman" then
-          ''
-            loki.source.docker "podman" {
-              forward_to = [loki.write.remote_loki.receiver]
-              labels     = {
-                "job"      = "podman",
-                "hostname" = "${config.networking.hostName}",
-              }
-              host       = "unix:///run/podman/podman.sock"
-            }
-          ''
-        else
-          ""
-      )
-      + ''
+
+        loki.source.docker "default" {
+          forward_to = [loki.write.remote_loki.receiver]
+          labels = {}
+          host   = "unix:///run/podman/podman.sock"
+          targets = []
+        }
+
         loki.write "remote_loki" {
           endpoint {
             url = "https://loki.lc.brotherwolf.ca/loki/api/v1/push"
