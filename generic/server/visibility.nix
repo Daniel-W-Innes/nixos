@@ -155,9 +155,6 @@
           storage.path = "/var/lib/tempo/generator";
         };
 
-        querier.ring.kvstore.store = "inmemory";
-        query_frontend.ring.kvstore.store = "inmemory";
-
         overrides.defaults = {
           metrics_generator.processor = {
             service_graphs = { };
