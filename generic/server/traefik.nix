@@ -62,6 +62,15 @@
         insecure = true;
       };
       metrics.prometheus = { };
+
+      tracing = {
+        otlp = {
+          grpc = {
+            endpoint = "localhost:4317";
+            insecure = true;
+          };
+        };
+      };
     };
 
     dynamicConfigOptions = import ./traefik-dynamic.nix {

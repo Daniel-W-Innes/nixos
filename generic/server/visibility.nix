@@ -132,6 +132,31 @@
         GOTIFY_SERVER_PORT = 60266;
       };
     };
+    tempo = {
+      enable = true;
+      settings = {
+        server = {
+          http_listen_port = 3200;
+          grpc_listen_port = 9095;
+        };
+        distributor.receivers.otlp.protocols = {
+          grpc.endpoint = "0.0.0.0:4317";
+          http.endpoint = "0.0.0.0:4318";
+        };
+        compactor.compaction.block_retention = "48h";
+        storage.trace = {
+          backend = "local";
+          local.path = "/var/lib/tempo/traces";
+          wal.path = "/var/lib/tempo/wal";
+        };
+        overrides.defaults = {
+          metrics_generator.processor = {
+            service_graphs = { };
+            span_metrics = { };
+          };
+        };
+      };
+    };
     alloy = {
       enable = true;
       configPath = builtins.toString (
@@ -289,6 +314,12 @@
               type = "loki";
               access = "proxy";
               url = "http://localhost:3100";
+            }
+            {
+              name = "Tempo";
+              type = "tempo";
+              access = "proxy";
+              url = "http://localhost:3200";
             }
           ];
         };
