@@ -682,6 +682,14 @@
             }
           ];
         }
+        {
+          job_name = "tempo";
+          static_configs = [
+            {
+              targets = [ "localhost:3200" ];
+            }
+          ];
+        }
       ];
       exporters = {
         exportarr-sonarr = {
