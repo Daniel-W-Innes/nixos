@@ -50,12 +50,16 @@ let
     (lib.mapAttrs (_: mkTarget))
   ];
 
-  routers = lib.mapAttrs (name: target: {
-    rule = mkHostRule name;
-    service = name;
-  } // lib.optionalAttrs (target ? middleware) {
-    middlewares = [ target.middleware ];
-  }) traefikTargets;
+  routers = lib.mapAttrs (
+    name: target:
+    {
+      rule = mkHostRule name;
+      service = name;
+    }
+    // lib.optionalAttrs (target ? middleware) {
+      middlewares = [ target.middleware ];
+    }
+  ) traefikTargets;
 
   services = lib.mapAttrs (_: target: {
     loadBalancer = {

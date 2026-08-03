@@ -15,5 +15,6 @@ _:
     ./borgmatic.nix
     ./podman.nix
     ./forgejoRunner.nix
+    ./lokiShipper.nix
   ];
 }
