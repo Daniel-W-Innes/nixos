@@ -149,6 +149,15 @@
           local.path = "/var/lib/tempo/traces";
           wal.path = "/var/lib/tempo/wal";
         };
+
+        metrics_generator = {
+          ring.kvstore.store = "inmemory";
+          storage.path = "/var/lib/tempo/generator";
+        };
+
+        querier.ring.kvstore.store = "inmemory";
+        query_frontend.ring.kvstore.store = "inmemory";
+
         overrides.defaults = {
           metrics_generator.processor = {
             service_graphs = { };
