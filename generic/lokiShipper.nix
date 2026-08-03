@@ -65,7 +65,7 @@
             url = "https://loki.lc.brotherwolf.ca/loki/api/v1/push"
             basic_auth {
               username      = "admin"
-              password_file = "%d/loki-shipper-password"
+              password_file = "/run/credentials/alloy.service/loki-shipper-password"
             }
           }
           external_labels = {
