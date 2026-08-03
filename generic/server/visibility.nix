@@ -212,6 +212,30 @@
           }
 
           otelcol.exporter.loki "default" {
+            forward_to = [loki.process.traefik_parse.receiver]
+          }
+
+          loki.process "traefik_parse" {
+            stage.json {
+              expressions = {
+                level       = "level",
+                router      = "RouterName",
+                service     = "ServiceName",
+                status      = "DownstreamStatus",
+                method      = "RequestMethod",
+                entrypoint  = "entryPointName",
+              }
+            }
+            stage.labels {
+              values = {
+                level      = "level",
+                router     = "router",
+                service    = "service",
+                status     = "status",
+                method     = "method",
+                entrypoint = "entrypoint",
+              }
+            }
             forward_to = [loki.write.local_loki.receiver]
           }
 
