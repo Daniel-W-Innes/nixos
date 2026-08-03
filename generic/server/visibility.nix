@@ -105,9 +105,15 @@
     };
   };
 
-  systemd.services.alloy.serviceConfig.SupplementaryGroups = [
-    "systemd-journal"
-  ];
+  systemd.services.alloy.serviceConfig = {
+    SupplementaryGroups = [ "systemd-journal" ];
+    LoadCredential = [
+      "loki-tenant-id:${config.age.secrets.loki-password.path}"
+    ];
+    Environment = [
+      "LOKI_TENANT_ID=%d/loki-tenant-id"
+    ];
+  };
 
   services = {
     gotify = {
@@ -158,6 +164,9 @@
           loki.write "local_loki" {
             endpoint {
               url = "http://localhost:3100/loki/api/v1/push"
+              headers = {
+                "X-Scope-OrgID" = env("LOKI_TENANT_ID")
+              }
             }
           }
           prometheus.exporter.self "alloy_self" {}
@@ -167,15 +176,10 @@
     loki = {
       enable = true;
       configuration = {
-        auth_enabled = false;
+        auth_enabled = true;
         server = {
           http_listen_port = 3100;
           grpc_server_max_recv_msg_size = 10485760;  # 10 MB
-          http_auth = {
-            enabled = true;
-            username = "admin";
-            password_file = config.age.secrets.loki-password.path;
-          };
         };
         pattern_ingester = {
           enabled = true;
@@ -275,9 +279,8 @@
               type = "loki";
               access = "proxy";
               url = "http://localhost:3100";
-              basicAuth = true;
-              basicAuthUser = "admin";
-              secureJsonData.basicAuthPassword = "$__file{${config.age.secrets.loki-password.path}}";
+              jsonData.httpHeaderName1 = "X-Scope-OrgID";
+              secureJsonData.httpHeaderValue1 = "$__file{${config.age.secrets.loki-password.path}}";
             }
           ];
         };
