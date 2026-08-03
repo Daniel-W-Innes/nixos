@@ -42,6 +42,22 @@
         level = "INFO";
         filePath = "${config.services.traefik.dataDir}/traefik.log";
         format = "json";
+        otlp = {
+          grpc = {
+            endpoint = "localhost:4319";
+            insecure = true;
+          };
+        };
+      };
+
+      accessLog = {
+        format = "json";
+        otlp = {
+          grpc = {
+            endpoint = "localhost:4319";
+            insecure = true;
+          };
+        };
       };
 
       certificatesResolvers.letsencrypt.acme = {
@@ -70,6 +86,10 @@
             insecure = true;
           };
         };
+      };
+
+      experimental = {
+        otlpLogs = true;
       };
     };
 

@@ -195,6 +195,26 @@
             }
           }
 
+          otelcol.receiver.otlp "default" {
+            grpc {
+              endpoint = "127.0.0.1:4319"
+            }
+
+            output {
+              logs = [otelcol.processor.batch.default.input]
+            }
+          }
+
+          otelcol.processor.batch "default" {
+            output {
+              logs = [otelcol.exporter.loki.default.input]
+            }
+          }
+
+          otelcol.exporter.loki "default" {
+            forward_to = [loki.write.local_loki.receiver]
+          }
+
           loki.source.docker "default" {
             forward_to = [loki.write.local_loki.receiver]
             labels = {}
