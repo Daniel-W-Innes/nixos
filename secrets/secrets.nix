@@ -150,4 +150,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "loki-password.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }

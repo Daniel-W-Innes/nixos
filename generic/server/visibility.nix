@@ -97,6 +97,12 @@
       group = "root";
       mode = "0400";
     };
+    loki-password = lib.mkIf config.services.loki.enable {
+      file = secretsDir + /loki-password.age;
+      owner = "loki";
+      group = "loki";
+      mode = "0400";
+    };
   };
 
   systemd.services.alloy.serviceConfig.SupplementaryGroups = [
@@ -165,6 +171,11 @@
         server = {
           http_listen_port = 3100;
           grpc_server_max_recv_msg_size = 10485760;  # 10 MB
+          http_auth = {
+            enabled = true;
+            username = "admin";
+            password_file = config.age.secrets.loki-password.path;
+          };
         };
         pattern_ingester = {
           enabled = true;
@@ -264,6 +275,9 @@
               type = "loki";
               access = "proxy";
               url = "http://localhost:3100";
+              basicAuth = true;
+              basicAuthUser = "admin";
+              secureJsonData.basicAuthPassword = "$__file{${config.age.secrets.loki-password.path}}";
             }
           ];
         };
