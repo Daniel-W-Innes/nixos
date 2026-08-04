@@ -34,8 +34,28 @@
         websecure = {
           address = ":443";
           asDefault = true;
-          http.tls.certResolver = "letsencrypt";
+          http.tls = {
+            certResolver = "letsencrypt";
+            options = "modern";
+          };
         };
+      };
+      tls.options.modern = {
+        minVersion = "VersionTLS13";
+        cipherSuites = [
+          "TLS_AES_128_GCM_SHA256"
+          "TLS_AES_256_GCM_SHA384"
+          "TLS_CHACHA20_POLY1305_SHA256"
+        ];
+        curvePreferences = [
+          "CurveP521"
+          "CurveP384"
+        ];
+        sniStrict = true;
+        forceSTSHeader = true;
+        stsSeconds = 63072000;
+        stsIncludeSubdomains = true;
+        stsPreload = true;
       };
 
       log = {

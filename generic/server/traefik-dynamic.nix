@@ -56,8 +56,10 @@ let
       rule = mkHostRule name;
       service = name;
     }
-    // lib.optionalAttrs (target ? middleware) {
-      middlewares = [ target.middleware ];
+    // lib.optionalAttrs (target ? middleware || true) {
+      middlewares =
+        [ "security-headers@file" ]
+        ++ lib.optional (target ? middleware) target.middleware;
     }
   ) traefikTargets;
 
@@ -75,12 +77,30 @@ in
 {
   http = {
     inherit routers services;
-    middlewares = lib.mkIf config.services.loki.enable {
-      loki-auth = {
-        basicAuth = {
-          usersFile = "/run/traefik-loki-htpasswd";
+    middlewares = lib.mkMerge [
+      {
+        security-headers = {
+          headers = {
+            frameDeny = true;
+            contentTypeNosniff = true;
+            browserXssFilter = true;
+            referrerPolicy = "strict-origin-when-cross-origin";
+            customFrameOptionsValue = "SAMEORIGIN";
+            permissionsPolicy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()";
+            stsSeconds = 63072000;
+            stsIncludeSubdomains = true;
+            stsPreload = true;
+            forceSTSHeader = true;
+          };
         };
-      };
-    };
+      }
+      (lib.mkIf config.services.loki.enable {
+        loki-auth = {
+          basicAuth = {
+            usersFile = "/run/traefik-loki-htpasswd";
+          };
+        };
+      })
+    ];
   };
 }
