@@ -13,5 +13,6 @@ _:
     ./searx.nix
     ./weather.nix
     ./forgejo.nix
+    ./authentik.nix
   ];
 }
