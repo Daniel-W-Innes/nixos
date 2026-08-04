@@ -144,5 +144,10 @@ in
     healthCheck = pingHealthCheck;
     middleware = "loki-auth";
   };
+  authentik = {
+    enable = config.systemd.services.authentik-server.enable;
+    port = 9000;
+    healthCheck = healthHealthCheck;
+  };
 }
 // arrTargetData
