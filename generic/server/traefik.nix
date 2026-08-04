@@ -26,10 +26,6 @@
           };
         };
 
-        tls.options.modern = {
-          minVersion = "VersionTLS12";
-        };
-
         websecure = {
           address = ":443";
           asDefault = true;
@@ -40,10 +36,16 @@
         };
       };
 
+      tls = {
+        options.modern = {
+          minVersion = "VersionTLS12";
+        };
+      };
+
       log = {
         level = "INFO";
-        filePath = "${config.services.traefik.dataDir}/traefik.log";
-        format = "json";
+        filePath
+        format = "
         otlp = {
           grpc = {
             endpoint = "localhost:4319";
