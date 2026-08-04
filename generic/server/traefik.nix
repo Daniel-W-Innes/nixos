@@ -31,7 +31,6 @@
           asDefault = true;
           http.tls = {
             certResolver = "letsencrypt";
-            options = "modern";
           };
         };
       };
