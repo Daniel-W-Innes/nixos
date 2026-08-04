@@ -117,7 +117,7 @@ in
           forceSTSHeader = true;
         };
 
-        internal-only.ipWhiteList = {
+        internal-only.ipAllowList = {
           sourceRange = [
             "10.0.0.0/8"
             "172.16.0.0/12"
