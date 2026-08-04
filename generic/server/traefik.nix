@@ -34,9 +34,6 @@
           };
         };
       };
-      tls.options.modern = {
-        minVersion = "VersionTLS12";
-      };
 
       log = {
         level = "INFO";
