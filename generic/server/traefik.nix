@@ -26,11 +26,16 @@
           };
         };
 
+        tls.options.modern = {
+          minVersion = "VersionTLS12";
+        };
+
         websecure = {
           address = ":443";
           asDefault = true;
           http.tls = {
             certResolver = "letsencrypt";
+            options = "modern";
           };
         };
       };
