@@ -69,7 +69,10 @@
 
       preStart = ''
         export PGPASSWORD="$(cat ${config.age.secrets.authentik-db-password.path})"
-        ${lib.getExe' pkgs.postgresql "psql"} -h /run/authentik-db -U authentik -d authentik -c "SELECT 1"
+        until ${lib.getExe' pkgs.postgresql "psql"} -h /run/authentik-db -U authentik -d authentik -c "SELECT 1" &>/dev/null; do
+          echo "Waiting for authentik database to be ready..."
+          sleep 1
+        done
       '';
 
       serviceConfig = {
@@ -108,7 +111,10 @@
 
       preStart = ''
         export PGPASSWORD="$(cat ${config.age.secrets.authentik-db-password.path})"
-        ${lib.getExe' pkgs.postgresql "psql"} -h /run/authentik-db -U authentik -d authentik -c "SELECT 1"
+        until ${lib.getExe' pkgs.postgresql "psql"} -h /run/authentik-db -U authentik -d authentik -c "SELECT 1" &>/dev/null; do
+          echo "Waiting for authentik database to be ready..."
+          sleep 1
+        done
       '';
 
       serviceConfig = {
