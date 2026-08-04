@@ -36,10 +36,6 @@
         };
       };
 
-      tls.options.modern = {
-        minVersion = "VersionTLS12";
-      };
-
       log = {
         level = "INFO";
         filePath = "${config.services.traefik.dataDir}/traefik.log";

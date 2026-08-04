@@ -104,40 +104,38 @@ in
 
     middlewares = lib.mkMerge [
       {
-        security-headers = {
-          headers = {
-            frameDeny = true;
-            contentTypeNosniff = true;
-            browserXssFilter = true;
-            referrerPolicy = "strict-origin-when-cross-origin";
-            customFrameOptionsValue = "SAMEORIGIN";
-            permissionsPolicy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()";
-            stsSeconds = 63072000;
-            stsIncludeSubdomains = true;
-            stsPreload = true;
-            forceSTSHeader = true;
-          };
+        security-headers.headers = {
+          frameDeny = true;
+          contentTypeNosniff = true;
+          browserXssFilter = true;
+          referrerPolicy = "strict-origin-when-cross-origin";
+          customFrameOptionsValue = "SAMEORIGIN";
+          permissionsPolicy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()";
+          stsSeconds = 63072000;
+          stsIncludeSubdomains = true;
+          stsPreload = true;
+          forceSTSHeader = true;
         };
 
-        internal-only = {
-          ipWhiteList = {
-            sourceRange = [
-              "10.0.0.0/8"
-              "172.16.0.0/12"
-              "192.168.0.0/16"
-              "127.0.0.1"
-              "::1"
-            ];
-          };
+        internal-only.ipWhiteList = {
+          sourceRange = [
+            "10.0.0.0/8"
+            "172.16.0.0/12"
+            "192.168.0.0/16"
+            "127.0.0.1"
+            "::1"
+          ];
         };
       }
       (lib.mkIf config.services.loki.enable {
-        loki-auth = {
-          basicAuth = {
-            usersFile = "/run/traefik-loki-htpasswd";
-          };
+        loki-auth.basicAuth = {
+          usersFile = "/run/traefik-loki-htpasswd";
         };
       })
     ];
+  };
+
+  tls.options.modern = {
+    minVersion = "VersionTLS12";
   };
 }
