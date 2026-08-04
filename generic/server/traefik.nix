@@ -37,7 +37,6 @@
       };
       tls.options.modern = {
         minVersion = "VersionTLS12";
-        sniStrict = true;
         forceSTSHeader = true;
         stsSeconds = 63072000;
         stsIncludeSubdomains = true;
