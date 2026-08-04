@@ -154,4 +154,12 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "authentik-secret-key.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
+  "authentik-db-password.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
