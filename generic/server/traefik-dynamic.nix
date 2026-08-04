@@ -1,12 +1,8 @@
 { config, lib, ... }:
 
 let
-  mkHostRule =
-    name:
-    lib.concatStringsSep " || " [
-      "Host(`${name}.brotherwolf.ca`)"
-      "Host(`${name}.lc.brotherwolf.ca`)"
-    ];
+  mkHostRulePublic = name: "Host(`${name}.brotherwolf.ca`)";
+  mkHostRuleInternal = name: "Host(`${name}.lc.brotherwolf.ca`)";
 
   mkBackendUrl =
     { host, port }:
@@ -29,10 +25,12 @@ let
       host ? "127.0.0.1",
       healthCheck ? null,
       middleware ? null,
+      public ? false,
     }:
     {
       inherit enable;
       url = mkBackendUrl { inherit host port; };
+      inherit public;
     }
     // lib.optionalAttrs (healthCheck != null) {
       inherit healthCheck;
@@ -50,15 +48,32 @@ let
     (lib.mapAttrs (_: mkTarget))
   ];
 
-  routers = lib.mapAttrs (
+  publicRouters = lib.pipe traefikTargets [
+    (lib.filterAttrs (_: target: target.public or false))
+    (lib.mapAttrs (
+      name: target:
+      {
+        rule = mkHostRulePublic name;
+        service = name;
+        entryPoints = [ "websecure" ];
+      }
+      // lib.optionalAttrs (target ? middleware || true) {
+        middlewares = [ "security-headers@file" ]
+          ++ lib.optional (target ? middleware) target.middleware;
+      }
+    ))
+  ];
+
+  internalRouters = lib.mapAttrs (
     name: target:
     {
-      rule = mkHostRule name;
+      rule = mkHostRuleInternal name;
       service = name;
+      entryPoints = [ "websecure" ];
     }
     // lib.optionalAttrs (target ? middleware || true) {
       middlewares =
-        [ "security-headers@file" ]
+        [ "internal-only@file" "security-headers@file" ]
         ++ lib.optional (target ? middleware) target.middleware;
     }
   ) traefikTargets;
@@ -76,7 +91,17 @@ let
 in
 {
   http = {
-    inherit routers services;
+    routers = publicRouters // internalRouters // {
+      dashboard = {
+        rule = "Host(`traefik.lc.brotherwolf.ca`)";
+        service = "api@internal";
+        entryPoints = [ "websecure" ];
+        middlewares = [ "internal-only@file" "security-headers@file" ];
+      };
+    };
+
+    inherit services;
+
     middlewares = lib.mkMerge [
       {
         security-headers = {
@@ -91,6 +116,18 @@ in
             stsIncludeSubdomains = true;
             stsPreload = true;
             forceSTSHeader = true;
+          };
+        };
+
+        internal-only = {
+          ipWhiteList = {
+            sourceRange = [
+              "10.0.0.0/8"
+              "172.16.0.0/12"
+              "192.168.0.0/16"
+              "127.0.0.1"
+              "::1"
+            ];
           };
         };
       }

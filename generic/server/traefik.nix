@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  secretsDir,
-  ...
-}:
+{ config, lib, secretsDir, ... }:
 {
   age.secrets.traefik-env = lib.mkIf config.services.traefik.enable {
     file = secretsDir + /traefik-env.age;
@@ -93,10 +88,7 @@
         };
       };
 
-      api = {
-        dashboard = true;
-        insecure = true;
-      };
+      api.dashboard = true;
       metrics.prometheus = { };
 
       tracing = {
@@ -121,6 +113,5 @@
   networking.firewall.allowedTCPPorts = [
     80
     443
-    8080
   ];
 }
