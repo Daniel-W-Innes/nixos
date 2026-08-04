@@ -36,16 +36,14 @@
         };
       };
 
-      tls = {
-        options.modern = {
-          minVersion = "VersionTLS12";
-        };
+      tls.options.modern = {
+        minVersion = "VersionTLS12";
       };
 
       log = {
         level = "INFO";
-        filePath
-        format = "
+        filePath = "${config.services.traefik.dataDir}/traefik.log";
+        format = "json";
         otlp = {
           grpc = {
             endpoint = "localhost:4319";
