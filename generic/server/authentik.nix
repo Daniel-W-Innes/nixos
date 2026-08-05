@@ -131,21 +131,6 @@
           sleep 1
         done
       '';
-
-      serviceConfig = {
-        Type = "simple";
-        User = "authentik";
-        Group = "authentik";
-        WorkingDirectory = "/var/lib/authentik";
-        StateDirectory = "authentik";
-        StateDirectoryMode = "0750";
-        ExecStart = "${pkgs.writeShellScript "authentik-worker-start" ''
-          export AUTHENTIK_POSTGRESQL__PASSWORD="$(cat ${config.age.secrets.authentik-db-password.path})"
-          exec ${pkgs.authentik}/bin/ak worker
-        ''}";
-        Restart = "on-failure";
-        RestartSec = "10s";
-      };
     };
   };
 }
