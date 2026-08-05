@@ -26,6 +26,7 @@
     isSystemUser = true;
     group = "authentik";
     home = "/var/lib/authentik";
+    extraGroups = [ "podman" ];
   };
 
   systemd.tmpfiles.rules = [
