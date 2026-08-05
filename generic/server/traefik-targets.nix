@@ -147,7 +147,6 @@ in
   authentik = {
     enable = config.systemd.services.authentik-server.enable;
     port = 9000;
-    healthCheck = healthHealthCheck;
   };
 }
 // arrTargetData
