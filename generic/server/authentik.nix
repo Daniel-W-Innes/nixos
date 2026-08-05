@@ -52,8 +52,23 @@
     authentik-server = {
       description = "authentik server";
       wantedBy = [ "multi-user.target" ];
-      after = [ "${config.virtualisation.oci-containers.backend}-authentik-db.service" ];
-      requires = [ "${config.virtualisation.oci-containers.backend}-authentik-db.service" ];
+      after = [ "podman-authentik-db.service" ];
+      requires = [ "podman-authentik-db.service" ];
+
+      serviceConfig = {
+        LoadCredential = [
+          "AUTHENTIK_POSTGRESQL__PASSWORD:${config.age.secrets.authentik-db-password.path}"
+        ];
+        Type = "simple";
+        User = "authentik";
+        Group = "authentik";
+        WorkingDirectory = "/var/lib/authentik";
+        StateDirectory = "authentik";
+        StateDirectoryMode = "0750";
+        ExecStart = "${pkgs.authentik}/bin/ak server";
+        Restart = "on-failure";
+        RestartSec = "10s";
+      };
 
       environment = {
         AUTHENTIK_POSTGRESQL__HOST = "/run/authentik-db";
@@ -74,28 +89,28 @@
           sleep 1
         done
       '';
+    };
+
+    authentik-worker = {
+      description = "authentik worker";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "podman-authentik-db.service" ];
+      requires = [ "podman-authentik-db.service" ];
 
       serviceConfig = {
+        LoadCredential = [
+          "AUTHENTIK_POSTGRESQL__PASSWORD:${config.age.secrets.authentik-db-password.path}"
+        ];
         Type = "simple";
         User = "authentik";
         Group = "authentik";
         WorkingDirectory = "/var/lib/authentik";
         StateDirectory = "authentik";
         StateDirectoryMode = "0750";
-        ExecStart = "${pkgs.writeShellScript "authentik-server-start" ''
-          export AUTHENTIK_POSTGRESQL__PASSWORD="$(cat ${config.age.secrets.authentik-db-password.path})"
-          exec ${pkgs.authentik}/bin/ak server
-        ''}";
+        ExecStart = "${pkgs.authentik}/bin/ak worker";
         Restart = "on-failure";
         RestartSec = "10s";
       };
-    };
-
-    authentik-worker = {
-      description = "authentik worker";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "${config.virtualisation.oci-containers.backend}-authentik-db.service" ];
-      requires = [ "${config.virtualisation.oci-containers.backend}-authentik-db.service" ];
 
       environment = {
         AUTHENTIK_POSTGRESQL__HOST = "/run/authentik-db";
