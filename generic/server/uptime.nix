@@ -10,7 +10,7 @@
 
   # MariaDB database container
   virtualisation.oci-containers.containers.uptime-kuma-mariadb = {
-    image = "mariadb:13";
+    image = "mariadb:12.3.2-ubi10";
     environment = {
       MARIADB_DATABASE = "uptime_kuma";
       MARIADB_USER = "uptime_kuma";
