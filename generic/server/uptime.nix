@@ -3,8 +3,8 @@
 {
   age.secrets.uptime-kuma-db-password = {
     file = secretsDir + /uptime-kuma-db-password.age;
-    owner = "root";
-    group = "root";
+    owner = "uptime-kuma";
+    group = "uptime-kuma";
     mode = "0400";
   };
 
