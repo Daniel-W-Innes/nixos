@@ -21,16 +21,25 @@
     mode = "0400";
   };
 
+  age.secrets.uptime-kuma-db-root-password-mariadb = {
+    file = secretsDir + /uptime-kuma-db-root-password.age;
+    owner = "999";
+    group = "999";
+    mode = "0400";
+  };
+
   virtualisation.oci-containers.containers.uptime-kuma-mariadb = {
     image = "mariadb:12.3.2-ubi10";
     environment = {
       MARIADB_DATABASE = "uptime_kuma";
       MARIADB_USER = "uptime_kuma";
       MARIADB_PASSWORD_FILE = "/run/secrets/db-password";
+      MARIADB_ROOT_PASSWORD_FILE = "/run/secrets/db-root-password";
     };
     volumes = [
       "/var/lib/uptime-kuma/mariadb:/var/lib/mysql"
       "${config.age.secrets.uptime-kuma-db-password-mariadb.path}:/run/secrets/db-password:ro"
+      "${config.age.secrets.uptime-kuma-db-root-password-mariadb.path}:/run/secrets/db-root-password:ro"
     ];
     ports = [ "127.0.0.1:3306:3306" ];
   };
