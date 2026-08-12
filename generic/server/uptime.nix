@@ -7,14 +7,20 @@
   };
   users.groups.uptime-kuma = { };
 
-  age.secrets.uptime-kuma-db-password = {
+  age.secrets.uptime-kuma-db-password-mariadb = {
+    file = secretsDir + /uptime-kuma-db-password.age;
+    owner = "999";
+    group = "999";
+    mode = "0400";
+  };
+
+  age.secrets.uptime-kuma-db-password-uptime = {
     file = secretsDir + /uptime-kuma-db-password.age;
     owner = "uptime-kuma";
     group = "uptime-kuma";
     mode = "0400";
   };
 
-  # MariaDB database container
   virtualisation.oci-containers.containers.uptime-kuma-mariadb = {
     image = "mariadb:12.3.2-ubi10";
     environment = {
@@ -24,7 +30,7 @@
     };
     volumes = [
       "/var/lib/uptime-kuma/mariadb:/var/lib/mysql"
-      "${config.age.secrets.uptime-kuma-db-password.path}:/run/secrets/db-password:ro"
+      "${config.age.secrets.uptime-kuma-db-password-mariadb.path}:/run/secrets/db-password:ro"
     ];
     ports = [ "127.0.0.1:3306:3306" ];
   };
@@ -42,11 +48,10 @@
       UPTIME_KUMA_DB_PORT = "3306";
       UPTIME_KUMA_DB_NAME = "uptime_kuma";
       UPTIME_KUMA_DB_USERNAME = "uptime_kuma";
-      UPTIME_KUMA_DB_PASSWORD_FILE = config.age.secrets.uptime-kuma-db-password.path;
+      UPTIME_KUMA_DB_PASSWORD_FILE = config.age.secrets.uptime-kuma-db-password-uptime.path;
     };
   };
 
-  # Disable DynamicUser so our static user/group are used
   systemd.services.uptime-kuma.serviceConfig = {
     DynamicUser = lib.mkForce false;
     User = "uptime-kuma";
@@ -60,7 +65,7 @@
     preStart = let
       waitScript = pkgs.writeShellScript "uptime-kuma-wait-db" ''
         set -e
-        PASSWORD="$(cat ${config.age.secrets.uptime-kuma-db-password.path})"
+        PASSWORD="$(cat ${config.age.secrets.uptime-kuma-db-password-uptime.path})"
         until ${lib.getExe' pkgs.mariadb "mysql"} \
           -h 127.0.0.1 -P 3306 \
           -u uptime_kuma \
