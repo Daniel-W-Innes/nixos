@@ -1,6 +1,12 @@
 { config, secretsDir, lib, pkgs, ... }:
 
 {
+  users.users.uptime-kuma = {
+    isSystemUser = true;
+    group = "uptime-kuma";
+  };
+  users.groups.uptime-kuma = { };
+
   age.secrets.uptime-kuma-db-password = {
     file = secretsDir + /uptime-kuma-db-password.age;
     owner = "uptime-kuma";
@@ -40,11 +46,17 @@
     };
   };
 
+  # Disable DynamicUser so our static user/group are used
+  systemd.services.uptime-kuma.serviceConfig = {
+    DynamicUser = lib.mkForce false;
+    User = "uptime-kuma";
+    Group = "uptime-kuma";
+  };
+
   systemd.services.uptime-kuma = {
     after = [ "${config.virtualisation.oci-containers.backend}-uptime-kuma-mariadb.service" ];
     requires = [ "${config.virtualisation.oci-containers.backend}-uptime-kuma-mariadb.service" ];
 
-    # Avoid storing the password in the Nix store by using a runtime-sourced script
     preStart = let
       waitScript = pkgs.writeShellScript "uptime-kuma-wait-db" ''
         set -e
