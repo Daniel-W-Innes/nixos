@@ -154,4 +154,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "uptime-kuma-db-password.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }
