@@ -144,5 +144,9 @@ in
     healthCheck = pingHealthCheck;
     middleware = "loki-auth";
   };
+  uptime = {
+    enable = config.services.uptime-kuma.enable;
+    port = 3001;
+  };
 }
 // arrTargetData
