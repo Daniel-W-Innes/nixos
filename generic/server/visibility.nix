@@ -754,6 +754,7 @@
             }
           ];
           basic_auth = {
+            username = "metrics";
             password_file = config.age.secrets.uptime-kuma-metrics-password.path;
           };
         }
