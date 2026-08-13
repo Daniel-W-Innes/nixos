@@ -162,4 +162,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "uptime-kuma-metrics-password.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }

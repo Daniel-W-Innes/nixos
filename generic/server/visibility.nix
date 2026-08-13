@@ -103,6 +103,12 @@
       group = "loki";
       mode = "0400";
     };
+    uptime-kuma-metrics-password = lib.mkIf config.services.uptime-kuma.enable {
+      file = secretsDir + /uptime-kuma-metrics-password.age;
+      owner = "prometheus";
+      group = "prometheus";
+      mode = "0400";
+    };
   };
 
   systemd.services = {
@@ -747,6 +753,9 @@
               targets = [ "localhost:3001" ];
             }
           ];
+          basic_auth = {
+            password_file = config.age.secrets.uptime-kuma-metrics-password.path;
+          };
         }
       ];
       exporters = {
