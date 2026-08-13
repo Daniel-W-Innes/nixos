@@ -740,6 +740,14 @@
             }
           ];
         }
+        {
+          job_name = "uptime-kuma";
+          static_configs = [
+            {
+              targets = [ "localhost:3001" ];
+            }
+          ];
+        }
       ];
       exporters = {
         exportarr-sonarr = {
