@@ -1,0 +1,26 @@
+on:
+  push: {}
+
+enable-openid-connect: true
+
+jobs:
+  update:
+    runs-on: debian
+    steps:
+      - uses: actions/checkout@v5
+      - name: Debug runner DNS and connectivity
+        run: |
+          echo "--- Runner's current DNS servers ---"
+          cat /etc/resolv.conf
+      
+          echo "--- Dig from runner (UDP) ---"
+          dig +timeout=2 +tries=1 git.lc.brotherwolf.ca
+      
+          echo "--- Dig from runner (TCP) ---"
+          dig +tcp git.lc.brotherwolf.ca
+      
+          echo "--- Ping from runner ---"
+          ping -c 3 git.lc.brotherwolf.ca || true
+      
+          echo "--- Curl from runner (IPv4 forced) ---"
+          curl -4 -v --connect-timeout 5 https://git.lc.brotherwolf.ca || true
