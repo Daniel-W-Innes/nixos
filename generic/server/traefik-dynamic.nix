@@ -58,8 +58,7 @@ let
         entryPoints = [ "websecure" ];
       }
       // lib.optionalAttrs (target ? middleware || true) {
-        middlewares = [ "security-headers@file" ]
-          ++ lib.optional (target ? middleware) target.middleware;
+        middlewares = [ "security-headers@file" ] ++ lib.optional (target ? middleware) target.middleware;
       }
     ))
   ];
@@ -72,9 +71,11 @@ let
       entryPoints = [ "websecure" ];
     }
     // lib.optionalAttrs (target ? middleware || true) {
-      middlewares =
-        [ "internal-only@file" "security-headers@file" ]
-        ++ lib.optional (target ? middleware) target.middleware;
+      middlewares = [
+        "internal-only@file"
+        "security-headers@file"
+      ]
+      ++ lib.optional (target ? middleware) target.middleware;
     }
   ) traefikTargets;
 
@@ -91,14 +92,20 @@ let
 in
 {
   http = {
-    routers = publicRouters // internalRouters // {
-      dashboard = {
-        rule = "Host(`traefik.lc.brotherwolf.ca`)";
-        service = "api@internal";
-        entryPoints = [ "websecure" ];
-        middlewares = [ "internal-only@file" "security-headers@file" ];
+    routers =
+      publicRouters
+      // internalRouters
+      // {
+        dashboard = {
+          rule = "Host(`traefik.lc.brotherwolf.ca`)";
+          service = "api@internal";
+          entryPoints = [ "websecure" ];
+          middlewares = [
+            "internal-only@file"
+            "security-headers@file"
+          ];
+        };
       };
-    };
 
     inherit services;
 

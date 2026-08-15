@@ -83,12 +83,8 @@
   };
 
   systemd.services.forgejo = {
-    after = [
-      "${config.virtualisation.oci-containers.backend}-forgejo-db.service"
-    ];
-    requires = [
-      "${config.virtualisation.oci-containers.backend}-forgejo-db.service"
-    ];
+    after = [ "${config.virtualisation.oci-containers.backend}-forgejo-db.service" ];
+    requires = [ "${config.virtualisation.oci-containers.backend}-forgejo-db.service" ];
 
     preStart = ''
       until ${lib.getExe' pkgs.postgresql "psql"} -h /run/forgejo-db -U forgejo -d forgejo -c "SELECT 1" &>/dev/null; do

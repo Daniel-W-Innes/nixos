@@ -1,4 +1,10 @@
-{ config, secretsDir, lib, pkgs, ... }:
+{
+  config,
+  secretsDir,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   users.users.uptime-kuma = {
@@ -71,22 +77,24 @@
     after = [ "${config.virtualisation.oci-containers.backend}-uptime-kuma-mariadb.service" ];
     requires = [ "${config.virtualisation.oci-containers.backend}-uptime-kuma-mariadb.service" ];
 
-    preStart = let
-      waitScript = pkgs.writeShellScript "uptime-kuma-wait-db" ''
-        set -e
-        PASSWORD="$(cat ${config.age.secrets.uptime-kuma-db-password-uptime.path})"
-        until ${lib.getExe' pkgs.mariadb "mysql"} \
-          -h 127.0.0.1 -P 3306 \
-          -u uptime_kuma \
-          -p"$PASSWORD" \
-          -e "SELECT 1" &>/dev/null
-        do
-          echo "Waiting for MariaDB to be ready..."
-          sleep 1
-        done
+    preStart =
+      let
+        waitScript = pkgs.writeShellScript "uptime-kuma-wait-db" ''
+          set -e
+          PASSWORD="$(cat ${config.age.secrets.uptime-kuma-db-password-uptime.path})"
+          until ${lib.getExe' pkgs.mariadb "mysql"} \
+            -h 127.0.0.1 -P 3306 \
+            -u uptime_kuma \
+            -p"$PASSWORD" \
+            -e "SELECT 1" &>/dev/null
+          do
+            echo "Waiting for MariaDB to be ready..."
+            sleep 1
+          done
+        '';
+      in
+      ''
+        ${waitScript}
       '';
-    in ''
-      ${waitScript}
-    '';
   };
 }
