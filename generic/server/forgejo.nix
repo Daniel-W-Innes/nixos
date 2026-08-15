@@ -1,8 +1,8 @@
 {
   config,
+  pkgs,
   secretsDir,
   lib,
-  pkgs,
   ...
 }:
 
@@ -73,12 +73,25 @@
       };
       mailer.ENABLED = false;
       actions.ENABLED = true;
+
+      indexer = {
+        STARTUP_TIMEOUT = "-1s"; # never fail Forgejo startup over an indexer outage
+
+        REPO_INDEXER_ENABLED = true;
+        REPO_INDEXER_TYPE = "bleve";
+        REPO_INDEXER_REPO_TYPES = "sources,forks,mirrors,templates";
+      };
     };
   };
 
   systemd.services.forgejo = {
-    after = [ "${config.virtualisation.oci-containers.backend}-forgejo-db.service" ];
-    requires = [ "${config.virtualisation.oci-containers.backend}-forgejo-db.service" ];
+    after = [
+      "${config.virtualisation.oci-containers.backend}-forgejo-db.service"
+    ];
+    requires = [
+      "${config.virtualisation.oci-containers.backend}-forgejo-db.service"
+    ];
+
     preStart = ''
       until ${lib.getExe' pkgs.postgresql "psql"} -h /run/forgejo-db -U forgejo -d forgejo -c "SELECT 1" &>/dev/null; do
         echo "Waiting for PostgreSQL to be ready..."
