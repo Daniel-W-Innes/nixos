@@ -30,6 +30,11 @@
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGsC8nOkFrvAzgNU/B2LE4ETtioDii+i/P1lV+ksWl6P daniel@cucamelon"
     ];
   };
-  preservation.preserveAt."/preserve/host".directories =
-    lib.mkIf config.services.openssh.enable [ "/etc/ssh" ];
+  preservation.preserveAt."/preserve/host".files =
+    lib.mkIf config.services.openssh.enable [
+      "/etc/ssh/ssh_host_ed25519_key"
+      "/etc/ssh/ssh_host_ed25519_key.pub"
+      "/etc/ssh/ssh_host_rsa_key"
+      "/etc/ssh/ssh_host_rsa_key.pub"
+    ];
 }
