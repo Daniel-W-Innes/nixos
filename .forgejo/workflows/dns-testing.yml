@@ -9,6 +9,7 @@ jobs:
     steps:
       - name: Debug runner DNS and connectivity
         run: |
+          apt-get update && apt-get install -y dnsutils
           echo "--- Runner's current DNS servers ---"
           cat /etc/resolv.conf
       
