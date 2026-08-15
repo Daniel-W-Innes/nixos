@@ -1,4 +1,4 @@
-_:
+{ config, lib, ... }:
 
 {
   services.dawarich = {
@@ -13,5 +13,11 @@ _:
       PHOTON_API_HOST = "photon.komoot.io";
       PHOTON_API_USE_HTTPS = "true";
     };
+  };
+
+  preservation.preserveAt."/dawarich" = {
+    directories = lib.mkIf config.services.dawarich.enable [
+      "/var/lib/dawarich"
+    ];
   };
 }
