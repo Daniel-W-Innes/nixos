@@ -908,4 +908,14 @@
       ];
     };
   };
+  preservation.preserveAt."/visibility" = {
+    directories = lib.mkMerge [
+      (lib.mkIf config.services.gotify.enable [ "/var/lib/gotify" ])
+      (lib.mkIf config.services.grafana.enable [ "/var/lib/grafana" ])
+      (lib.mkIf config.services.prometheus.enable [ "/var/lib/prometheus" ])
+      (lib.mkIf config.services.influxdb2.enable [ "/var/lib/influxdb2" ])
+      (lib.mkIf config.services.loki.enable [ "/var/lib/loki" ])
+      (lib.mkIf config.services.tempo.enable [ "/var/lib/tempo" ])
+    ];
+  };
 }
