@@ -97,4 +97,10 @@
         ${waitScript}
       '';
   };
+
+  preservation.preserveAt."/uptime-kuma" = {
+    directories = lib.mkIf config.services.uptime-kuma.enable [
+      "/var/lib/uptime-kuma"
+    ];
+  };
 }
