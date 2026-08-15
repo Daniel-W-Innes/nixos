@@ -34,4 +34,10 @@
     environmentFile = config.age.secrets.bookorbit-env.path;
     readOnly = false;
   };
+
+  preservation.preserveAt."/bookorbit" = {
+    directories = lib.mkIf config.services.bookorbit.enable [
+      "/var/lib/bookorbit"
+    ];
+  };
 }
