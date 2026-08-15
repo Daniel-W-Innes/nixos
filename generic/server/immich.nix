@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, lib, ... }:
 
 {
   fileSystems."/mnt/immich" = {
@@ -55,5 +55,11 @@
         template = "{{y}}/{{MM}}/{{dd}}/{{HH}}{{mm}}{{SSS}}_{{filename}}";
       };
     };
+  };
+
+  preservation.preserveAt."/immich" = {
+    directories = lib.mkIf config.services.immich.enable [
+      "/var/lib/immich"
+    ];
   };
 }
