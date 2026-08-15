@@ -75,8 +75,6 @@
       actions.ENABLED = true;
 
       indexer = {
-        STARTUP_TIMEOUT = "-1s"; # never fail Forgejo startup over an indexer outage
-
         REPO_INDEXER_ENABLED = true;
         REPO_INDEXER_TYPE = "bleve";
         REPO_INDEXER_REPO_TYPES = "sources,forks,mirrors,templates";
