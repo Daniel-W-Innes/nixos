@@ -99,4 +99,10 @@
         --password "$(tr -d '\n' < ${config.age.secrets.forgejo-admin-password.path})" || true
     '';
   };
+
+  preservation.preserveAt."/forgejo" = {
+    directories = lib.mkIf config.services.forgejo.enable [
+      "/var/lib/forgejo"
+    ];
+  };
 }
