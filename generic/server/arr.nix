@@ -31,6 +31,23 @@ in
     };
   };
 
+  preservation.preserveAt."/arr" = {
+    directories = lib.mkMerge [
+      # Transmission: settings.json, stats.json, torrents/, resume/, queue.json
+      (lib.mkIf config.services.transmission.enable [ "/var/lib/transmission" ])
+      # *arr stack state and databases
+      (lib.mkIf config.services.prowlarr.enable [ "/var/lib/prowlarr" ])
+      (lib.mkIf config.services.radarr.enable [ "/var/lib/radarr" ])
+      (lib.mkIf config.services.sonarr.enable [ "/var/lib/sonarr" ])
+      (lib.mkIf config.services.lidarr.enable [ "/var/lib/lidarr" ])
+      (lib.mkIf config.services.readarr.enable [ "/var/lib/readarr" ])
+      # Navidrome database and cache
+      (lib.mkIf config.services.navidrome.enable [ "/var/lib/navidrome" ])
+      # Jellyfin data (config, metadata, plugins)
+      (lib.mkIf config.services.jellyfin.enable [ "/var/lib/jellyfin" ])
+    ];
+  };
+
   fileSystems."/mnt/media" = {
     device = "//pumpkin.lc.brotherwolf.ca/Media";
     fsType = "cifs";
