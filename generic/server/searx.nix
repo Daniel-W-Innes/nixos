@@ -62,4 +62,15 @@ in
       -e "s/@SEARX_DANIEL_TOKEN@/$searx_daniel_token_escaped/g" \
       -i settings.yml
   '';
+
+  preservation.preserveAt."/searx" = {
+    directories = lib.mkMerge [
+      (lib.mkIf config.services.searx.enable [
+        "/var/lib/searx"
+      ])
+      (lib.mkIf config.services.redis.servers.searx.enable [
+        "/var/lib/searx-redis"
+      ])
+    ];
+  };
 }
