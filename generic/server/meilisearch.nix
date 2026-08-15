@@ -1,4 +1,4 @@
-{ config, secretsDir, ... }:
+{ config, lib, secretsDir, ... }:
 
 {
   users.groups.meilisearch = { };
@@ -28,5 +28,11 @@
         "127.0.0.1:24900:24900/tcp"
       ];
     };
+  };
+
+  preservation.preserveAt."/meilisearch" = {
+    directories = lib.mkIf config.services.meilisearch.enable [
+      "/var/lib/private/meilisearch"
+    ];
   };
 }
