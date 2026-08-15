@@ -91,6 +91,4 @@
           '';
         };
   };
-  preservation.preserveAt."/preserve/host".directories =
-    lib.mkIf config.services.prometheus.enable [ "/var/lib/prometheus" ];
 }
