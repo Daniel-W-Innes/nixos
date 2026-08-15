@@ -77,4 +77,9 @@
       ''
     );
   };
+
+  preservation.preserveAt."/preserve/host".directories = lib.mkMerge [
+    (lib.mkIf config.services.promtail.enable [ "/var/lib/promtail" ])
+    (lib.mkIf config.services.alloy.enable [ "/var/lib/alloy" ])
+  ];
 }

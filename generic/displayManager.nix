@@ -1,4 +1,4 @@
-_:
+{ config, lib, ... }:
 
 {
   services.displayManager.ly = {
@@ -9,4 +9,6 @@ _:
     };
     x11Support = false;
   };
+  preservation.preserveAt."/preserve/host".directories =
+    lib.mkIf config.services.displayManager.sddm.enable [ "/var/lib/sddm" ];
 }

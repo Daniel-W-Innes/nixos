@@ -1,6 +1,6 @@
 {
-  lib,
   config,
+  lib,
   secretsDir,
   ...
 }:
@@ -94,4 +94,9 @@
       };
     };
   };
+
+  preservation.preserveAt."/preserve/host".directories = lib.mkMerge [
+    (lib.mkIf config.networking.networkmanager.enable [ "/var/lib/NetworkManager" ])
+    (lib.mkIf config.networking.wireless.iwd.enable [ "/var/lib/iwd" ])
+  ];
 }

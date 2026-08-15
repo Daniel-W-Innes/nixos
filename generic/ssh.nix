@@ -1,4 +1,4 @@
-_:
+{ config, lib, ... }:
 
 {
   environment.etc."avahi/services/ssh.service".text = ''
@@ -30,4 +30,6 @@ _:
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGsC8nOkFrvAzgNU/B2LE4ETtioDii+i/P1lV+ksWl6P daniel@cucamelon"
     ];
   };
+  preservation.preserveAt."/preserve/host".directories =
+    lib.mkIf config.services.openssh.enable [ "/etc/ssh" ];
 }
