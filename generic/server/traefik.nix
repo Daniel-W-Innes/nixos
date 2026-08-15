@@ -102,4 +102,18 @@
     80
     443
   ];
+
+  preservation.preserveAt."/traefik" = {
+    directories = lib.mkIf config.services.traefik.enable [
+      config.services.traefik.dataDir
+    ];
+    files = lib.mkIf config.services.traefik.enable [
+      {
+        file = "${config.services.traefik.dataDir}/acme.json";
+        user = "traefik";
+        group = "traefik";
+        mode = "0600";
+      }
+    ];
+  };
 }
