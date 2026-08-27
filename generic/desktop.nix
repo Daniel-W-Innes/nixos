@@ -16,5 +16,7 @@ _:
     ./podman.nix
     ./forgejoRunner.nix
     ./lokiShipper.nix
+    ./smb.nix
+    ./media.nix
   ];
 }

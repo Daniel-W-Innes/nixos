@@ -8,6 +8,7 @@ _:
     ./podman.nix
     ./prometheus.nix
     ./forgejoRunner.nix
+    ./smb.nix
     ./server/all.nix
   ];
 }
