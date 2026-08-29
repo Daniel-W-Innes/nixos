@@ -166,4 +166,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "anthropic-auth-token.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }

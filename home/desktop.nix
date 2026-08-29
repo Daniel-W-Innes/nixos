@@ -10,5 +10,6 @@ _:
     ./gui.nix
     ./steam.nix
     ./vscode.nix
+    ./claude.nix
   ];
 }
