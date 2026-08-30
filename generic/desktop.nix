@@ -11,6 +11,7 @@ _:
     ./wifi.nix
     ./steam.nix
     ./avahi.nix
+    ./claude.nix
     ./smartd.nix
     ./borgmatic.nix
     ./podman.nix
