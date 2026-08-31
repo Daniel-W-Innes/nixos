@@ -12,6 +12,7 @@ _:
     ./steam.nix
     ./avahi.nix
     ./claude.nix
+    ./grafana-mcp.nix
     ./smartd.nix
     ./borgmatic.nix
     ./podman.nix

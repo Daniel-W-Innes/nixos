@@ -170,4 +170,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "grafana-mcp-env.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }

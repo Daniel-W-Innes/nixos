@@ -1,6 +1,5 @@
 {
   config,
-  pkgs,
   osConfig,
   ...
 }:
@@ -22,7 +21,24 @@
       fi
     '';
   };
-  home.packages = with pkgs; [
-    claude-code
-  ];
+  programs.claude-code = {
+    enable = true;
+    settings = {
+      theme = "auto";
+      enabledMcpjsonServers = [ "mcp-grafana" ];
+      # Read-only visibility tools (actual names from `tools/list`, 2026-08-31).
+      permissions.allow = [
+        "mcp__mcp-grafana__query_prometheus"
+        "mcp__mcp-grafana__query_loki_logs"
+        "mcp__mcp-grafana__list_prometheus_metric_names"
+        "mcp__mcp-grafana__list_loki_label_names"
+        "mcp__mcp-grafana__list_loki_label_values"
+        "mcp__mcp-grafana__search_dashboards"
+        "mcp__mcp-grafana__get_dashboard_by_uid"
+        "mcp__mcp-grafana__get_dashboard_summary"
+        "mcp__mcp-grafana__list_alert_groups"
+        "mcp__mcp-grafana__get_alert_group"
+      ];
+    };
+  };
 }
