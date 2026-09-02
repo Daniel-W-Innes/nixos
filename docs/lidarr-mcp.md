@@ -1,22 +1,22 @@
 # Plan: give Claude Code full CRUD over Lidarr via MCP
 
 Date: 2026-09-02
-Goal: let Claude Code (running on melon, in this repo) manage Lidarr — artists, albums, releases, quality profiles, downloads — through MCP tools instead of clicking through the web UI.
+Goal: let Claude Code (running on onion, in this repo) manage Lidarr — artists, albums, releases, quality profiles, downloads — through MCP tools instead of clicking through the web UI.
 
 ## Decision
 
-Run [`abl030/lidarr-mcp`](https://github.com/abl030/lidarr-mcp) (auto-generated from the Lidarr OpenAPI spec, 244 tools, full CRUD) as a **systemd service on melon** with FastMCP's streamable-http transport bound to **loopback** (`127.0.0.1:8001`), registered in the repo's project-scope `.mcp.json` as `http://127.0.0.1:8001/mcp`.
+Run [`abl030/lidarr-mcp`](https://github.com/abl030/lidarr-mcp) (auto-generated from the Lidarr OpenAPI spec, 244 tools, full CRUD) as a **systemd service on onion** (next to Claude Code, like `mcp-grafana`) with FastMCP's streamable-http transport bound to **loopback** (`127.0.0.1:8001`), registered in the repo's project-scope `.mcp.json` as `http://127.0.0.1:8001/mcp`. Lidarr itself is reached over the existing internal traefik route (`https://lidarr.lc.brotherwolf.ca`), so no new traefik router is needed — same shape as `docs/mcp-grafana-plan.md`.
 
-Not a traefik router: the server has mutation tools and no caller auth of its own, so it stays loopback-only on the host where Claude Code runs — same reasoning as `docs/mcp-grafana-plan.md`.
+Not on melon: the MCP server must sit next to the client (loopback-only endpoint, no caller auth of its own), and `generic/server/*` modules never apply to onion.
 
 ## Implementation
 
 - **`flake.nix`** — `lidarr-mcp` input (`github:abl030/lidarr-mcp`, nixpkgs follows) passed to modules as `_module.args.lidarrMCP`.
-- **`generic/server/arr.nix`** — `systemd.services.lidarr-mcp`:
+- **`generic/lidarr-mcp.nix`** (imported by `generic/desktop.nix`) — `systemd.services.lidarr-mcp`:
   - Wraps `fastmcp run ${lidarrMCP}/generated/server.py "$@"`. The flake's default package is stdio-only (no `"$@"`), so a local `writeShellApplication` wrapper passes transport args.
-  - `LIDARR_URL=http://127.0.0.1:8686` via `environment` (lidarr binds loopback; traefik proxies to it the same way).
-  - `LIDARR_API_KEY` reuses the existing `lidarr-api-key.age` secret (same one exportarr-lidarr uses) via `LoadCredential`; the wrapper exports it from `$CREDENTIALS_DIRECTORY`. No second secret, no key duplication.
-  - Runs as the `lidarr` user with `NoNewPrivileges`.
+  - `LIDARR_URL=https://lidarr.lc.brotherwolf.ca` via `environment` (internal-only traefik router, Let's Encrypt certs the Python httpx client trusts).
+  - `LIDARR_API_KEY` reuses the existing `lidarr-api-key.age` secret (the same file exportarr-lidarr uses on melon), declared here too so agenix materializes it on onion, and injected via `LoadCredential`; the wrapper exports it from `$CREDENTIALS_DIRECTORY`. No second secret, no key duplication.
+  - `DynamicUser` + `NoNewPrivileges`.
 - **`.mcp.json`** — `lidarr-mcp` → `http://127.0.0.1:8001/mcp`.
 - **`home/claude.nix`** — `enabledMcpjsonServers += "lidarr-mcp"`, and `permissions.allow` has the server-wide rule `mcp__lidarr-mcp` (write tools are the point of this server; enumerating 244 names would be noise).
 
@@ -30,19 +30,19 @@ Not a traefik router: the server has mutation tools and no caller auth of its ow
 ## Deploy
 
 ```bash
-# on melon
-sudo nixos-rebuild switch --flake .#melon
+# on onion
+sudo nixos-rebuild switch --flake .#onion
 ```
 
 ## Verify
 
 ```bash
-# on melon
+# on onion: service is up and healthy
 systemctl status lidarr-mcp
 curl -s -o /dev/null -w '%{http_code}\n' -X POST http://127.0.0.1:8001/mcp \
   -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
   -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"t","version":"0"}}}'
-# in Claude Code on melon: /mcp shows lidarr-mcp connected with 244 tools
+# in Claude Code on onion: /mcp shows lidarr-mcp connected with 244 tools
 ```
 
 ## Optional hardening

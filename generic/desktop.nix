@@ -13,6 +13,7 @@ _:
     ./avahi.nix
     ./claude.nix
     ./grafana-mcp.nix
+    ./lidarr-mcp.nix
     ./smartd.nix
     ./borgmatic.nix
     ./podman.nix
