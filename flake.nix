@@ -34,6 +34,12 @@
     };
 
     vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
+
+    # MCP server for the Lidarr API (https://github.com/abl030/lidarr-mcp)
+    lidarr-mcp = {
+      url = "github:abl030/lidarr-mcp";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -47,6 +53,7 @@
       pre-commit-hooks,
       vpn-confinement,
       lanzaboote,
+      lidarr-mcp,
       ...
     }:
     let
@@ -83,6 +90,7 @@
         lanzaboote.nixosModules.lanzaboote
         {
           _module.args.secretsDir = ./secrets;
+          _module.args.lidarrMCP = lidarr-mcp;
           programs.nix-index-database.comma.enable = true;
           environment.systemPackages = preCommitCheck.enabledPackages ++ [
             pkgs.prek

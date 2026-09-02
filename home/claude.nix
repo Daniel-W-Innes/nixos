@@ -1,5 +1,4 @@
 {
-  config,
   osConfig,
   ...
 }:
@@ -25,9 +24,14 @@
     enable = true;
     settings = {
       theme = "auto";
-      enabledMcpjsonServers = [ "mcp-grafana" ];
+      enabledMcpjsonServers = [
+        "mcp-grafana"
+        "lidarr-mcp"
+      ];
+      # Server-wide: the lidarr MCP is full CRUD by design (see docs/lidarr-mcp.md).
       # Read-only visibility tools (actual names from `tools/list`, 2026-08-31).
       permissions.allow = [
+        "mcp__lidarr-mcp"
         "mcp__mcp-grafana__query_prometheus"
         "mcp__mcp-grafana__query_loki_logs"
         "mcp__mcp-grafana__list_prometheus_metric_names"
