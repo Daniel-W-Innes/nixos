@@ -3,7 +3,6 @@
   lib,
   pkgs,
   secretsDir,
-  lidarrMCP,
   ...
 }:
 
@@ -13,25 +12,6 @@ let
     settings = {
       log.analyticsEnabled = true;
     };
-  };
-
-  # The flake's default package is a stdio-only wrapper (`exec fastmcp run …`
-  # without "$@"), so wrap the same server.py ourselves to pass transport args.
-  lidarrMcpHttp = pkgs.writeShellApplication {
-    name = "lidarr-mcp-http";
-    runtimeInputs = [
-      (pkgs.python3.withPackages (ps: [
-        ps.fastmcp
-        ps.httpx
-      ]))
-    ];
-    text = ''
-      # Reuses the lidarr API key secret (also used by exportarr-lidarr),
-      # injected by systemd LoadCredential — see systemd.services.lidarr-mcp.
-      LIDARR_API_KEY="$(cat "$CREDENTIALS_DIRECTORY/lidarr-api-key")"
-      export LIDARR_API_KEY
-      exec fastmcp run ${lidarrMCP}/generated/server.py "$@"
-    '';
   };
 in
 {
@@ -107,24 +87,6 @@ in
         ''
       )
     ];
-  };
-
-  # MCP server over the Lidarr API for Claude Code on this host (see
-  # .mcp.json). Bound to loopback: mutation tools must not be network-facing.
-  systemd.services.lidarr-mcp = {
-    description = "lidarr-mcp: MCP server for the Lidarr API";
-    after = [ "network.target" ];
-    environment = {
-      LIDARR_URL = "http://127.0.0.1:8686"; # not a secret; lidarr binds loopback
-    };
-    serviceConfig = {
-      ExecStart = "${lidarrMcpHttp}/bin/lidarr-mcp-http --transport http --host 127.0.0.1 --port 8001";
-      LoadCredential = "lidarr-api-key:${config.age.secrets.lidarr-api-key.path}";
-      Restart = "on-failure";
-      User = "lidarr";
-      Group = "lidarr";
-      NoNewPrivileges = true;
-    };
   };
 
   services = {
