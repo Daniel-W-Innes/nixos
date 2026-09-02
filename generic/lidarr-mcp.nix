@@ -42,6 +42,7 @@ in
   systemd.services.lidarr-mcp = {
     description = "lidarr-mcp: MCP server for the Lidarr API";
     after = [ "network.target" ];
+    wantedBy = [ "multi-user.target" ];
     environment = {
       LIDARR_URL = "https://lidarr.lc.brotherwolf.ca"; # not a secret
     };
