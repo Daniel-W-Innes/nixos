@@ -1,5 +1,7 @@
 # process_exporter has no namegroups — add per-service process metrics
 
+**DONE 2026-09-05.** Verified live on melon: 26 namegroups exported on `localhost:9256` (transmission=1, arr=5, immich=2, postgres=23, grafana=2, …), all scraped by Prometheus via job `process_exporter`, and the "Transmission down" Grafana alert provisioned in the `visibility` group (state normal, health ok). Patterns are anchored on the binary basename to dodge store-path collisions (e.g. `grafana` vs `grafana-loki`, `prometheus` vs `prometheus-*-exporter`). Two process-exporter semantics to know: multiple `cmdline` regexes in one group are **ANDed** (use one regex with `|` alternation — the first deploy's `arr`/`immich` groups silently matched nothing until fixed in `fix cmd lines`), and `-children` defaults to true, so groups count matched processes plus their descendants (postgres=23 is 3 postmasters + children; grafana=2 is the server + its elasticsearch-datasource plugin child). The alert is a `sum(...) == 0` across hosts so hosts that don't run transmission (onion/cucamelon, once rebuilt) export 0 without firing it.
+
 ### Problem
 
 `services.prometheus.exporters.process` is enabled on all hosts (`generic/prometheus.nix:12-17`) but configured with **no `process_names`**, so it exports only `namedprocess_scrape_errors` and nothing useful. During the 2026-09-03 transmission investigation we could not tell from metrics whether the daemon restarted, was CPU-busy, or was blocked — a one-query answer that didn't exist.
