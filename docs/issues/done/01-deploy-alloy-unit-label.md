@@ -1,5 +1,7 @@
 # Journal logs in Loki are missing the `unit` label — relabel must live inside `loki.source.journal`
 
+**DONE 2026-09-04.** Verified live on both hosts: journal lines carry `unit`/`level`/`hostname` labels and the trimmed 14-field JSON; traefik's loki route is healthy; both alloys are scraped by melon's Prometheus.
+
 ### Problem
 
 Live Loki data (checked 2026-09-04) has journal-stream labels `hostname`, `job`, `service_name` — **no `unit` label** — and `service_name` is a constant (`systemd-journal`) rather than the actual unit name. Two stacked causes:

@@ -112,14 +112,13 @@ Run: `nix-shell -p python3 --run "python3 /tmp/parse_loki.py <saved-file>" | hea
 
 ## Planned fixes (gaps future sessions should expect, not be surprised by)
 
-Tracked as GitHub issues in `issues/`:
+Tracked as GitHub issues in `docs/issues/`:
 
-1. Deploy the fixed Alloy config (relabel moved into `loki.source.journal`) on melon and onion so the `unit` label exists — `issues/01-deploy-alloy-unit-label.md` (biggest single win).
-2. Add `process_exporter` namegroups for transmission/jellyfin/grafana/loki/etc. — `issues/02-process-exporter-namegroups.md`.
-3. Add a `wg show latest-handshakes` textfile-collector or tiny exporter for the proton namespace + a Grafana alert on handshake age > 5 min — `issues/03-wireguard-handshake-exporter.md` (the missing signal from the 2026-09-03 incident).
-4. Fix/replace the segfaulting iperf3-exporter — `issues/04-iperf3-exporter-segfault.md`.
-5. Fix or remove the broken exporters listed in §Known noise — `issues/05-clean-up-broken-exporters.md`.
-6. (Resilience, not debug) Transmission watchdog timer — `issues/06-transmission-watchdog.md`.
+2. Add `process_exporter` namegroups for transmission/jellyfin/grafana/loki/etc. — `docs/issues/02-process-exporter-namegroups.md`.
+3. Add a `wg show latest-handshakes` textfile-collector or tiny exporter for the proton namespace + a Grafana alert on handshake age > 5 min — `docs/issues/03-wireguard-handshake-exporter.md` (the missing signal from the 2026-09-03 incident).
+4. Fix/replace the segfaulting iperf3-exporter — `docs/issues/04-iperf3-exporter-segfault.md`.
+5. Fix or remove the broken exporters listed in §Known noise — `docs/issues/05-clean-up-broken-exporters.md`.
+6. (Resilience, not debug) Transmission watchdog timer — `docs/issues/06-transmission-watchdog.md`.
 
 ## Worked example (abridged)
 

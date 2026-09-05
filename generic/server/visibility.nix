@@ -408,7 +408,7 @@
             {
               orgId = 1;
               name = "visibility";
-              folder = "General";
+              folder = "visibility";
               interval = "60s";
               rules = [
                 {
@@ -429,7 +429,6 @@
                           uid = "PBFA97CFB590B2093";
                         };
                       };
-                      queryType = "instant";
                       relativeTimeRange = {
                         from = 300;
                         to = 0;
@@ -460,7 +459,6 @@
                           uid = "PBFA97CFB590B2093";
                         };
                       };
-                      queryType = "instant";
                       relativeTimeRange = {
                         from = 300;
                         to = 0;
@@ -491,7 +489,6 @@
                           uid = "PBFA97CFB590B2093";
                         };
                       };
-                      queryType = "instant";
                       relativeTimeRange = {
                         from = 300;
                         to = 0;
@@ -522,7 +519,6 @@
                           uid = "PBFA97CFB590B2093";
                         };
                       };
-                      queryType = "instant";
                       relativeTimeRange = {
                         from = 600;
                         to = 0;
