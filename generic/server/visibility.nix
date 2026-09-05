@@ -199,7 +199,36 @@
             format_as_json = true
             labels         = {"job" = "systemd-journal"}
             relabel_rules  = loki.relabel.journal_rules.rules
-            forward_to     = [loki.write.local_loki.receiver]
+            forward_to     = [loki.process.journal_trim.receiver]
+          }
+
+          loki.process "journal_trim" {
+            stage.json {
+              expressions = {
+                message      = "MESSAGE",
+                priority     = "PRIORITY",
+                syslog_id    = "SYSLOG_IDENTIFIER",
+                unit_field   = "_SYSTEMD_UNIT",
+                pid          = "_PID",
+                uid          = "_UID",
+                gid          = "_GID",
+                comm         = "_COMM",
+                transport    = "_TRANSPORT",
+                container    = "CONTAINER_NAME",
+                container_id = "CONTAINER_ID",
+                code_file    = "CODE_FILE",
+                code_func    = "CODE_FUNC",
+                code_line    = "CODE_LINE",
+              }
+            }
+            stage.template {
+              source   = "trimmed"
+              template = `{"MESSAGE":{{ toJson .message }},"PRIORITY":{{ toJson .priority }},"SYSLOG_IDENTIFIER":{{ toJson .syslog_id }},"_SYSTEMD_UNIT":{{ toJson .unit_field }},"_PID":{{ toJson .pid }},"_UID":{{ toJson .uid }},"_GID":{{ toJson .gid }},"_COMM":{{ toJson .comm }},"_TRANSPORT":{{ toJson .transport }},"CONTAINER_NAME":{{ toJson .container }},"CONTAINER_ID":{{ toJson .container_id }},"CODE_FILE":{{ toJson .code_file }},"CODE_FUNC":{{ toJson .code_func }},"CODE_LINE":{{ toJson .code_line }}}`
+            }
+            stage.output {
+              source = "trimmed"
+            }
+            forward_to = [loki.write.local_loki.receiver]
           }
 
           otelcol.receiver.otlp "default" {
@@ -244,13 +273,6 @@
               }
             }
             forward_to = [loki.write.local_loki.receiver]
-          }
-
-          loki.source.docker "default" {
-            forward_to = [loki.write.local_loki.receiver]
-            labels = {}
-            host   = "unix:///run/podman/podman.sock"
-            targets = []
           }
 
           loki.write "local_loki" {
@@ -377,6 +399,143 @@
               type = "tempo";
               access = "proxy";
               url = "http://localhost:3200";
+            }
+          ];
+        };
+        alerting.rules.settings = {
+          apiVersion = 1;
+          groups = [
+            {
+              orgId = 1;
+              name = "visibility";
+              folder = "General";
+              interval = "60s";
+              rules = [
+                {
+                  uid = "traefik-backend-down";
+                  title = "Traefik backend down";
+                  condition = "A";
+                  data = [
+                    {
+                      refId = "A";
+                      datasourceUid = "PBFA97CFB590B2093";
+                      model = {
+                        expr = "traefik_service_server_up{service=~\".*@file\"} == 0";
+                        instant = true;
+                        range = false;
+                        refId = "A";
+                        datasource = {
+                          type = "prometheus";
+                          uid = "PBFA97CFB590B2093";
+                        };
+                      };
+                      queryType = "instant";
+                      relativeTimeRange = {
+                        from = 300;
+                        to = 0;
+                      };
+                    }
+                  ];
+                  noDataState = "OK";
+                  execErrState = "KeepLast";
+                  for = "3m";
+                  annotations.summary = "{{ $labels.service }} is unhealthy ({{ $labels.url }})";
+                  labels.severity = "critical";
+                }
+                {
+                  uid = "traefik-down";
+                  title = "Traefik down";
+                  condition = "A";
+                  data = [
+                    {
+                      refId = "A";
+                      datasourceUid = "PBFA97CFB590B2093";
+                      model = {
+                        expr = "up{job=\"traefik\"} == 0";
+                        instant = true;
+                        range = false;
+                        refId = "A";
+                        datasource = {
+                          type = "prometheus";
+                          uid = "PBFA97CFB590B2093";
+                        };
+                      };
+                      queryType = "instant";
+                      relativeTimeRange = {
+                        from = 300;
+                        to = 0;
+                      };
+                    }
+                  ];
+                  noDataState = "OK";
+                  execErrState = "KeepLast";
+                  for = "3m";
+                  annotations.summary = "traefik on {{ $labels.instance }} is down";
+                  labels.severity = "critical";
+                }
+                {
+                  uid = "alloy-down";
+                  title = "Alloy down";
+                  condition = "A";
+                  data = [
+                    {
+                      refId = "A";
+                      datasourceUid = "PBFA97CFB590B2093";
+                      model = {
+                        expr = "up{job=\"alloy\"} == 0";
+                        instant = true;
+                        range = false;
+                        refId = "A";
+                        datasource = {
+                          type = "prometheus";
+                          uid = "PBFA97CFB590B2093";
+                        };
+                      };
+                      queryType = "instant";
+                      relativeTimeRange = {
+                        from = 300;
+                        to = 0;
+                      };
+                    }
+                  ];
+                  noDataState = "OK";
+                  execErrState = "KeepLast";
+                  for = "3m";
+                  annotations.summary = "alloy on {{ $labels.instance }} is down";
+                  labels.severity = "critical";
+                }
+                {
+                  uid = "alloy-shipping-failing";
+                  title = "Alloy journal shipping failing";
+                  condition = "A";
+                  data = [
+                    {
+                      refId = "A";
+                      datasourceUid = "PBFA97CFB590B2093";
+                      model = {
+                        expr = "sum by (instance) (rate(loki_write_batch_retries_total{job=\"alloy\"}[5m])) > 0";
+                        instant = true;
+                        range = false;
+                        refId = "A";
+                        datasource = {
+                          type = "prometheus";
+                          uid = "PBFA97CFB590B2093";
+                        };
+                      };
+                      queryType = "instant";
+                      relativeTimeRange = {
+                        from = 600;
+                        to = 0;
+                      };
+                    }
+                  ];
+                  noDataState = "OK";
+                  execErrState = "KeepLast";
+                  for = "5m";
+                  annotations.summary = "journal shipping to Loki is retrying on {{ $labels.instance }}";
+                  labels.severity = "critical";
+                }
+              ];
             }
           ];
         };
@@ -735,7 +894,10 @@
           job_name = "alloy";
           static_configs = [
             {
-              targets = [ "localhost:12345" ];
+              targets = [
+                "localhost:12345"
+                "onion.lc.brotherwolf.ca:12345"
+              ];
             }
           ];
         }

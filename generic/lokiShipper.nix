@@ -51,14 +51,36 @@
           format_as_json = true
           labels         = {"job" = "systemd-journal"}
           relabel_rules  = loki.relabel.journal_rules.rules
-          forward_to     = [loki.write.remote_loki.receiver]
+          forward_to     = [loki.process.journal_trim.receiver]
         }
 
-        loki.source.docker "default" {
+        loki.process "journal_trim" {
+          stage.json {
+            expressions = {
+              message      = "MESSAGE",
+              priority     = "PRIORITY",
+              syslog_id    = "SYSLOG_IDENTIFIER",
+              unit_field   = "_SYSTEMD_UNIT",
+              pid          = "_PID",
+              uid          = "_UID",
+              gid          = "_GID",
+              comm         = "_COMM",
+              transport    = "_TRANSPORT",
+              container    = "CONTAINER_NAME",
+              container_id = "CONTAINER_ID",
+              code_file    = "CODE_FILE",
+              code_func    = "CODE_FUNC",
+              code_line    = "CODE_LINE",
+            }
+          }
+          stage.template {
+            source   = "trimmed"
+            template = `{"MESSAGE":{{ toJson .message }},"PRIORITY":{{ toJson .priority }},"SYSLOG_IDENTIFIER":{{ toJson .syslog_id }},"_SYSTEMD_UNIT":{{ toJson .unit_field }},"_PID":{{ toJson .pid }},"_UID":{{ toJson .uid }},"_GID":{{ toJson .gid }},"_COMM":{{ toJson .comm }},"_TRANSPORT":{{ toJson .transport }},"CONTAINER_NAME":{{ toJson .container }},"CONTAINER_ID":{{ toJson .container_id }},"CODE_FILE":{{ toJson .code_file }},"CODE_FUNC":{{ toJson .code_func }},"CODE_LINE":{{ toJson .code_line }}}`
+          }
+          stage.output {
+            source = "trimmed"
+          }
           forward_to = [loki.write.remote_loki.receiver]
-          labels = {}
-          host   = "unix:///run/podman/podman.sock"
-          targets = []
         }
 
         loki.write "remote_loki" {
