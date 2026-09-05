@@ -178,22 +178,28 @@
             format = "logfmt"
           }
 
-          loki.source.journal "journal" {
-            format_as_json = true
-            labels         = {"job" = "systemd-journal"}
-            relabel_rules {
+          loki.relabel "journal_rules" {
+            forward_to = []
+
+            rule {
               source_labels = ["__journal__systemd_unit"]
               target_label  = "unit"
             }
-            relabel_rules {
+            rule {
               source_labels = ["__journal__hostname"]
               target_label  = "hostname"
             }
-            relabel_rules {
+            rule {
               source_labels = ["__journal_priority_keyword"]
               target_label  = "level"
             }
-            forward_to = [loki.write.local_loki.receiver]
+          }
+
+          loki.source.journal "journal" {
+            format_as_json = true
+            labels         = {"job" = "systemd-journal"}
+            relabel_rules  = loki.relabel.journal_rules.rules
+            forward_to     = [loki.write.local_loki.receiver]
           }
 
           otelcol.receiver.otlp "default" {
