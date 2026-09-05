@@ -58,6 +58,10 @@ in
         from = 9091;
         to = 9091;
       }
+      {
+        from = 9586;
+        to = 9586;
+      }
     ];
     openVPNPorts = [
       {
@@ -88,6 +92,15 @@ in
       )
     ];
   };
+
+  systemd.services.prometheus-wireguard-exporter =
+    lib.mkIf config.services.prometheus.exporters.wireguard.enable
+      {
+        vpnConfinement = {
+          enable = true;
+          vpnNamespace = "proton";
+        };
+      };
 
   services = {
     transmission = {

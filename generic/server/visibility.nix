@@ -950,6 +950,14 @@
             password_file = config.age.secrets.uptime-kuma-metrics-password.path;
           };
         }
+        {
+          job_name = "wireguard";
+          static_configs = [
+            {
+              targets = [ "localhost:9586" ];
+            }
+          ];
+        }
       ];
       exporters = {
         exportarr-sonarr = {
@@ -1027,6 +1035,13 @@
           gotifyURL = "https://gotify.lc.brotherwolf.ca";
           gotifyTokenPath = config.age.secrets.konnected-gotify-token.path;
           gotifyAllowList = "Frontdoor,Backdoor";
+        };
+        wireguard = {
+          enable = true;
+          listenAddress = "192.168.15.1";
+          interfaces = [ "proton0" ];
+          withRemoteIp = true;
+          latestHandshakeDelay = true;
         };
       };
     };
