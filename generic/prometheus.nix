@@ -73,6 +73,75 @@ in
             name = "postgres";
             cmdline = [ (bin "postgres") ];
           }
+          {
+            name = "traefik";
+            cmdline = [ (bin "traefik") ];
+          }
+          {
+            # Binary is literally `server`; match the store path instead.
+            name = "gotify";
+            cmdline = [ "gotify-server" ];
+          }
+          {
+            name = "uptime-kuma";
+            cmdline = [ (bin "uptime-kuma") ];
+          }
+          {
+            name = "forgejo-runner";
+            cmdline = [ (bin "forgejo-runner") ];
+          }
+          {
+            name = "meilisearch";
+            cmdline = [ (bin "meilisearch") ];
+          }
+          {
+            name = "meilisearch-ui";
+            cmdline = [ "meilisearch-ui" ];
+          }
+          {
+            # Binary is `.searxng-run-wrapped`; match the store path instead.
+            name = "searxng";
+            cmdline = [ "searxng" ];
+          }
+          {
+            name = "immich";
+            cmdline = [
+              (bin "immich")
+              (bin "immich-api")
+            ];
+          }
+          {
+            # Broad match: puma, sidekiq, and its redis/db workers all carry
+            # `dawarich` in their argv.
+            name = "dawarich";
+            cmdline = [ "dawarich" ];
+          }
+          {
+            # App container's node argv is generic; match podman's conmon
+            # wrapper, which lives exactly as long as the container.
+            name = "bookorbit";
+            cmdline = [ "bookorbit-app" ];
+          }
+          {
+            name = "mariadb";
+            cmdline = [ (bin "mariadbd") ];
+          }
+          {
+            name = "iperf3-exporter";
+            cmdline = [ (bin "iperf3_exporter") ];
+          }
+          {
+            name = "mc-monitor";
+            cmdline = [ "mc-monitor" ];
+          }
+          {
+            name = "metar-exporter";
+            cmdline = [ "metar-exporter" ];
+          }
+          {
+            name = "statuspage-exporter";
+            cmdline = [ "statuspage-exporter" ];
+          }
         ];
       };
       smartctl = lib.mkIf config.services.smartd.enable {
