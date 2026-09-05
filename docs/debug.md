@@ -114,7 +114,6 @@ Run: `nix-shell -p python3 --run "python3 /tmp/parse_loki.py <saved-file>" | hea
 
 Tracked as GitHub issues in `docs/issues/`:
 
-2. Add `process_exporter` namegroups for transmission/jellyfin/grafana/loki/etc. — `docs/issues/02-process-exporter-namegroups.md`.
 3. Add a `wg show latest-handshakes` textfile-collector or tiny exporter for the proton namespace + a Grafana alert on handshake age > 5 min — `docs/issues/03-wireguard-handshake-exporter.md` (the missing signal from the 2026-09-03 incident).
 4. Fix/replace the segfaulting iperf3-exporter — `docs/issues/04-iperf3-exporter-segfault.md`.
 5. Fix or remove the broken exporters listed in §Known noise — `docs/issues/05-clean-up-broken-exporters.md`.

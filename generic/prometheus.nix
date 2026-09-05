@@ -54,16 +54,12 @@ in
             cmdline = [ (bin "forgejo") ];
           }
           {
-            # *arr apps; Readarr runs via `dotnet Readarr.dll`, so the
-            # case-sensitive names also keep exportarr (lowercase) out.
+            # *arr apps; Readarr runs via `dotnet Readarr.dll`. Single
+            # alternation regex: multiple cmdline regexes in one group are
+            # ANDed, not ORed. Case-sensitive names keep exportarr (lowercase)
+            # out.
             name = "arr";
-            cmdline = [
-              "Prowlarr"
-              "Radarr"
-              "Sonarr"
-              "Lidarr"
-              "Readarr"
-            ];
+            cmdline = [ "Prowlarr|Radarr|Sonarr|Lidarr|Readarr" ];
           }
           {
             name = "navidrome";
@@ -104,11 +100,10 @@ in
             cmdline = [ "searxng" ];
           }
           {
+            # Single alternation regex: multiple cmdline regexes in one
+            # group are ANDed, not ORed.
             name = "immich";
-            cmdline = [
-              (bin "immich")
-              (bin "immich-api")
-            ];
+            cmdline = [ "(^|/)immich( |$)|(^|/)immich-api( |$)" ];
           }
           {
             # Broad match: puma, sidekiq, and its redis/db workers all carry

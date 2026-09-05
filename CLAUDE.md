@@ -72,3 +72,4 @@ The `hosts` attrset in `flake.nix` maps hostname → `{ type, stateVersion, secu
 - `stateVersion` is pinned per host in `flake.nix` — leave it alone.
 - `secureBoot = true` (cucamelon) switches boot from plain systemd-boot to lanzaboote; this branches on the `secureBoot` module arg.
 - CI runs on the target machines themselves, so `melon`/`onion` must be online for PR checks to pass.
+- process-exporter `cmdline` regexes in one group are **ANDed** (one regex with `|` alternation for OR), and its `-children` flag defaults to true, so groups count the matched process plus its descendants.
