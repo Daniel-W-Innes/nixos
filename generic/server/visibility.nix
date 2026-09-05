@@ -531,6 +531,39 @@
                   annotations.summary = "journal shipping to Loki is retrying on {{ $labels.instance }}";
                   labels.severity = "critical";
                 }
+                {
+                  uid = "transmission-down";
+                  title = "Transmission down";
+                  condition = "A";
+                  data = [
+                    {
+                      refId = "A";
+                      datasourceUid = "PBFA97CFB590B2093";
+                      model = {
+                        # Sum across hosts: hosts that don't run transmission
+                        # export 0, so this only fires when it's down everywhere
+                        # (and still fires if melon's exporter is unreachable).
+                        expr = "sum(namedprocess_namegroup_num_procs{groupname=\"transmission\"}) == 0";
+                        instant = true;
+                        range = false;
+                        refId = "A";
+                        datasource = {
+                          type = "prometheus";
+                          uid = "PBFA97CFB590B2093";
+                        };
+                      };
+                      relativeTimeRange = {
+                        from = 300;
+                        to = 0;
+                      };
+                    }
+                  ];
+                  noDataState = "OK";
+                  execErrState = "KeepLast";
+                  for = "3m";
+                  annotations.summary = "transmission daemon is not running on any host";
+                  labels.severity = "critical";
+                }
               ];
             }
           ];

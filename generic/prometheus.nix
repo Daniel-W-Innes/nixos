@@ -1,5 +1,11 @@
 { lib, config, ... }:
 
+let
+  # process-exporter matches each regex against the full space-joined argv;
+  # anchor on the binary basename so other packages' store paths don't match
+  # (e.g. prometheus-node-exporter, grafana-loki, forgejo-runner).
+  bin = name: "(^|/)" + name + "( |$)";
+in
 {
   services = {
     prometheus.exporters = {
@@ -14,6 +20,60 @@
         port = 9256;
         openFirewall = true;
         firewallFilter = "-i enp8s0 -p tcp -m tcp --dport 9256";
+        settings.process_names = [
+          {
+            name = "transmission";
+            cmdline = [ (bin "transmission-daemon") ];
+          }
+          {
+            name = "jellyfin";
+            cmdline = [ (bin "jellyfin") ];
+          }
+          {
+            name = "grafana";
+            cmdline = [ (bin "grafana") ];
+          }
+          {
+            name = "loki";
+            cmdline = [ (bin "loki") ];
+          }
+          {
+            name = "tempo";
+            cmdline = [ (bin "tempo") ];
+          }
+          {
+            name = "prometheus";
+            cmdline = [ (bin "prometheus") ];
+          }
+          {
+            name = "influxdb";
+            cmdline = [ (bin "influxd") ];
+          }
+          {
+            name = "forgejo";
+            cmdline = [ (bin "forgejo") ];
+          }
+          {
+            # *arr apps; Readarr runs via `dotnet Readarr.dll`, so the
+            # case-sensitive names also keep exportarr (lowercase) out.
+            name = "arr";
+            cmdline = [
+              "Prowlarr"
+              "Radarr"
+              "Sonarr"
+              "Lidarr"
+              "Readarr"
+            ];
+          }
+          {
+            name = "navidrome";
+            cmdline = [ (bin "navidrome") ];
+          }
+          {
+            name = "postgres";
+            cmdline = [ (bin "postgres") ];
+          }
+        ];
       };
       smartctl = lib.mkIf config.services.smartd.enable {
         enable = true;
