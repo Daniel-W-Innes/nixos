@@ -1,8 +1,11 @@
-# Journal logs in Loki are missing the `unit` label — deploy stale Alloy config on melon
+# Journal logs in Loki are missing the `unit` label — relabel must live inside `loki.source.journal`
 
 ### Problem
 
-The repo's Alloy config (`generic/server/visibility.nix:181-202`) relabels `__journal__systemd_unit` → `unit` for `loki.source.journal`. But live Loki data (checked 2026-09-04) has labels `hostname`, `job`, `level`, `service_name` — **no `unit` label** — and `service_name` is a constant (`systemd-journal`) rather than the actual unit name. The running Alloy pipeline on melon predates the repo config (last repo edit 2026-08-15).
+Live Loki data (checked 2026-09-04) has journal-stream labels `hostname`, `job`, `service_name` — **no `unit` label** — and `service_name` is a constant (`systemd-journal`) rather than the actual unit name. Two stacked causes:
+
+- **Relabel placement bug:** `loki.source.journal` drops all `__journal_*` labels before forwarding to receivers (Alloy v1.16 `tailer.go` relabels internally, then skips any label still prefixed `__`; the docs say the same). The repo's `loki.relabel "journal_labels"` component sat downstream of the source, so its `__journal__systemd_unit` → `unit` rule never fired. Regression: `f6545a8` "loki relabel" (2026-08-02) moved the rules out of the source, where `beb259c` had them in the source's own `relabel_rules`.
+- **Stale deploy:** melon's running config diverges from the repo (the live static `service_name` label appears in no commit; alloy process started 2026-08-11).
 
 ### Why it matters
 
@@ -10,10 +13,9 @@ Every journal log line is stored as a full 1–2 KB JSON blob (all ~30 journald 
 
 ### Fix
 
-1. Rebuild melon so the deployed Alloy config matches the repo: `sudo nixos-rebuild switch --flake .#melon`
-2. Restart alloy if needed (`systemctl status alloy` should show the new config time).
-3. Verify in Grafana/Explore (or the mcp-grafana MCP): `list_loki_label_names` over `now-1h` should include `unit`, and a query like `{unit="transmission.service"}` should return lines.
-4. If `unit` is still absent after deploy, the label is being dropped between Alloy and Loki — investigate `loki.write`/`limits_config` (see `docs/debug.md` for the full live-vs-repo analysis).
+1. Move `relabel_rules` into `loki.source.journal` in `generic/server/visibility.nix` and `generic/lokiShipper.nix` (done 2026-09-04; validated with `alloy fmt`).
+2. Deploy: `sudo nixos-rebuild switch --flake .#melon` on melon (also `.#onion` for its shipper). systemd restarts alloy since the config store path changes.
+3. Verify in Grafana/Explore (or the mcp-grafana MCP): `list_loki_label_names` over `now-5m` should include `unit`, and a query like `{unit="transmission.service"}` should return lines.
 
 ### References
 

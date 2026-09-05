@@ -34,7 +34,7 @@ Transmission specifics that decode symptoms:
 
 - Live journal-stream labels: `hostname`, `job`, `level`, `service_name`. There is **no `unit` label** on live data.
 - `service_name` values in practice: `systemd-journal` (all journald lines) and `traefik` (OTLP path). Filtering a unit requires a line filter on the JSON blob: `|= "\"_SYSTEMD_UNIT\":\"lidarr.service\""`.
-- The repo config (`generic/server/visibility.nix:181-202`, Alloy `loki.source.journal`) relabels `__journal__systemd_unit` → `unit`. **The running pipeline on melon predates this — deploy it** (last repo edit 2026-08-15). Once live, `{unit="transmission.service"}` replaces every regex-scan trick below and makes journal queries ~100× cheaper.
+- The repo config (`generic/server/visibility.nix`, Alloy `loki.source.journal`) relabels `__journal__systemd_unit` → `unit` via the source's own `relabel_rules`. **Root cause found 2026-09-04:** the journal source drops all `__journal_*` labels before forwarding, so a downstream `loki.relabel` can never set `unit` (regression `f6545a8`). Fixed by moving `relabel_rules` into the source in `visibility.nix` and `lokiShipper.nix` — **deploy on melon (and onion) to take effect**. Once live, `{unit="transmission.service"}` replaces every regex-scan trick below and makes journal queries ~100× cheaper.
 - Each journal line is the **full journald entry as a 1–2 KB JSON blob** (30+ fields). 100 lines ≈ 150 KB. Prefer the most selective line filter you can; never pull raw windows without one.
 - Pass `startRfc3339` (e.g. `now-48h`) to `list_loki_label_names/values` — they only look at recent data by default.
 
@@ -113,7 +113,7 @@ Run: `nix-shell -p python3 --run "python3 /tmp/parse_loki.py <saved-file>" | hea
 
 Tracked as GitHub issues in `issues/`:
 
-1. Deploy the stale Alloy config on melon so the `unit` label exists — `issues/01-deploy-alloy-unit-label.md` (biggest single win).
+1. Deploy the fixed Alloy config (relabel moved into `loki.source.journal`) on melon and onion so the `unit` label exists — `issues/01-deploy-alloy-unit-label.md` (biggest single win).
 2. Add `process_exporter` namegroups for transmission/jellyfin/grafana/loki/etc. — `issues/02-process-exporter-namegroups.md`.
 3. Add a `wg show latest-handshakes` textfile-collector or tiny exporter for the proton namespace + a Grafana alert on handshake age > 5 min — `issues/03-wireguard-handshake-exporter.md` (the missing signal from the 2026-09-03 incident).
 4. Fix/replace the segfaulting iperf3-exporter — `issues/04-iperf3-exporter-segfault.md`.
