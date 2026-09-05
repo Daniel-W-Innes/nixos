@@ -564,6 +564,73 @@
                   annotations.summary = "transmission daemon is not running on any host";
                   labels.severity = "critical";
                 }
+                {
+                  uid = "wireguard-exporter-down";
+                  title = "WireGuard exporter down";
+                  condition = "A";
+                  data = [
+                    {
+                      refId = "A";
+                      datasourceUid = "PBFA97CFB590B2093";
+                      model = {
+                        expr = "up{job=\"wireguard\"} == 0";
+                        instant = true;
+                        range = false;
+                        refId = "A";
+                        datasource = {
+                          type = "prometheus";
+                          uid = "PBFA97CFB590B2093";
+                        };
+                      };
+                      relativeTimeRange = {
+                        from = 300;
+                        to = 0;
+                      };
+                    }
+                  ];
+                  noDataState = "OK";
+                  execErrState = "KeepLast";
+                  for = "3m";
+                  annotations.summary = "wireguard exporter on {{ $labels.instance }} is down";
+                  annotations.description = "The exporter runs inside the proton netns and is bound to its service, so this fires when the namespace or proton0 disappears.";
+                  labels.severity = "critical";
+                }
+                {
+                  uid = "wireguard-handshake-stall";
+                  title = "WireGuard handshake stalled";
+                  condition = "A";
+                  data = [
+                    {
+                      refId = "A";
+                      datasourceUid = "PBFA97CFB590B2093";
+                      model = {
+                        # Delay = seconds since each proton0 peer's last handshake.
+                        # min() over peers, not any-peer: Proton keeps the three
+                        # failover peers handshaking every ~20-120s while the active
+                        # 0.0.0.0/0 peer routinely sits 20+ min stale when idle.
+                        # min > 300 only when every peer has stalled (tunnel down).
+                        expr = "min(wireguard_latest_handshake_delay_seconds{job=\"wireguard\"}) > 300";
+                        instant = true;
+                        range = false;
+                        refId = "A";
+                        datasource = {
+                          type = "prometheus";
+                          uid = "PBFA97CFB590B2093";
+                        };
+                      };
+                      relativeTimeRange = {
+                        from = 300;
+                        to = 0;
+                      };
+                    }
+                  ];
+                  noDataState = "OK";
+                  execErrState = "KeepLast";
+                  for = "3m";
+                  annotations.summary = "Proton tunnel (proton0) has had no WireGuard handshake for 5+ minutes";
+                  annotations.description = "Every proton0 peer is stale: the tunnel is down and transmission will freeze.";
+                  labels.severity = "critical";
+                }
               ];
             }
           ];
