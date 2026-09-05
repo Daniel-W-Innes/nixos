@@ -954,7 +954,7 @@
           job_name = "wireguard";
           static_configs = [
             {
-              targets = [ "localhost:9586" ];
+              targets = [ "192.168.15.1:9586" ];
             }
           ];
         }
