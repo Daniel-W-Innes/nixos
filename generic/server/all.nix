@@ -9,6 +9,7 @@ _:
     ./dawarich.nix
     ./bookorbit.nix
     ./immich.nix
+    ./iperf-probe.nix
     ./traefik.nix
     ./meilisearch.nix
     ./searx.nix

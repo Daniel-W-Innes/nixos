@@ -1,5 +1,7 @@
 # iperf3-exporter segfaults — pin or replace the image
 
+**DONE 2026-09-05.** Replaced, not pinned: the segfaulting process was the image's bundled Alpine musl iperf3 (`comm=iperf3`, crash in `ld-musl`), and every published tag ships the same `FROM alpine:3.21; apk add iperf3` — pinning was a coin-flip. Shipped as `generic/server/iperf-probe.nix` (option 2): an hourly systemd timer runs nixpkgs iperf3 (glibc) from melon against all three targets and writes the same `iperf3_*` metric names with `target`/`port` labels into the node_exporter textfile collector (`--collector.textfile.directory=/run/iperf-probe`), so the Grafana iperf3 dashboard (separate git-synced repo, queries keyed only on target/port) needs no changes. Probe job, oci-container, and process-exporter group removed; per-target failures emit `iperf3_up 0` only. Deploy + first hourly run on melon still pending as of writing (see verification below).
+
 ### Problem
 
 The hourly speed-test scrape (`job="iperf3"`, targets cucamelon/onion/pumpkin, exporter container at `localhost:9579`, `generic/server/visibility.nix:539-567,886-891`) is broken. Kernel log 2026-09-04T01:47:45Z during the transmission investigation:

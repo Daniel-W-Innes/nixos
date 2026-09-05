@@ -51,7 +51,7 @@ These are constant background noise and will burn queries if treated as signals 
 - **postgres** — immich/postgres collation-version warnings.
 - **grafana** — provisioning-repository "branch protection check" warnings.
 - **loki.service** — logs its own queries (`caller=metrics.go`). Any broad regex matches your own query text; expect and discard these lines.
-- Broken scrape targets (up=0, pre-existing): `copyparty` (pumpkin:30266), `unpoller`, `shelly`, `statuspage`, all `cucamelon.*`, iperf3 probes between hourly scrapes.
+- Broken scrape targets (up=0, pre-existing): `copyparty` (pumpkin:30266), `unpoller`, `shelly`, `statuspage`, all `cucamelon.*`.
 
 ## Loki playbook (mcp-grafana)
 
@@ -95,7 +95,7 @@ Run: `nix-shell -p python3 --run "python3 /tmp/parse_loki.py <saved-file>" | hea
 - Provisioned Grafana alerts (group `visibility`, folder General, all → gotify): `traefik-backend-down` (`traefik_service_server_up{service=~".*@file"} == 0`), `traefik-down` (`up{job="traefik"} == 0`), `alloy-down` (`up{job="alloy"} == 0`), `alloy-shipping-failing` (`rate(loki_write_batch_retries_total{job="alloy"}[5m]) > 0`). These fire where 2026-09-04's silent failures lived — a gotify ping for any of them replaces the whole investigation this doc was written for.
 - Key devices on melon's node_exporter: `ens3` (the only NIC — LAN+WAN), `proton-br` (VPN bridge — only VPN-ns visibility; healthy keepalives ~100–800 B/s depending on activity, near-zero = tunnel dead). 5-min `rate()` smears short events — a 10 min outage shows as ~zero rates at the 5-min samples spanning it.
 - `process_exporter` on melon currently has **no namegroups** (exports nothing useful). Planned gap, see backlog.
-- Hourly iperf3 probe job (`job="iperf3"`, exporter at localhost:9579) targets cucamelon/onion/pumpkin; the exporter segfaults in musl — treat its results as broken.
+- Hourly iperf3 speed tests run from the melon `iperf-probe` systemd timer (nixpkgs iperf3) into the node_exporter textfile collector — `iperf3_*{target=...,port="5201"}` appear under `job="node_exporter"`, `instance="localhost:9100"`. Replaced the segfaulting container exporter 2026-09-05 — `docs/issues/done/04-iperf3-exporter-segfault.md`.
 
 ## Time and anchors
 
@@ -115,7 +115,7 @@ Run: `nix-shell -p python3 --run "python3 /tmp/parse_loki.py <saved-file>" | hea
 Tracked as GitHub issues in `docs/issues/`:
 
 3. Add a `wg show latest-handshakes` textfile-collector or tiny exporter for the proton namespace + a Grafana alert on handshake age > 5 min — `docs/issues/03-wireguard-handshake-exporter.md` (the missing signal from the 2026-09-03 incident).
-4. Fix/replace the segfaulting iperf3-exporter — `docs/issues/04-iperf3-exporter-segfault.md`.
+4. ~~Fix/replace the segfaulting iperf3-exporter~~ — DONE 2026-09-05: hourly timer + node_exporter textfile collector (`generic/server/iperf-probe.nix`) — `docs/issues/done/04-iperf3-exporter-segfault.md`.
 5. Fix or remove the broken exporters listed in §Known noise — `docs/issues/05-clean-up-broken-exporters.md`.
 6. (Resilience, not debug) Transmission watchdog timer — `docs/issues/06-transmission-watchdog.md`.
 

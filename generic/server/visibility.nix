@@ -793,35 +793,6 @@
           ];
         }
         {
-          job_name = "iperf3";
-          scrape_interval = "1h";
-          metrics_path = "/probe";
-          params.port = [ "5201" ];
-          static_configs = [
-            {
-              targets = [
-                "cucamelon.lc.brotherwolf.ca"
-                "onion.lc.brotherwolf.ca"
-                "pumpkin.lc.brotherwolf.ca"
-              ];
-            }
-          ];
-          relabel_configs = [
-            {
-              source_labels = [ "__address__" ];
-              target_label = "__param_target";
-            }
-            {
-              source_labels = [ "__param_target" ];
-              target_label = "instance";
-            }
-            {
-              target_label = "__address__";
-              replacement = "localhost:9579";
-            }
-          ];
-        }
-        {
           job_name = "immich";
           static_configs = [
             {
@@ -1155,12 +1126,6 @@
       ];
       cmd = [
         "export-for-prometheus"
-      ];
-    };
-    iperf3-exporter = {
-      image = "ghcr.io/edgard/iperf3_exporter:latest";
-      ports = [
-        "127.0.0.1:9579:9579/tcp"
       ];
     };
     statuspage-exporter = {

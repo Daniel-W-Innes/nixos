@@ -122,10 +122,6 @@ in
             cmdline = [ (bin "mariadbd") ];
           }
           {
-            name = "iperf3-exporter";
-            cmdline = [ (bin "iperf3_exporter") ];
-          }
-          {
             name = "mc-monitor";
             cmdline = [ "mc-monitor" ];
           }
