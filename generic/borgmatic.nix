@@ -18,43 +18,51 @@ let
       dir=/var/lib/borgmatic
       tmp="$dir/borgmatic.prom.tmp"
       out="$dir/borgmatic.prom"
-      lock="$dir/.stats.lock"
-      {
-        echo '# HELP borgmatic_last_success Unix time of the most recent successful borgmatic backup.'
-        echo '# TYPE borgmatic_last_success gauge'
-        echo "borgmatic_last_success $(date +%s)"
-      } > "$tmp"
+      if ! flock -n 9; then
+        exit 0
+      fi 9>"$dir/.stats.lock"
       info=""
-      if flock -n 9; then
-        info=$(borgmatic info --json --verbosity -2 2>/dev/null) || true
-      fi 9>"$lock"
+      info=$(borgmatic info --json --verbosity -2 2>/dev/null) || true
+      start=""
+      end=""
+      ucs=""
+      tcs=""
       if [ -n "$info" ]; then
         start=$(printf '%s' "$info" | jq -r '.archives[0].start // empty' 2>/dev/null || true)
         end=$(printf '%s' "$info" | jq -r '.archives[0].end // empty' 2>/dev/null || true)
-        if [ -n "$start" ] && [ -n "$end" ]; then
-          duration=$(( $(date -d "$end" +%s) - $(date -d "$start" +%s) ))
-          {
-            echo '# HELP borgmatic_last_backup_duration_seconds Duration of the most recent successful backup, from archive start to end.'
-            echo '# TYPE borgmatic_last_backup_duration_seconds gauge'
-            echo "borgmatic_last_backup_duration_seconds $duration"
-          } >> "$tmp"
-        fi
         ucs=$(printf '%s' "$info" | jq -r '(.cache.stats.unique_csize // .archives[0].stats.unique_csize // empty)' 2>/dev/null || true)
         tcs=$(printf '%s' "$info" | jq -r '(.cache.stats.total_csize // .archives[0].stats.total_csize // empty)' 2>/dev/null || true)
-        if [ -n "$ucs" ]; then
-          {
-            echo '# HELP borgmatic_repository_deduplicated_size_bytes Compressed size of unique chunks in the repository.'
-            echo '# TYPE borgmatic_repository_deduplicated_size_bytes gauge'
-            echo "borgmatic_repository_deduplicated_size_bytes $ucs"
-          } >> "$tmp"
+      fi
+      {
+        echo '# HELP borgmatic_last_success Unix time the most recent archive in the repository finished, 0 if the repository holds no archives.'
+        echo '# TYPE borgmatic_last_success gauge'
+        if [ -n "$end" ]; then
+          echo "borgmatic_last_success $(date -d "$end" +%s)"
+        else
+          echo 'borgmatic_last_success 0'
         fi
-        if [ -n "$tcs" ]; then
-          {
-            echo '# HELP borgmatic_repository_total_size_bytes Compressed size of all chunks in the repository, before deduplication.'
-            echo '# TYPE borgmatic_repository_total_size_bytes gauge'
-            echo "borgmatic_repository_total_size_bytes $tcs"
-          } >> "$tmp"
-        fi
+      } > "$tmp"
+      if [ -n "$start" ] && [ -n "$end" ]; then
+        duration=$(( $(date -d "$end" +%s) - $(date -d "$start" +%s) ))
+        {
+          echo '# HELP borgmatic_last_backup_duration_seconds Duration of the most recent archive, from start to end.'
+          echo '# TYPE borgmatic_last_backup_duration_seconds gauge'
+          echo "borgmatic_last_backup_duration_seconds $duration"
+        } >> "$tmp"
+      fi
+      if [ -n "$ucs" ]; then
+        {
+          echo '# HELP borgmatic_repository_deduplicated_size_bytes Compressed size of unique chunks in the repository.'
+          echo '# TYPE borgmatic_repository_deduplicated_size_bytes gauge'
+          echo "borgmatic_repository_deduplicated_size_bytes $ucs"
+        } >> "$tmp"
+      fi
+      if [ -n "$tcs" ]; then
+        {
+          echo '# HELP borgmatic_repository_total_size_bytes Compressed size of all chunks in the repository, before deduplication.'
+          echo '# TYPE borgmatic_repository_total_size_bytes gauge'
+          echo "borgmatic_repository_total_size_bytes $tcs"
+        } >> "$tmp"
       fi
       mv -f "$tmp" "$out"
     '';
@@ -115,6 +123,8 @@ in
       after_actions = [ "${writeSuccessMetric}/bin/borgmatic-write-success-metric" ];
     };
   };
+
+  systemd.services.borgmatic.serviceConfig.ReadWritePaths = [ "/run/media/daniel/stb" ];
 
   services.prometheus.exporters.node = {
     enabledCollectors = [ "textfile" ];
