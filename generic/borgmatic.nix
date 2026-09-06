@@ -8,7 +8,6 @@ let
     name = "borgmatic-write-success-metric";
     runtimeInputs = [
       pkgs.borgbackup
-      pkgs.borgmatic
       pkgs.coreutils
       pkgs.jq
       pkgs.util-linux
@@ -18,20 +17,21 @@ let
       dir=/var/lib/borgmatic
       tmp="$dir/borgmatic.prom.tmp"
       out="$dir/borgmatic.prom"
+      exec 9>"$dir/.stats.lock"
       if ! flock -n 9; then
         exit 0
-      fi 9>"$dir/.stats.lock"
+      fi
       info=""
-      info=$(borgmatic info --json --verbosity -2 2>/dev/null) || true
+      info=$(borg info --json --glob-archives 'borgmatic_{hostname}_*' /run/media/daniel/stb/repo 2>/dev/null) || true
       start=""
       end=""
       ucs=""
       tcs=""
       if [ -n "$info" ]; then
-        start=$(printf '%s' "$info" | jq -r '.archives[0].start // empty' 2>/dev/null || true)
-        end=$(printf '%s' "$info" | jq -r '.archives[0].end // empty' 2>/dev/null || true)
-        ucs=$(printf '%s' "$info" | jq -r '(.cache.stats.unique_csize // .archives[0].stats.unique_csize // empty)' 2>/dev/null || true)
-        tcs=$(printf '%s' "$info" | jq -r '(.cache.stats.total_csize // .archives[0].stats.total_csize // empty)' 2>/dev/null || true)
+        start=$(printf '%s' "$info" | jq -r '[.archives[]] | sort_by(.end) | last | .start // empty' 2>/dev/null || true)
+        end=$(printf '%s' "$info" | jq -r '[.archives[]] | sort_by(.end) | last | .end // empty' 2>/dev/null || true)
+        ucs=$(printf '%s' "$info" | jq -r '.cache.stats.unique_csize // empty' 2>/dev/null || true)
+        tcs=$(printf '%s' "$info" | jq -r '.cache.stats.total_csize // empty' 2>/dev/null || true)
       fi
       {
         echo '# HELP borgmatic_last_success Unix time the most recent archive in the repository finished, 0 if the repository holds no archives.'
