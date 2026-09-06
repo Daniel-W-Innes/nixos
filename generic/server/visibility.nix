@@ -631,6 +631,36 @@
                   annotations.description = "Every proton0 peer is stale: the tunnel is down and transmission will freeze.";
                   labels.severity = "critical";
                 }
+                {
+                  uid = "borgmatic-stale";
+                  title = "Borgmatic backup stale";
+                  condition = "A";
+                  data = [
+                    {
+                      refId = "A";
+                      datasourceUid = "PBFA97CFB590B2093";
+                      model = {
+                        expr = "time() - borgmatic_last_success > 108000 or absent(borgmatic_last_success)";
+                        instant = true;
+                        range = false;
+                        refId = "A";
+                        datasource = {
+                          type = "prometheus";
+                          uid = "PBFA97CFB590B2093";
+                        };
+                      };
+                      relativeTimeRange = {
+                        from = 300;
+                        to = 0;
+                      };
+                    }
+                  ];
+                  noDataState = "OK";
+                  execErrState = "KeepLast";
+                  for = "3m";
+                  annotations.summary = "no successful borgmatic backup on onion in over 30 hours";
+                  labels.severity = "critical";
+                }
               ];
             }
           ];
