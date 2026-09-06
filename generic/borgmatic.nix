@@ -11,18 +11,23 @@ let
       pkgs.borgmatic
       pkgs.coreutils
       pkgs.jq
+      pkgs.util-linux
     ];
     text = ''
       set -euo pipefail
       dir=/var/lib/borgmatic
       tmp="$dir/borgmatic.prom.tmp"
       out="$dir/borgmatic.prom"
+      lock="$dir/.stats.lock"
       {
         echo '# HELP borgmatic_last_success Unix time of the most recent successful borgmatic backup.'
         echo '# TYPE borgmatic_last_success gauge'
         echo "borgmatic_last_success $(date +%s)"
       } > "$tmp"
-      info=$(borgmatic info --json --verbosity -2 2>/dev/null) || true
+      info=""
+      if flock -n 9; then
+        info=$(borgmatic info --json --verbosity -2 2>/dev/null) || true
+      fi 9>"$lock"
       if [ -n "$info" ]; then
         start=$(printf '%s' "$info" | jq -r '.archives[0].start // empty' 2>/dev/null || true)
         end=$(printf '%s' "$info" | jq -r '.archives[0].end // empty' 2>/dev/null || true)
