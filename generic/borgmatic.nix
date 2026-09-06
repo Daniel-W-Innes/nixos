@@ -109,14 +109,27 @@ in
         }
         {
           name = "repository";
-          frequency = "2 weeks";
+          frequency = "1 month";
+          only_run_on = [ "Saturday" ];
         }
         {
           name = "spot";
           count_tolerance_percentage = 0.1;
           data_sample_percentage = 5;
           data_tolerance_percentage = 1;
-          frequency = "1 month";
+          xxh64sum_command = "${pkgs.xxhash}/bin/xxhsum";
+          frequency = "2 month";
+          only_run_on = [ "Sunday" ];
+        }
+        {
+          name = "extract";
+          frequency = "1 year";
+          only_run_on = [ "Sunday" ];
+        }
+        {
+          name = "data";
+          frequency = "1 year";
+          only_run_on = [ "Saturday" ];
         }
       ];
 
