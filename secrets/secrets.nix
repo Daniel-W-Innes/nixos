@@ -166,6 +166,10 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "borgmatic-env.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
   "anthropic-auth-token.age" = {
     publicKeys = users ++ systems;
     armor = true;

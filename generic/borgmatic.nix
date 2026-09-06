@@ -1,5 +1,7 @@
 {
+  config,
   pkgs,
+  secretsDir,
   ...
 }:
 
@@ -134,10 +136,24 @@ in
       ];
 
       after_actions = [ "${writeSuccessMetric}/bin/borgmatic-write-success-metric" ];
+
+      uptime_kuma = {
+        push_url = "https://uptime.lc.brotherwolf.ca/api/push/\${KUMA_PUSH_TOKEN}";
+      };
     };
   };
 
-  systemd.services.borgmatic.serviceConfig.ReadWritePaths = [ "/run/media/daniel/stb" ];
+  age.secrets.borgmatic-env = {
+    file = secretsDir + /borgmatic-env.age;
+    owner = "root";
+    group = "root";
+    mode = "0400";
+  };
+
+  systemd.services.borgmatic.serviceConfig = {
+    ReadWritePaths = [ "/run/media/daniel/stb" ];
+    EnvironmentFile = [ config.age.secrets.borgmatic-env.path ];
+  };
 
   services.prometheus.exporters.node = {
     enabledCollectors = [ "textfile" ];
