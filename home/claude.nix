@@ -28,9 +28,25 @@
         "mcp-grafana"
         "lidarr-mcp"
       ];
-      # Server-wide: the lidarr MCP is full CRUD by design (see docs/lidarr-mcp.md).
-      # Read-only visibility tools (actual names from `tools/list`, 2026-08-31).
       permissions.allow = [
+        "Bash(journalctl *)"
+        "Bash(systemctl status *)"
+        "Bash(systemctl cat *)"
+        "Bash(systemctl is-active *)"
+        "Bash(systemctl show *)"
+        "Bash(nixos-rebuild build *)"
+        "Bash(nix flake check *)"
+        "Bash(nix eval *)"
+        "Bash(nix fmt *)"
+        "Bash(nix build *)"
+        "Bash(nix log *)"
+        "Bash(nix --version)"
+        "Bash(prek run *)"
+        "Bash(git add *)"
+        "WebFetch(domain:github.com)"
+        "WebFetch(domain:raw.githubusercontent.com)"
+        # Server-wide: the lidarr MCP is full CRUD by design (see docs/lidarr-mcp.md).
+        # Read-only visibility tools (actual names from `tools/list`, 2026-08-31).
         "mcp__lidarr-mcp"
         "mcp__mcp-grafana__query_prometheus"
         "mcp__mcp-grafana__query_loki_logs"
@@ -42,6 +58,8 @@
         "mcp__mcp-grafana__get_dashboard_summary"
         "mcp__mcp-grafana__list_alert_groups"
         "mcp__mcp-grafana__get_alert_group"
+        "mcp__mcp-grafana__list_datasources"
+        "mcp__mcp-grafana__get_doc"
       ];
     };
   };

@@ -14,6 +14,8 @@ Personal NixOS configuration flake for three machines (single `x86_64-linux` sys
 
 Pinned to `nixpkgs/nixos-26.05` and `home-manager/release-26.05`; home-manager and agenix `follow` nixpkgs. There is no devShell — the repo is the config itself. Deployed by running `nixos-rebuild switch --flake .` on each machine (hostname matches the `nixosConfigurations` attr name).
 
+A broader view of the infra lives in `docs/`: `docs/debug.md` (topology incl. the flake-unmanaged pumpkin NAS and radish UniFi controller, plus the debugging playbook), `docs/issues/` (known problems, dated), `docs/reports/` (post-incident write-ups). Read these before debugging a service — the answer is often already there.
+
 ## Commands
 
 ```bash
@@ -40,6 +42,18 @@ nix shell nixpkgs#agenix -c agenix -e secrets/foo.age
 nix shell nixpkgs#agenix -c agenix -r
 ```
 
+## One-off tooling
+
+There is no devShell (the repo is the config, not a package), so `nix develop` is a no-op. Hosts are minimal — assume a tool is missing until proven present (e.g. no `python3` on onion, see `docs/debug.md`). Don't install missing tools into the config; run them ephemerally instead:
+
+- `nix shell nixpkgs#<pkg> -c <cmd>` — run one command with a package in scope (the agenix pattern above).
+- `, <cmd>` — [comma](https://github.com/nix-community/comma): runs any nixpkgs binary without installing, resolving `<cmd>` to the package that provides it via the nix-index database, e.g. `, yq`, `, python3`. Enabled on all hosts (`programs.nix-index-database.comma.enable`, flake.nix); the first run downloads the index, after which a systemd timer keeps it fresh.
+
+Comma is for interactive humans at a shell — it maps a bare command name to a package, nice to type but fragile to script (it depends on the nix-index database, and the command name alone is ambiguous). For anything Claude Code runs, use the explicit `nix shell nixpkgs#<pkg> -c <cmd>` form instead.
+- `nix-shell -p <pkg>` — interactive shell with a package; add `--run '<cmd>'` for non-interactive use (the `docs/debug.md` pattern).
+
+These resolve against the unstable nixpkgs channel/registry, not this repo's pinned `nixos-26.05` — fine for scratch tooling, but not where versions must match the flake's closure.
+
 ## Architecture
 
 `flake.nix` is the hub. `mkHost` assembles each `nixosConfigurations.<name>` from:
@@ -51,7 +65,7 @@ nix shell nixpkgs#agenix -c agenix -r
 
 The `hosts` attrset in `flake.nix` maps hostname → `{ type, stateVersion, secureBoot, extraModules }`. Adding a machine means adding a `hosts/<name>/` directory, an entry there, and matching `generic/`/`home/` files for the type.
 
-- **`generic/`** — system modules keyed by machine class. `min.nix` is the common base imported by server/desktop/laptop. `generic/server.nix` imports `generic/server/*.nix`, one file per self-hosted service (traefik, forgejo, arr, smb, searx, uptime, weather, visibility...). Modules may take `secretsDir`/`secureBoot` from `_module.args` (see `generic/min.nix` branching on `secureBoot`).
+- **`generic/`** — system modules keyed by machine class. `min.nix` is the common base imported by server/desktop/laptop. `generic/server.nix` (melon) imports `generic/server/*.nix`, one file per self-hosted service (traefik, forgejo, arr, smb, searx, uptime, weather, visibility...). `generic/desktop.nix` (onion) instead imports per-role modules: niri, claude (anthropic-auth token), grafana-mcp, lidarr-mcp, lokiShipper (Alloy shipping journal → melon's Loki), borgmatic (USB repo at `/run/media/daniel/stb/repo`, Prometheus textfile metrics, stale-backup alert in `generic/server/visibility.nix` + uptime-kuma), podman, forgejoRunner. Modules may take `secretsDir`/`secureBoot` from `_module.args` (see `generic/min.nix` branching on `secureBoot`).
 - **`home/`** — home-manager configs keyed by machine class, composed from shared pieces (`base.nix`, `min.nix`, `term.nix`, `niri.nix`, `gui.nix`, ...). WM-specific config lives in per-WM subdirectories (`home/niri/config.kdl`, `home/hyprland/`, `home/sway/`). Home-manager runs as a NixOS module (`users.daniel`, global pkgs) — not standalone.
 - **`modules/`** — custom NixOS modules: three Prometheus exporters (konnected, airzone, openweathermap) written in Go and built inline with `pkgs.buildGoModule` (`src = ./<dir>`, pinned `vendorHash`), plus `services.bookorbit`. `modules/konnected-exporter/gotify/` is a generated OpenAPI client. When Go sources change, update `vendorHash` (the build prints the expected hash).
 - **`secrets/`** — agenix `.age` files. `secrets/secrets.nix` maps each secret to the SSH keys (per-user and per-host) allowed to decrypt it; new hosts must be added there and all secrets rekeyed. Modules reference them as `age.secrets.<name>.file = secretsDir + /<name>.age`; runtime path is `config.age.secrets.<name>.path` (`/run/agenix/<name>` by default — `/run/secrets/...` references inside container definitions are in-container mount targets, not agenix paths).
