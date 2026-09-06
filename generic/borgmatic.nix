@@ -98,9 +98,9 @@ in
 
       archive_name_format = "borgmatic_{hostname}_{now:%Y-%m-%dT%H:%M:%S.%f}";
 
-      keep_daily = 7;
-      keep_weekly = 4;
-      keep_yearly = 1;
+      keep_daily = 14;
+      keep_weekly = 10;
+      keep_yearly = 3;
 
       checks = [
         {
