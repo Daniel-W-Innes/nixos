@@ -91,6 +91,16 @@ in
       exclude_patterns = [
         "/home/*/.cache"
         "*/steamapps"
+        "/var/lib/containers/storage"
+        "/home/daniel/.local/share/containers/storage"
+        "/home/daniel/.local/share/Trash"
+        "/home/daniel/.config/Code/Cache"
+        "/home/daniel/.config/Code/CachedData"
+        "/home/daniel/.config/Code/CachedExtensionVSIXs"
+        "/home/daniel/.config/Code/WebStorage"
+        "/home/daniel/.config/Code/GPUCache"
+        "/home/daniel/.config/discord/Cache"
+        "/home/daniel/go/pkg"
       ];
       exclude_caches = true;
 
