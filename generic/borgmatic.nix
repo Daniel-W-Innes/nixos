@@ -148,7 +148,12 @@ in
         }
       ];
 
-      after_actions = [ "${writeSuccessMetric}/bin/borgmatic-write-success-metric" ];
+      commands = [
+        {
+          after = "repository";
+          run = [ "${writeSuccessMetric}/bin/borgmatic-write-success-metric" ];
+        }
+      ];
 
       uptime_kuma = {
         push_url = "https://uptime.lc.brotherwolf.ca/api/push/\${KUMA_PUSH_TOKEN}";
