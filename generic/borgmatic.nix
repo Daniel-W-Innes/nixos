@@ -91,6 +91,9 @@ in
       exclude_patterns = [
         "/home/*/.cache"
         "*/steamapps"
+        "/home/daniel/.local/share/Steam/steamrt64"
+        "/home/daniel/.local/share/Steam/steamrt32"
+        "/home/daniel/.local/share/Steam/ubuntu12_32"
         "/var/lib/containers/storage"
         "/home/daniel/.local/share/containers/storage"
         "/home/daniel/.local/share/Trash"
