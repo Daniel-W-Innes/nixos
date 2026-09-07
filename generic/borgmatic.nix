@@ -29,11 +29,25 @@ let
       end=""
       ucs=""
       tcs=""
+      usize=""
+      tsize=""
+      days=""
+      count=""
       if [ -n "$info" ]; then
         start=$(printf '%s' "$info" | jq -r '[.archives[]] | sort_by(.end) | last | .start // empty' 2>/dev/null || true)
         end=$(printf '%s' "$info" | jq -r '[.archives[]] | sort_by(.end) | last | .end // empty' 2>/dev/null || true)
         ucs=$(printf '%s' "$info" | jq -r '.cache.stats.unique_csize // empty' 2>/dev/null || true)
         tcs=$(printf '%s' "$info" | jq -r '.cache.stats.total_csize // empty' 2>/dev/null || true)
+        usize=$(printf '%s' "$info" | jq -r '.cache.stats.unique_size // empty' 2>/dev/null || true)
+        tsize=$(printf '%s' "$info" | jq -r '.cache.stats.total_size // empty' 2>/dev/null || true)
+        days=$(printf '%s' "$info" | jq -r '[.archives[].start[:10]] | unique | length' 2>/dev/null || true)
+        count=$(printf '%s' "$info" | jq -r '.archives // [] | length' 2>/dev/null || true)
+      fi
+      listed=""
+      listed=$(borg list --json /run/media/daniel/stb/repo 2>/dev/null) || true
+      total=""
+      if [ -n "$listed" ]; then
+        total=$(printf '%s' "$listed" | jq -r '.archives // [] | length' 2>/dev/null || true)
       fi
       {
         echo '# HELP borgmatic_last_success Unix time the most recent archive in the repository finished, 0 if the repository holds no archives.'
@@ -64,6 +78,41 @@ let
           echo '# HELP borgmatic_repository_total_size_bytes Compressed size of all chunks in the repository, before deduplication.'
           echo '# TYPE borgmatic_repository_total_size_bytes gauge'
           echo "borgmatic_repository_total_size_bytes $tcs"
+        } >> "$tmp"
+      fi
+      if [ -n "$usize" ]; then
+        {
+          echo '# HELP borgmatic_repository_deduplicated_uncompressed_size_bytes Uncompressed size of unique chunks in the repository.'
+          echo '# TYPE borgmatic_repository_deduplicated_uncompressed_size_bytes gauge'
+          echo "borgmatic_repository_deduplicated_uncompressed_size_bytes $usize"
+        } >> "$tmp"
+      fi
+      if [ -n "$tsize" ]; then
+        {
+          echo '# HELP borgmatic_repository_total_uncompressed_size_bytes Uncompressed size of all chunks in the repository, before deduplication.'
+          echo '# TYPE borgmatic_repository_total_uncompressed_size_bytes gauge'
+          echo "borgmatic_repository_total_uncompressed_size_bytes $tsize"
+        } >> "$tmp"
+      fi
+      if [ -n "$days" ]; then
+        {
+          echo '# HELP borgmatic_archive_days Number of distinct days that hold borgmatic archives.'
+          echo '# TYPE borgmatic_archive_days gauge'
+          echo "borgmatic_archive_days $days"
+        } >> "$tmp"
+      fi
+      if [ -n "$total" ]; then
+        {
+          echo '# HELP borgmatic_repository_archives Number of archives in the repository, including non-borgmatic prefixes.'
+          echo '# TYPE borgmatic_repository_archives gauge'
+          echo "borgmatic_repository_archives $total"
+        } >> "$tmp"
+      fi
+      if [ -n "$count" ]; then
+        {
+          echo '# HELP borgmatic_archives Number of borgmatic archives in the repository.'
+          echo '# TYPE borgmatic_archives gauge'
+          echo "borgmatic_archives $count"
         } >> "$tmp"
       fi
       mv -f "$tmp" "$out"
