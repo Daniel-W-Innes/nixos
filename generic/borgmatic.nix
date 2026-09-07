@@ -11,7 +11,9 @@ let
     runtimeInputs = [
       pkgs.borgbackup
       pkgs.coreutils
+      pkgs.findutils
       pkgs.jq
+      pkgs.systemd
       pkgs.util-linux
     ];
     text = ''
@@ -56,6 +58,31 @@ let
       total=""
       if [ -n "$listed" ]; then
         total=$(printf '%s' "$listed" | jq -r '.archives // [] | length' 2>/dev/null || true)
+      fi
+      checks_root="''${STATE_DIRECTORY:-''${XDG_STATE_HOME:-$HOME/.local/state}}/borgmatic/checks"
+      check_metrics=""
+      for check in repository archives extract spot data; do
+        newest=""
+        newest=$(find "$checks_root" \( -name "$check" -o -path "*/$check/*" \) -type f -exec stat -c %Y {} + 2>/dev/null | sort -n | tail -1 || true)
+        if [ -n "$newest" ]; then
+          printf -v check_metrics '%s\nborgmatic_check_last_success{check="%s"} %s' "$check_metrics" "$check" "$newest"
+        fi
+      done
+      spot_state="$dir/spot.state"
+      spot_count=""
+      spot_data=""
+      if [ -n "''${INVOCATION_ID:-}" ]; then
+        spot_vals=""
+        spot_vals=$(journalctl _SYSTEMD_INVOCATION_ID="$INVOCATION_ID" -o json --no-pager 2>/dev/null | jq -r '.MESSAGE // empty | try capture("Spot check passed with a (?<count>[0-9.]+)% file count delta and a (?<data>[0-9.]+)% file data delta") catch empty | "\(.count) \(.data)"' 2>/dev/null | tail -1 || true)
+        spot_count=$(printf '%s' "$spot_vals" | cut -d' ' -f1 || true)
+        spot_data=$(printf '%s' "$spot_vals" | cut -d' ' -f2 || true)
+        if [ -n "$spot_count" ] && [ -n "$spot_data" ]; then
+          printf '{"spot_count":"%s","spot_data":"%s"}\n' "$spot_count" "$spot_data" > "$spot_state"
+        fi
+      fi
+      if [ -f "$spot_state" ]; then
+        spot_count=$(jq -r '.spot_count // empty' "$spot_state" 2>/dev/null || true)
+        spot_data=$(jq -r '.spot_data // empty' "$spot_state" 2>/dev/null || true)
       fi
       {
         echo '# HELP borgmatic_last_success Unix time the most recent archive in the repository finished, 0 if the repository holds no archives.'
@@ -135,6 +162,27 @@ let
           echo '# HELP borgmatic_archives Number of borgmatic archives in the repository.'
           echo '# TYPE borgmatic_archives gauge'
           echo "borgmatic_archives $count"
+        } >> "$tmp"
+      fi
+      if [ -n "$check_metrics" ]; then
+        {
+          echo '# HELP borgmatic_check_last_success Unix time each check type last passed.'
+          echo '# TYPE borgmatic_check_last_success gauge'
+          printf '%s\n' "$check_metrics"
+        } >> "$tmp"
+      fi
+      if [ -n "$spot_count" ]; then
+        {
+          echo '# HELP borgmatic_spot_check_file_count_delta_percent File count delta of the most recent spot check.'
+          echo '# TYPE borgmatic_spot_check_file_count_delta_percent gauge'
+          echo "borgmatic_spot_check_file_count_delta_percent $spot_count"
+        } >> "$tmp"
+      fi
+      if [ -n "$spot_data" ]; then
+        {
+          echo '# HELP borgmatic_spot_check_file_data_delta_percent File data delta of the most recent spot check.'
+          echo '# TYPE borgmatic_spot_check_file_data_delta_percent gauge'
+          echo "borgmatic_spot_check_file_data_delta_percent $spot_data"
         } >> "$tmp"
       fi
       mv -f "$tmp" "$out"
