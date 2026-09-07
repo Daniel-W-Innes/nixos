@@ -31,7 +31,10 @@ let
       tcs=""
       usize=""
       tsize=""
+      dates=""
       days=""
+      weeks=""
+      years=""
       count=""
       if [ -n "$info" ]; then
         start=$(printf '%s' "$info" | jq -r '[.archives[]] | sort_by(.end) | last | .start // empty' 2>/dev/null || true)
@@ -40,8 +43,13 @@ let
         tcs=$(printf '%s' "$info" | jq -r '.cache.stats.total_csize // empty' 2>/dev/null || true)
         usize=$(printf '%s' "$info" | jq -r '.cache.stats.unique_size // empty' 2>/dev/null || true)
         tsize=$(printf '%s' "$info" | jq -r '.cache.stats.total_size // empty' 2>/dev/null || true)
-        days=$(printf '%s' "$info" | jq -r '[.archives[].start[:10]] | unique | length' 2>/dev/null || true)
+        dates=$(printf '%s' "$info" | jq -r '.archives[].start // empty' 2>/dev/null | xargs -r -I{} date -d {} '+%F|%G-%V|%Y' 2>/dev/null || true)
         count=$(printf '%s' "$info" | jq -r '.archives // [] | length' 2>/dev/null || true)
+      fi
+      if [ -n "$dates" ]; then
+        days=$(printf '%s' "$dates" | cut -d'|' -f1 | sort -u | wc -l | tr -d ' ' || true)
+        weeks=$(printf '%s' "$dates" | cut -d'|' -f2 | sort -u | wc -l | tr -d ' ' || true)
+        years=$(printf '%s' "$dates" | cut -d'|' -f3 | sort -u | wc -l | tr -d ' ' || true)
       fi
       listed=""
       listed=$(borg list --json /run/media/daniel/stb/repo 2>/dev/null) || true
@@ -99,6 +107,20 @@ let
           echo '# HELP borgmatic_archive_days Number of distinct days that hold borgmatic archives.'
           echo '# TYPE borgmatic_archive_days gauge'
           echo "borgmatic_archive_days $days"
+        } >> "$tmp"
+      fi
+      if [ -n "$weeks" ]; then
+        {
+          echo '# HELP borgmatic_archive_weeks Number of distinct ISO weeks that hold borgmatic archives.'
+          echo '# TYPE borgmatic_archive_weeks gauge'
+          echo "borgmatic_archive_weeks $weeks"
+        } >> "$tmp"
+      fi
+      if [ -n "$years" ]; then
+        {
+          echo '# HELP borgmatic_archive_years Number of distinct years that hold borgmatic archives.'
+          echo '# TYPE borgmatic_archive_years gauge'
+          echo "borgmatic_archive_years $years"
         } >> "$tmp"
       fi
       if [ -n "$total" ]; then
