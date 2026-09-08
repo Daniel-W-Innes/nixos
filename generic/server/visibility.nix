@@ -681,7 +681,7 @@
           job_name = "prometheus";
           static_configs = [
             {
-              targets = [ "localhost:9100" ];
+              targets = [ "localhost:9090" ];
             }
           ];
         }
