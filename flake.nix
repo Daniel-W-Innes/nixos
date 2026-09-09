@@ -40,6 +40,17 @@
       url = "github:abl030/lidarr-mcp";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Dormant KDE Plasma support (generic/kde.nix + home/kde.nix).
+    plasma-manager = {
+      url = "github:nix-community/plasma-manager/trunk";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
+    plasma-zones = {
+      url = "github:fuddlesworth/PlasmaZones";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -54,6 +65,8 @@
       vpn-confinement,
       lanzaboote,
       lidarr-mcp,
+      plasma-manager,
+      plasma-zones,
       ...
     }:
     let
@@ -91,6 +104,10 @@
         {
           _module.args.secretsDir = ./secrets;
           _module.args.lidarrMCP = lidarr-mcp;
+          home-manager.extraSpecialArgs = {
+            # Used by home/kde.nix (dormant) in its `imports` list.
+            plasmaManager = plasma-manager;
+          };
           programs.nix-index-database.comma.enable = true;
           environment.systemPackages = preCommitCheck.enabledPackages ++ [
             pkgs.prek
@@ -116,6 +133,11 @@
         }:
         nixpkgs.lib.nixosSystem {
           inherit system;
+          # specialArgs (not _module.args): generic/kde.nix uses this in its
+          # `imports` list, which is evaluated before config._module.args exists.
+          specialArgs = {
+            plasmaZones = plasma-zones;
+          };
           modules =
             sharedModules
             ++ [
