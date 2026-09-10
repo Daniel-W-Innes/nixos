@@ -36,6 +36,7 @@ let
       dates=""
       days=""
       weeks=""
+      months=""
       years=""
       count=""
       if [ -n "$info" ]; then
@@ -45,13 +46,14 @@ let
         tcs=$(printf '%s' "$info" | jq -r '.cache.stats.total_csize // empty' 2>/dev/null || true)
         usize=$(printf '%s' "$info" | jq -r '.cache.stats.unique_size // empty' 2>/dev/null || true)
         tsize=$(printf '%s' "$info" | jq -r '.cache.stats.total_size // empty' 2>/dev/null || true)
-        dates=$(printf '%s' "$info" | jq -r '.archives[].start // empty' 2>/dev/null | xargs -r -I{} date -d {} '+%F|%G-%V|%Y' 2>/dev/null || true)
+        dates=$(printf '%s' "$info" | jq -r '.archives[].start // empty' 2>/dev/null | xargs -r -I{} date -d {} '+%F|%G-%V|%Y-%m|%Y' 2>/dev/null || true)
         count=$(printf '%s' "$info" | jq -r '.archives // [] | length' 2>/dev/null || true)
       fi
       if [ -n "$dates" ]; then
         days=$(printf '%s' "$dates" | cut -d'|' -f1 | sort -u | wc -l | tr -d ' ' || true)
         weeks=$(printf '%s' "$dates" | cut -d'|' -f2 | sort -u | wc -l | tr -d ' ' || true)
-        years=$(printf '%s' "$dates" | cut -d'|' -f3 | sort -u | wc -l | tr -d ' ' || true)
+        months=$(printf '%s' "$dates" | cut -d'|' -f3 | sort -u | wc -l | tr -d ' ' || true)
+        years=$(printf '%s' "$dates" | cut -d'|' -f4 | sort -u | wc -l | tr -d ' ' || true)
       fi
       listed=""
       listed=$(borg list --json /run/media/daniel/stb/repo 2>/dev/null) || true
@@ -143,6 +145,13 @@ let
           echo "borgmatic_archive_weeks $weeks"
         } >> "$tmp"
       fi
+      if [ -n "$months" ]; then
+        {
+          echo '# HELP borgmatic_archive_months Number of distinct months that hold borgmatic archives.'
+          echo '# TYPE borgmatic_archive_months gauge'
+          echo "borgmatic_archive_months $months"
+        } >> "$tmp"
+      fi
       if [ -n "$years" ]; then
         {
           echo '# HELP borgmatic_archive_years Number of distinct years that hold borgmatic archives.'
@@ -232,9 +241,13 @@ in
 
       archive_name_format = "borgmatic_{hostname}_{now:%Y-%m-%dT%H:%M:%S.%f}";
 
+      keep_within = 24h;
       keep_daily = 14;
       keep_weekly = 10;
-      keep_yearly = 3;
+      keep_monthly = 12;
+      keep_yearly = 4;
+
+      statistics = true;
 
       checks = [
         {
