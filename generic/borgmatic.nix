@@ -241,7 +241,7 @@ in
 
       archive_name_format = "borgmatic_{hostname}_{now:%Y-%m-%dT%H:%M:%S.%f}";
 
-      keep_within = 24h;
+      keep_within = "24h";
       keep_daily = 14;
       keep_weekly = 10;
       keep_monthly = 12;
