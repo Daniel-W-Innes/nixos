@@ -43,6 +43,8 @@
         "Bash(nix --version)"
         "Bash(prek run *)"
         "Bash(git add *)"
+        "Read(//nix/store/**)"
+        "Read(//run/current-system/**)"
         "WebFetch(domain:github.com)"
         "WebFetch(domain:raw.githubusercontent.com)"
         # Server-wide: the lidarr MCP is full CRUD by design (see docs/lidarr-mcp.md).
