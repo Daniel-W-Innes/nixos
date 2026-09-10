@@ -4,6 +4,9 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
+    # Rolling nixpkgs for fast-moving services (immich) that stable lags on
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -46,6 +49,7 @@
     {
       self,
       nixpkgs,
+      nixpkgs-unstable,
       agenix,
       home-manager,
       nix-index-database,
@@ -91,6 +95,7 @@
         {
           _module.args.secretsDir = ./secrets;
           _module.args.lidarrMCP = lidarr-mcp;
+          _module.args.immichPkgs = nixpkgs-unstable.legacyPackages.${system};
           programs.nix-index-database.comma.enable = true;
           environment.systemPackages = preCommitCheck.enabledPackages ++ [
             pkgs.prek

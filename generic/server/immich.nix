@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, immichPkgs, ... }:
 
 {
   fileSystems."/mnt/immich" = {
@@ -18,6 +18,9 @@
 
   services.immich = {
     enable = true;
+    # immich from unstable: upstream moves fast and nixos-26.05 lags into
+    # versions flagged insecure (e.g. 2.7.5).
+    package = immichPkgs.immich;
     group = "media";
     mediaLocation = "/mnt/immich";
     environment = {
