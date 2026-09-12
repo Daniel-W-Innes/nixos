@@ -17,7 +17,13 @@ Transmission specifics that decode symptoms:
 - `transmission.service` is confined to the `proton` VPN namespace (`generic/server/arr.nix`, `vpnConfinement`). RPC binds `192.168.15.1:9091` *inside* the namespace; the *arrs and uptime-kuma reach it via a main-namespace port mapping on `localhost:9091`.
 - Transmission 4.x runs the torrent session, tracker announces, peer I/O, and the RPC server on **one thread**. A blocking network op through the VPN freezes the RPC too → connections *hang* (timeouts), never refuse. A wedged daemon logs nothing (`message-level = 3` only logs errors; blocked ≠ error).
 - The VPN namespace itself is **invisible to host exporters**. The only signal is the `proton-br` bridge counter (keepalives) — near-zero rate means the tunnel is dead.
+- A wedged daemon wedges on *stop* too: `State 'stop-sigterm' timed out. Killing.` → SIGKILL → "Failed with result 'timeout'". So `systemctl restart` on a wedged daemon kills it (fine) — but the replacement can then time out *starting* if the namespace is still rebuilding; issue another start once `proton.service` has settled (2026-09-11, see `docs/issues/done/08-forgejo-db-start-race.md`).
 - 2026-09-03 reference incident: transmission RPC dead 21:35–21:56 EDT, self-healed, no restart, correlated with `proton-br` keepalive collapse. Full report: `docs/reports/2026-09-03-transmission-outage.md`.
+
+Forgejo specifics that decode symptoms:
+
+- Forgejo uses a podman postgres container (`forgejo-db`) via a unix socket at `/run/forgejo-db`. The module's preStart runs `forgejo migrate`, which fails fast when the socket is absent and burns the start-limit in ~2s — the unit stays failed even after the DB recovers (2026-09-11; fixed in `generic/server/forgejo.nix` with a `mkBefore` psql wait + `TimeoutStartSec=600`).
+- Runner 503s (`gitea-runner-*` — `fail to invoke Declare` / `failed to fetch task`: "unavailable: 503") mean traefik is up but the forgejo backend is down. melon's runner crash-loops (exit-code every ~2.5s) and needs a manual `systemctl start` after forgejo recovers; onion's keeps retrying and self-heals.
 
 ## Datasource UIDs (mcp-grafana)
 
@@ -33,6 +39,7 @@ Transmission specifics that decode symptoms:
 **Always start with `list_loki_label_names` / `list_loki_label_values` and trust what's live, not the config.**
 
 - Live journal-stream labels: `hostname`, `job`, `level`, `service_name`, `unit` (since 2026-09-04). `{unit="transmission.service"}` replaces every regex-scan trick below and makes journal queries ~100× cheaper.
+- **systemd's own messages carry no `unit` label**: "Failed with result"/"Starting"/"Stopped"/kill lines are logged by PID 1 with `_SYSTEMD_UNIT=init.scope`. Find unit failures by text instead: `{service_name="systemd-journal"} |= ".service: Failed with result"` (all services), or `|= "transmission.service"` for one unit (the name appears in the MESSAGE).
 - `service_name` values: `systemd-journal` (all journald lines — added by Alloy's journal source itself, not by config) and `traefik` (OTLP path). `exporter` label: `OTLP` (traefik stream, Loki-side from user-agent).
 - Root cause of the missing `unit` (2026-09-04): the journal source drops all `__journal_*` labels before forwarding, so a downstream `loki.relabel` can never set `unit` (regression `f6545a8`). Fixed by declaring rules in `loki.relabel` and assigning its `rules` export to the journal source's `relabel_rules` (`visibility.nix`, `lokiShipper.nix`) — deployed on melon and onion. Bonus fix in the same run: traefik's loki healthcheck was `/ping` (Loki 404s it) → `/ready` (`traefik-targets.nix`), which had been 503-ing the `loki.lc.brotherwolf.ca` route since 2026-08-03, so onion's shipper never landed.
 - Each journal line is a **trimmed ~0.4–0.7 KB JSON blob** (14 fields; since 2026-09-04, `loki.process journal_trim` in the alloy configs): keys `MESSAGE`, `PRIORITY`, `SYSLOG_IDENTIFIER`, `_SYSTEMD_UNIT`, `_PID`, `_UID`, `_GID`, `_COMM`, `_TRANSPORT`, `CONTAINER_NAME`, `CONTAINER_ID`, `CODE_FILE`, `CODE_FUNC`, `CODE_LINE` (missing = `null`). Bulk fields (`_CMDLINE`, `_EXE`, `_BOOT_ID`, ...) are dropped at the source. Still prefer the most selective line filter you can; never pull raw windows without one.
@@ -53,11 +60,20 @@ These are constant background noise and will burn queries if treated as signals 
 - **loki.service** — logs its own queries (`caller=metrics.go`). Any broad regex matches your own query text; expect and discard these lines.
 - Broken scrape targets (up=0, pre-existing): `copyparty` (pumpkin:30266), `unpoller`, `shelly`, `statuspage`, all `cucamelon.*`.
 
+## Switch storms: units failed after `nixos-rebuild switch`
+
+A flake update bumps nearly every package, so the switch restarts nearly every service — expect a wall of restart traffic in the journal. Signatures:
+
+- **Stop-phase timeout cluster**: unrelated units all "Failed with result 'timeout'" at the *same second* = stop order + 90s (default TimeoutStopSec) — units that wedged on SIGTERM and were SIGKILLed. Most recover when systemd restarts them; the switch's final warning lists only the units still failed.
+- **Podman container recreations take minutes** (image pull → create → start; ~5 min for forgejo-db on 2026-09-11). "Container started" ≠ the service inside is ready — anything needing the DB must wait on the socket (see Forgejo specifics above).
+- **Start-timeout during namespace rebuild**: a daemon confined to a namespace that's being rebuilt (transmission ↔ proton) can time out *starting*; start it again after `proton.service` settles.
+- Worked example: the 2026-09-11 storm (forgejo DB race, runner cascade, transmission stop/start wedges) — `docs/issues/done/08-forgejo-db-start-race.md`.
+
 ## Loki playbook (mcp-grafana)
 
 1. **Discover labels first.** `list_loki_label_names` → `list_loki_label_values` for the window.
 2. **Size-check cheaply.** `query_loki_stats` on the selector before pulling lines.
-3. **Narrow windows + `direction="forward"`.** Default is backward + limit — in a chatty window "the 100 newest lines" can cover only 5–20 seconds. If you want the *start* of a window, use forward; if you want a specific moment, bound it tightly (±2 min).
+3. **Narrow windows + `direction="forward"`.** Default is backward + limit — in a chatty window "the 100 newest lines" can cover only 5–20 seconds. If you want the *start* of a window, use forward; if you want a specific moment, bound it tightly (±2 min). With no explicit start/end the lookback is 1 h (the `hints` field says so) — pass `startRfc3339` every time.
 4. **Oversized results get saved to a file** under `~/.claude/projects/-home-daniel-repos-nixos/<session>/tool-results/` when they exceed the token limit. Parse them immediately with the script below (do not use Read — the file is one giant line). The harness requires the full file be read before summarizing; the script does that compactly.
 5. **Exclude loki's own query logs** when scanning broadly: append `!= "\"SYSLOG_IDENTIFIER\":\"loki\""`.
 6. Prefer `limit` ≤ 50 and the most specific filter that can work: `|=` (substring/regex on the raw line) is enough since the line embeds all journald fields as JSON text.
