@@ -86,17 +86,22 @@
     after = [ "${config.virtualisation.oci-containers.backend}-forgejo-db.service" ];
     requires = [ "${config.virtualisation.oci-containers.backend}-forgejo-db.service" ];
 
-    preStart = ''
-      until ${lib.getExe' pkgs.postgresql "psql"} -h /run/forgejo-db -U forgejo -d forgejo -c "SELECT 1" &>/dev/null; do
-        echo "Waiting for PostgreSQL to be ready..."
-        sleep 1
-      done
+    preStart = lib.mkMerge [
+      (lib.mkBefore ''
+        until ${lib.getExe' pkgs.postgresql "psql"} -h /run/forgejo-db -U forgejo -d forgejo -c "SELECT 1" &>/dev/null; do
+          echo "Waiting for PostgreSQL to be ready..."
+          sleep 1
+        done
+      '')
+      (lib.mkAfter ''
+        ${lib.getExe config.services.forgejo.package} admin user create \
+          --admin \
+          --email "root@localhost" \
+          --username Daniel-W-Innes \
+          --password "$(tr -d '\n' < ${config.age.secrets.forgejo-admin-password.path})" || true
+      '')
+    ];
 
-      ${lib.getExe config.services.forgejo.package} admin user create \
-        --admin \
-        --email "root@localhost" \
-        --username Daniel-W-Innes \
-        --password "$(tr -d '\n' < ${config.age.secrets.forgejo-admin-password.path})" || true
-    '';
+    serviceConfig.TimeoutStartSec = 600;
   };
 }
