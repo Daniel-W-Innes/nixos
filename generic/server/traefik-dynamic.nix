@@ -139,6 +139,11 @@ in
           usersFile = "/run/traefik-loki-htpasswd";
         };
       })
+      (lib.mkIf (config.virtualisation.oci-containers.containers ? fileflows) {
+        fileflows-auth.basicAuth = {
+          usersFile = "/run/traefik-fileflows-htpasswd";
+        };
+      })
     ];
   };
 

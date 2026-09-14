@@ -96,6 +96,13 @@ in
     {
       inherit enable host port;
     };
+  fileflows = {
+    # Keeps the router and its auth middleware in lockstep: both are driven by
+    # the container's presence.
+    enable = config.virtualisation.oci-containers.containers ? fileflows;
+    port = 19200;
+    middleware = "fileflows-auth";
+  };
   navidrome =
     let
       inherit (config.services.navidrome) enable;
