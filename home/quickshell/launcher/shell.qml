@@ -31,23 +31,28 @@ ShellRoot {
     readonly property int rowHeight: 36
     readonly property int maxRows: 12
 
-    property var entries: []
-    property var matches: []
-
-    Component.onCompleted: {
+    // Reactive on DesktopEntries.applications.values: quickshell's scan is
+    // async and populates the model a moment AFTER startup, so this must be
+    // a binding (a one-shot read at startup would stay empty forever).
+    property var allEntries: {
       const arr = [];
       for (const e of DesktopEntries.applications.values) {
         if (!e.noDisplay && e.command.length > 0) arr.push(e);
       }
       arr.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1);
-      root.entries = arr;
-      root.matches = arr;
-      field.forceActiveFocus();
+      return arr;
     }
 
-    function refresh(query) {
-      root.matches = query === "" ? root.entries
-        : root.entries.filter(e => e.name.toLowerCase().includes(query));
+    property string query: ""
+
+    property var matches: {
+      const q = root.query.trim().toLowerCase();
+      return q === "" ? root.allEntries
+        : root.allEntries.filter(e => e.name.toLowerCase().includes(q));
+    }
+
+    Component.onCompleted: {
+      field.forceActiveFocus();
     }
 
     function launch(entry) {
@@ -101,7 +106,7 @@ ShellRoot {
         verticalAlignment: TextInput.AlignVCenter
         background: Rectangle { radius: 6; color: root.bgHover }
         onTextChanged: {
-          root.refresh(text.trim().toLowerCase());
+          root.query = text;
           list.currentIndex = 0;
         }
         Keys.onPressed: (event) => {
@@ -164,9 +169,12 @@ ShellRoot {
       }
 
       Text {
+        // "Loading…" covers the async scan right after launch; "No matches"
+        // means the scan is done and the query really matches nothing.
         visible: root.matches.length === 0
         anchors { horizontalCenter: parent.horizontalCenter; top: field.bottom; topMargin: 12 }
-        text: "No matches"
+        text: root.query === "" && DesktopEntries.applications.values.length === 0
+          ? "Loading…" : "No matches"
         color: root.fgFaint
         font.pixelSize: 13
       }
