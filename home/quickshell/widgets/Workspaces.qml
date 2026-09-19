@@ -2,17 +2,18 @@ import QtQuick
 import Quickshell.Hyprland
 import ".."
 
-// Workspace dots: occupied = dim, focused = pill (widens), urgent = red.
-// Named/scratchpad workspaces have negative ids and are filtered out.
+// Numbered workspace indicators: focused = pill highlight, occupied = dim,
+// empty = faint, urgent = red. Named/scratchpad workspaces (negative ids)
+// are filtered out.
 Item {
   id: root
-  implicitHeight: Theme.dotSize
+  implicitHeight: Theme.wsHeight
   implicitWidth: wsRow.implicitWidth
 
   Row {
     id: wsRow
     anchors.verticalCenter: parent.verticalCenter
-    spacing: 6
+    spacing: 2
 
     Repeater {
       model: Hyprland.workspaces.values
@@ -21,24 +22,32 @@ Item {
         required property var modelData
         visible: modelData.id > 0
 
-        width: modelData.focused ? Theme.pillWidth : Theme.dotSize
-        height: Theme.dotSize
-        Behavior on width {
-          enabled: Theme.animations
-          NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic }
-        }
+        width: pill.width
+        height: Theme.wsHeight
 
         Rectangle {
-          anchors.fill: parent
+          id: pill
+          anchors.verticalCenter: parent.verticalCenter
+          width: numberText.implicitWidth + 2 * Theme.pillPad
+          height: Theme.wsHeight
           radius: height / 2
-          color: modelData.urgent ? Theme.urgent
-            : modelData.focused ? Theme.fg
-            : modelData.toplevels.values.length > 0 ? Theme.fgDim
-            : Theme.fgFaint
+          color: modelData.focused ? Theme.bgHover : "transparent"
           Behavior on color {
             enabled: Theme.animations
             ColorAnimation { duration: Theme.fast }
           }
+        }
+
+        Text {
+          id: numberText
+          anchors.centerIn: pill
+          text: modelData.id
+          color: modelData.urgent ? Theme.urgent
+            : modelData.focused ? Theme.fg
+            : modelData.toplevels.values.length > 0 ? Theme.fgDim
+            : Theme.fgFaint
+          font.family: Theme.textFont
+          font.pixelSize: Theme.fontSize - 1
         }
 
         MouseArea {
