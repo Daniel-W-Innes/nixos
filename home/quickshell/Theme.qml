@@ -30,6 +30,12 @@ Singleton {
   readonly property int chipSize: 20
   readonly property int osdWidth: 210
   readonly property int osdHeight: 40
+  readonly property int launcherWidth: 560
+  readonly property int launcherSearchHeight: 40
+  readonly property int launcherRowHeight: 38
+  readonly property int launcherMaxResults: 25
+  readonly property real launcherTopFraction: 0.18
+  readonly property real launcherMaxListFraction: 0.4
 
   // fonts
   readonly property string textFont: "Liberation Sans"

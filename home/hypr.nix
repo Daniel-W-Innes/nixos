@@ -4,7 +4,6 @@
   home.packages = with pkgs; [
     wl-clipboard
     alacritty
-    wofi
     playerctl
     brightnessctl
     pavucontrol
