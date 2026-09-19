@@ -5,6 +5,10 @@
     wl-clipboard
     alacritty
     wofi
+    playerctl
+    brightnessctl
+    kdePackages.dolphin
+    kdePackages.dolphin-plugins
     kdePackages.qtsvg
   ];
   programs = {
@@ -18,6 +22,7 @@
     waybar.enable = true;
   };
   services.hyprpolkitagent.enable = true;
+  services.mako.enable = true;
   xdg.configFile = {
     "waybar/config.jsonc".source = ./hyprland/waybar/config.jsonc;
     "waybar/style.css".source = ./hyprland/waybar/style.css;
