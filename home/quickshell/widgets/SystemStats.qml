@@ -105,7 +105,7 @@ Item {
     spacing: Theme.gap
 
     Stat {
-      glyph: String.fromCodePoint(0xF04A6) // nf-md-cpu_64_bit
+      glyph: String.fromCodePoint(0xF2DB) // nf-fa-microchip
       label: root.cpu + "%"
       tint: root.cpu >= 90 ? Theme.critical : root.cpu >= 80 ? Theme.warning : Theme.fg
     }
