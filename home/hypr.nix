@@ -4,6 +4,7 @@
   home.packages = with pkgs; [
     wl-clipboard
     alacritty
+    wofi
     playerctl
     brightnessctl
     pavucontrol
@@ -21,9 +22,6 @@
     quickshell = {
       enable = true;
       configs.main = ./quickshell;
-      # Separate process, toggled by the hyprland keybind:
-      #   quickshell kill -c launcher || quickshell --config launcher
-      configs.launcher = ./quickshell/launcher;
       # Inert without systemd.enable (ly never activates graphical-session.target):
       # the exec-once in hyprland.conf is what selects the config. Kept to
       # document which of the named configs is active.
