@@ -1,21 +1,12 @@
 import Quickshell
-import Quickshell.Io
 import QtQml
 
-// One shell process hosts the bar, the OSD, the power menu and the app
-// launcher — one instance of each per monitor. QML windows cannot nest, so
-// they are siblings here and communicate through the Ui singleton.
+// One shell process hosts the bar, the OSD and the power menu — one instance
+// of each per monitor. QML windows cannot nest, so they are siblings here
+// and communicate through the Ui singleton. (The app launcher is a separate
+// process in ./launcher, toggled by a hyprland keybind.)
 ShellRoot {
   id: shell
-
-  // The launcher is toggled from a hyprland keybind:
-  //   quickshell ipc -c main call launcher toggle
-  // Lives here (not in Launcher.qml) because there is one Launcher per
-  // screen and IpcHandler targets must be unique.
-  IpcHandler {
-    target: "launcher"
-    function toggle(): void { Ui.toggleLauncher(); }
-  }
 
   Variants {
     model: Quickshell.screens
@@ -35,13 +26,6 @@ ShellRoot {
     model: Quickshell.screens
     delegate: Component {
       PowerMenu { screen: modelData }
-    }
-  }
-
-  Variants {
-    model: Quickshell.screens
-    delegate: Component {
-      Launcher { screen: modelData }
     }
   }
 }
