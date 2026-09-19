@@ -5,7 +5,7 @@ _:
     ./min.nix
     ./ssh.nix
     ./displayManager.nix
-    ./niri.nix
+    ./hypr.nix
     ./iperf.nix
     ./prometheus.nix
     ./avahi.nix
