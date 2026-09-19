@@ -13,19 +13,16 @@ PanelWindow {
   screen: modelData
 
   anchors { top: true; left: true; right: true }
-  margins { top: 6; left: 8; right: 8 }
   implicitHeight: Theme.barHeight
-  // Explicit zone: ExclusionMode.Auto would only reserve the surface height,
-  // leaving the 6px top margin uncovered by windows.
-  exclusiveZone: Theme.barHeight + 8
+  exclusiveZone: Theme.barHeight
 
   color: "transparent"
   surfaceFormat.opaque: false
 
-  // The rounded panel
+  // The panel (flush with the screen edges, so no rounding)
   Rectangle {
     anchors.fill: parent
-    radius: Theme.radius
+    radius: 0
     color: Theme.bg
     border.width: 1
     border.color: Theme.border
@@ -78,20 +75,29 @@ PanelWindow {
     PowerButton { barScreen: bar.screen }
   }
 
-  component PowerButton: Rectangle {
+  // The chip is centered in a bar-height cell so it aligns with the widgets
+  // (the widgets center their content in the same height).
+  component PowerButton: Item {
     required property var barScreen
 
-    width: 22
-    height: 22
-    radius: Theme.chipRadius
-    color: mouse.containsMouse ? Theme.bgHover : "transparent"
-    Behavior on color {
-      enabled: Theme.animations
-      ColorAnimation { duration: Theme.fast }
+    implicitHeight: Theme.barHeight
+    implicitWidth: 22
+
+    Rectangle {
+      id: chip
+      anchors.verticalCenter: parent.verticalCenter
+      width: 22
+      height: 22
+      radius: Theme.chipRadius
+      color: mouse.containsMouse ? Theme.bgHover : "transparent"
+      Behavior on color {
+        enabled: Theme.animations
+        ColorAnimation { duration: Theme.fast }
+      }
     }
 
     Text {
-      anchors.centerIn: parent
+      anchors.centerIn: chip
       text: String.fromCodePoint(0xF0425) // nf-md-power
       color: Theme.fg
       font.family: Theme.iconFont
@@ -100,7 +106,7 @@ PanelWindow {
 
     MouseArea {
       id: mouse
-      anchors.fill: parent
+      anchors.fill: chip
       hoverEnabled: true
       onClicked: Ui.toggleMenu(barScreen)
     }

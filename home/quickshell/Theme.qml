@@ -24,8 +24,8 @@ Singleton {
   readonly property int gap: 14
   readonly property int fontSize: 13
   readonly property int iconSize: 14
-  readonly property int dotSize: 8
-  readonly property int pillWidth: 22
+  readonly property int wsHeight: 18
+  readonly property int pillPad: 7
   readonly property int chipRadius: 6
   readonly property int osdWidth: 210
   readonly property int osdHeight: 40
