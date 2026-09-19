@@ -25,7 +25,9 @@ PanelWindow {
   }
 
   Rectangle {
-    anchors { top: parent.top; right: parent.right; topMargin: Theme.barHeight + 14; rightMargin: 8 }
+    // Right edge flush with the power button (which sits inset by padH),
+    // hovering just below the bar.
+    anchors { top: parent.top; right: parent.right; topMargin: Theme.barHeight + 6; rightMargin: Theme.padH }
     width: 200
     height: column.implicitHeight + 12
     radius: Theme.radius
