@@ -13,6 +13,7 @@ Singleton {
   property bool osdMuted: false
   property bool menuVisible: false
   property var menuScreen: null
+  property bool launcherVisible: false
 
   function showVolume(value, muted) {
     osdKind = "volume";
@@ -37,6 +38,14 @@ Singleton {
 
   function closeMenu() {
     menuVisible = false;
+  }
+
+  function toggleLauncher() {
+    launcherVisible = !launcherVisible;
+  }
+
+  function closeLauncher() {
+    launcherVisible = false;
   }
 
   Timer {
