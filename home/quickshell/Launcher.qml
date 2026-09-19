@@ -24,7 +24,8 @@ PanelWindow {
 
   property real contentOpacity: 0
   visible: contentOpacity > 0
-  Behavior on contentOpacity { NumberAnimation { duration: Theme.fast } }
+  // No fade: a launcher should appear instantly, like wofi did. (The OSD
+  // and power menu keep their fades.)
 
   // Maximum list rows that fit under the list height cap.
   readonly property int maxRows: Math.max(1, Math.floor(
@@ -191,9 +192,11 @@ PanelWindow {
       }
 
       Text {
+        // Distinguish "desktop-file scan still running" (right after login)
+        // from a genuinely empty search result.
         visible: root.matches.length === 0
         anchors { horizontalCenter: parent.horizontalCenter; top: field.bottom; topMargin: 12 }
-        text: "No matches"
+        text: DesktopEntries.applications.values.length === 0 ? "Loading…" : "No matches"
         color: Theme.fgFaint
         font.family: Theme.textFont
         font.pixelSize: Theme.fontSize
