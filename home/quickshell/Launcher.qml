@@ -24,8 +24,7 @@ PanelWindow {
 
   property real contentOpacity: 0
   visible: contentOpacity > 0
-  // No fade: a launcher should appear instantly, like wofi did. (The OSD
-  // and power menu keep their fades.)
+  Behavior on contentOpacity { NumberAnimation { duration: Theme.fast } }
 
   // Maximum list rows that fit under the list height cap.
   readonly property int maxRows: Math.max(1, Math.floor(
@@ -117,6 +116,12 @@ PanelWindow {
       if (show) {
         field.text = "";
         field.forceActiveFocus();
+        // quickshell lazily creates a window's content on its first show,
+        // and the ListView can skip building delegates for that first
+        // frame, leaving the results area empty. Bumping the model forces
+        // the view to rebuild now that the window is visible.
+        list.model = null;
+        list.model = root.matches;
       }
     }
   }
