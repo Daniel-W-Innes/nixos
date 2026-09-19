@@ -13,4 +13,6 @@ _:
     ./wifi.nix
     ./lokiShipper.nix
   ];
+  # The quickshell bar reads battery state over UPower; off by default.
+  services.upower.enable = true;
 }

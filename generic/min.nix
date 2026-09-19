@@ -74,5 +74,10 @@
     git
     sbctl
   ];
-  fonts.packages = with pkgs; [ nerd-fonts.roboto-mono ];
+  fonts.packages = with pkgs; [
+    nerd-fonts.roboto-mono
+    # Icon-only variant for the quickshell bar glyphs (stable metrics,
+    # guaranteed glyph coverage).
+    nerd-fonts.symbols-only
+  ];
 }
