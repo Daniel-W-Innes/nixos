@@ -12,6 +12,7 @@ Item {
 
   property string dev: ""
   property real pct: 0
+  property real lastPct: -1
   property bool primed: false
 
   Process {
@@ -41,7 +42,10 @@ Item {
     const m = Number(maxFile.text().trim());
     if (isNaN(b) || isNaN(m) || m <= 0) return;
     root.pct = Math.max(0, Math.min(1, b / m));
-    if (root.primed) Ui.showBrightness(root.pct);
+    // The 1s poll would otherwise re-trigger the OSD forever; only show it
+    // when the value actually changed.
+    if (root.primed && Math.abs(root.pct - root.lastPct) > 0.001) Ui.showBrightness(root.pct);
+    root.lastPct = root.pct;
   }
 
   // Backstop poll — sysfs inotify is historically flaky.
