@@ -81,13 +81,13 @@ PanelWindow {
     required property var barScreen
 
     implicitHeight: Theme.barHeight
-    implicitWidth: 22
+    implicitWidth: Theme.chipSize
 
     Rectangle {
       id: chip
       anchors.verticalCenter: parent.verticalCenter
-      width: 22
-      height: 22
+      width: Theme.chipSize
+      height: Theme.chipSize
       radius: Theme.chipRadius
       color: mouse.containsMouse ? Theme.bgHover : "transparent"
       Behavior on color {

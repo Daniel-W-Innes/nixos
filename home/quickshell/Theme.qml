@@ -18,15 +18,16 @@ Singleton {
   readonly property color urgent: "#c9545d"
 
   // metrics
-  readonly property int barHeight: 34
+  readonly property int barHeight: 26
   readonly property int radius: 10
   readonly property int padH: 12
   readonly property int gap: 14
   readonly property int fontSize: 13
   readonly property int iconSize: 14
-  readonly property int wsHeight: 18
+  readonly property int wsHeight: 16
   readonly property int pillPad: 7
   readonly property int chipRadius: 6
+  readonly property int chipSize: 20
   readonly property int osdWidth: 210
   readonly property int osdHeight: 40
 
