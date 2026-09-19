@@ -9,7 +9,7 @@ ShellRoot {
   id: shell
 
   // The launcher is toggled from a hyprland keybind:
-  //   quickshell ipc call -c main launcher toggle
+  //   quickshell ipc -c main call launcher toggle
   // Lives here (not in Launcher.qml) because there is one Launcher per
   // screen and IpcHandler targets must be unique.
   IpcHandler {

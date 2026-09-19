@@ -179,7 +179,11 @@ PanelWindow {
         id: list
         anchors { left: parent.left; right: parent.right; top: field.bottom; leftMargin: 4; rightMargin: 4; topMargin: 4 }
         height: Math.min(root.matches.length, root.maxRows) * Theme.launcherRowHeight
-        model: ScriptModel { values: root.matches }
+        // Plain JS array, not ScriptModel: the array is tiny (<= 25 entries) and
+        // ScriptModel's deferred diffing left the list empty for a moment after
+        // the window became visible. Recreating delegates per keystroke is cheap
+        // at this scale and the data is there on the first frame.
+        model: root.matches
         delegate: RowComponent
         currentIndex: -1
         clip: true
