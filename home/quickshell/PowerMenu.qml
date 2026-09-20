@@ -41,7 +41,7 @@ PanelWindow {
       anchors.margins: 6
       spacing: 2
 
-      MenuRow { glyph: String.fromCodePoint(0xF033E); label: "Lock"; cmd: ["swaylock", "-fFc", "000000"] }
+      MenuRow { glyph: String.fromCodePoint(0xF033E); label: "Lock"; cmd: ["quickshell", "--config", "lock"] }
       MenuRow { glyph: String.fromCodePoint(0xF0904); label: "Suspend"; cmd: ["systemctl", "suspend"] }
       MenuRow { glyph: String.fromCodePoint(0xF0709); label: "Reboot"; cmd: ["systemctl", "reboot"] }
       MenuRow { glyph: String.fromCodePoint(0xF0425); label: "Shut down"; cmd: ["systemctl", "poweroff"] }
