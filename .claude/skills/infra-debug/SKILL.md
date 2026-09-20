@@ -28,23 +28,25 @@ Standard lanes:
 1. **Journal/Loki** (general-purpose agent) — label discovery first (`list_loki_label_names/values`), `query_loki_stats` before any pull, `|=` filters on the JSON blobs; remember systemd's own messages carry no `unit` label (text-filter instead, §Journal data). Goal: first error, restart/failure timeline, stop/start messages.
 2. **Prometheus** (general-purpose agent) — aggregate before pulling: `min_over_time(up{...}[3h])`, `count_over_time` baselines; node_exporter devices `ens3`/`proton-br`; the four provisioned alerts (§Prometheus playbook) as early-warning shortcuts. Goal: host health (CPU/mem/disk), network health, uptime history.
 3. **Config/state** (Explore agent) — repo only: the service's module (`generic/`, `modules/`, `hosts/`), `docs/issues/` and `docs/reports/` for known problems, recent `git log`. Goal: what the config intends, what changed recently, which known issue matches.
-4. Extra lanes only when the hypothesis list calls for them: **timeline** (uptime-kuma `MONITOR` lines), **kernel** (always a second filter — TTM noise floods it), **switch-storm** (after a `nixos-rebuild switch`: the `.service: Failed with result` text filter and the stop-phase timeout-cluster signature, §Switch storms).
+4. **Local state/SSH** (general-purpose agent) — `ssh melon` read-only as daniel (no sudo, never edit files on the host): `systemctl cat/status <unit>` (the *live* unit definition — sandbox props, ExecStart, drops-ins), `journalctl -b -u <unit>`, mount state (`systemctl status '*.mount' '*.automount'`, `mount`), namespace config (`/etc/netns/<ns>/`, `/run/netns/`), service state dirs. Goal: the live reality the repo and metrics can't see — exact unit definitions, local files, mount health.
+5. Extra lanes only when the hypothesis list calls for them: **timeline** (uptime-kuma `MONITOR` lines), **kernel** (always a second filter — TTM noise floods it), **switch-storm** (after a `nixos-rebuild switch`: the `.service: Failed with result` text filter and the stop-phase timeout-cluster signature, §Switch storms).
 
 Subagent discipline (spell it out in each prompt):
 
 - Baseline before believing: any suspicious signal gets a ≥10 h `count_over_time` before being treated as causal.
 - Ignore §Known noise; never pull raw windows without a line filter; `limit` ≤ 50.
-- Read-only: they may `git log`/grep but must not edit files, ssh, or sudo.
+- Read-only: they may `git log`/grep and `ssh melon` as daniel for local state, but must not edit files (repo or host) and must not sudo.
 
 ## Phase 2 — Verify and synthesize
 
-1. Re-run at most the one or two decisive queries yourself to confirm the causal claim (never re-run the sweep the subagents did).
+1. Re-run at most the one or two decisive queries yourself to confirm the causal claim (never re-run the sweep the subagents did) — or one read-only ssh check if the claim is local state (a unit file, a mount, a file on disk).
 2. Kill remaining hypotheses one query at a time, cheapest first; keep the ruled-out list.
 3. Reconstruct the timeline in EDT anchored to MESSAGE timestamps; map each symptom through the debug.md decoders (§Topology specifics, §Switch storms) to root cause(s) and recovery actions.
 
 ## Phase 3 — Report and recover
 
 - Report: timeline, root cause, evidence (queries + key lines), what was ruled out, and exact recovery commands.
-- The user runs commands on the hosts; ask before SSHing, never sudo (§Workflow rules).
+- Host access: **SSH is explicitly allowed** — `ssh melon` from onion as daniel, read-only (journalctl, `systemctl status/cat`, mounts, service dirs, `/proc`); never sudo over ssh (sudo needs an interactive tty). Observability-first still applies for anything mcp-grafana already answers.
+- **When root is needed, make the user a script instead of a command list.** Write it into `/tmp` on the host over ssh (`ssh melon 'bash -s' <<'EOF'` heredoc), have the user run exactly one `sudo bash /tmp/<script>` (their password, their tty), and have the script write its outputs to `/tmp` files you then read back over ssh. One sudo per run beats one sudo per line — the 2026-09-19 transmission pattern (debug runs with `--log-level=debug`, per-thread `/proc/<pid>/task/*/stack` captures, unit drop-in experiments) recovered the service this way.
 - Never commit — leave any config fix as a working-tree diff for the user.
 - Offer the repo follow-ups: a `docs/reports/` post-incident write-up, a `docs/issues/` (or `docs/issues/done/`) entry, and a `docs/debug.md` update with any new decoder learned.

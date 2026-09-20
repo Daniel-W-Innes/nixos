@@ -77,6 +77,18 @@ in
       vpnNamespace = "proton";
     };
 
+    # After an unclean power-off the daemon can wedge during startup (blocks
+    # on the VPN data path before signalling READY) and systemd kills it
+    # after TimeoutStartSec; with the default Restart=no the unit then stays
+    # failed indefinitely (2026-09-18, docs/reports/2026-09-18-transmission-wedge.md).
+    # Retry on failure so it self-heals once the tunnel path recovers.
+    serviceConfig.Restart = "on-failure";
+
+    # Startup loads ~4000 torrents synchronously and stats their files over
+    # the pumpkin CIFS mount; the 90s default times out long before READY
+    # (2026-09-18 incident). Same pattern as forgejo's TimeoutStartSec=600.
+    serviceConfig.TimeoutStartSec = 600;
+
     # This is a hack to ensure the queue.json file exists before transmission starts, as it doesn't create it on its own and fails if it doesn't exist.
     serviceConfig.ExecStartPre = lib.mkAfter [
       (

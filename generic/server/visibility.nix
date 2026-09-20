@@ -420,7 +420,7 @@
                       refId = "A";
                       datasourceUid = "PBFA97CFB590B2093";
                       model = {
-                        expr = "traefik_service_server_up{service=~\".*@file\"} == 0";
+                        expr = "traefik_service_server_up{service=~\".*@file\"} == bool 0";
                         instant = true;
                         range = false;
                         refId = "A";
@@ -450,7 +450,7 @@
                       refId = "A";
                       datasourceUid = "PBFA97CFB590B2093";
                       model = {
-                        expr = "up{job=\"traefik\"} == 0";
+                        expr = "up{job=\"traefik\"} == bool 0";
                         instant = true;
                         range = false;
                         refId = "A";
@@ -480,7 +480,7 @@
                       refId = "A";
                       datasourceUid = "PBFA97CFB590B2093";
                       model = {
-                        expr = "up{job=\"alloy\"} == 0";
+                        expr = "up{job=\"alloy\"} == bool 0";
                         instant = true;
                         range = false;
                         refId = "A";
@@ -543,7 +543,11 @@
                         # Sum across hosts: hosts that don't run transmission
                         # export 0, so this only fires when it's down everywhere
                         # (and still fires if melon's exporter is unreachable).
-                        expr = "sum(namedprocess_namegroup_num_procs{groupname=\"transmission\"}) == 0";
+                        # `== bool 0` (not `== 0`): a bare `==` filters series
+                        # instead of yielding 1, so the rule can never fire —
+                        # 2026-09-18 this left transmission down ~28 h unalerted
+                        # (docs/reports/2026-09-18-transmission-wedge.md).
+                        expr = "sum(namedprocess_namegroup_num_procs{groupname=\"transmission\"}) == bool 0";
                         instant = true;
                         range = false;
                         refId = "A";
@@ -573,7 +577,7 @@
                       refId = "A";
                       datasourceUid = "PBFA97CFB590B2093";
                       model = {
-                        expr = "up{job=\"wireguard\"} == 0";
+                        expr = "up{job=\"wireguard\"} == bool 0";
                         instant = true;
                         range = false;
                         refId = "A";
