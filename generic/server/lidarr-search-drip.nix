@@ -22,13 +22,14 @@ let
       URL="http://127.0.0.1:8686"
       BATCH="''${BATCH:-25}"
       MIN_GAP_HOURS="''${MIN_GAP_HOURS:-72}"
+      MAX_TIME="''${MAX_TIME:-60}"
 
       # Fetch every page of the missing list (~13 requests for 12K albums).
       pages=$(mktemp -d)
       trap 'rm -rf "$pages"' EXIT
       page=1
       while :; do
-        curl -fsS --retry 2 --retry-delay 5 --retry-connrefused \
+        curl -fsS --max-time "$MAX_TIME" --retry 2 --retry-delay 5 --retry-connrefused \
           -H "X-Api-Key: $KEY" \
           "$URL/api/v1/wanted/missing?page=''${page}&pageSize=1000" \
           -o "$pages/''${page}.json"
@@ -56,9 +57,10 @@ let
 
       n=$(echo "$ids" | jq length)
       if [ "$n" -gt 0 ]; then
-        curl -fsS --retry 2 --retry-delay 5 --retry-connrefused \
+        curl -fsS --max-time "$MAX_TIME" --retry 2 --retry-delay 5 --retry-connrefused \
           -X POST -H "X-Api-Key: $KEY" -H "Content-Type: application/json" \
           -d "{\"name\":\"AlbumSearch\",\"albumIds\":$ids}" \
+          -o /dev/null \
           "$URL/api/v1/command"
         echo "queued AlbumSearch for $n albums"
       else
@@ -78,9 +80,16 @@ in
     environment = {
       BATCH = "25";
       MIN_GAP_HOURS = "72";
+      MAX_TIME = "60";
     };
     serviceConfig = {
       ExecStart = "${dripScript}/bin/lidarr-search-drip";
+      # Bound any run so a degraded lidarr (each request taking minutes to
+      # hours) can't hang the service and block every later timer fire.
+      # 2026-09-24: one run crawled for 67h on a stalled backend; the timer
+      # had Trigger: n/a the whole time. Worst legit run is ~14 min with
+      # MAX_TIME=60 (13 pages + POST), so 30 min leaves headroom.
+      RuntimeMaxSec = 1800;
       LoadCredential = "lidarr-api-key:${config.age.secrets.lidarr-api-key.path}";
       User = "lidarr";
       Group = "lidarr";
