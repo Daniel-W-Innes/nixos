@@ -3,7 +3,7 @@ _:
 {
   imports = [
     ./min.nix
-    ./niri.nix
+    ./hypr.nix
     ./iperf.nix
     ./displayManager.nix
     ./prometheus.nix

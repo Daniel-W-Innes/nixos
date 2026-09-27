@@ -6,7 +6,7 @@ _:
     ./dark.nix
     ./min.nix
     ./term.nix
-    ./niri.nix
+    ./hypr.nix
     ./gui.nix
     ./steam.nix
     ./vscode.nix
