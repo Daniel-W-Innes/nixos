@@ -27,5 +27,5 @@
 
 ### References
 
-- `docs/debug.md` §"Switch storms", §Forgejo specifics, §Transmission specifics, §Journal data
+- `docs/debug/switch-storms.md`, `docs/debug/forgejo.md`, `docs/debug/transmission.md`, `docs/debug/journal.md`
 - Evidence: Loki `{unit="forgejo.service"}`, `{unit="podman-forgejo-db.service"}`, `{unit="gitea-runner-melon.service"}`, `{service_name="systemd-journal"} |= ".service: Failed with result"` over 2026-09-12T00:50–01:08Z

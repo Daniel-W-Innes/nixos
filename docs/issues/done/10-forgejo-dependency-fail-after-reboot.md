@@ -1,6 +1,6 @@
 # Forgejo stranded after reboot — dependency-fail on podman-forgejo-db never retried
 
-**Open.** Opened 2026-09-27. Fix implemented (uncommitted diff in `generic/server/forgejo.nix`), deploy + verification pending.
+**DONE 2026-09-27.** Fix committed in `cf9faf0` (`upholds=` beside `requires` in `generic/server/forgejo.nix`) and deployed to melon with the 2026-09-27 switch; reboot verification pending.
 
 ### Problem
 
@@ -12,12 +12,12 @@ A clean reboot of melon (2026-09-25 19:25 and again 2026-09-27 10:04, both user-
 
 ### Verification plan
 
-- `nix build .#nixosConfigurations.melon.config.system.build.toplevel` and confirm the generated unit carries `Upholds=podman-forgejo-db.service`.
-- Rehearse: stop the DB unit while forgejo is running (forgejo stops too), start the DB again → forgejo should start on its own.
-- After the next switch: reboot melon and confirm forgejo comes up without manual intervention.
+- ✓ Verified 2026-09-27: `nix eval` shows `systemd.services.forgejo.upholds` = `["podman-forgejo-db.service"]` in the generated unit.
+- Rehearse (pending): stop the DB unit while forgejo is running (forgejo stops too), start the DB again → forgejo should start on its own.
+- Reboot check (pending): melon has not rebooted since the fix was deployed — after the next boot confirm forgejo comes up without manual intervention.
 
 ### References
 
 - `docs/reports/2026-09-27-forgejo-dependency-outage.md`
-- `docs/debug.md` §Forgejo specifics
+- `docs/debug/forgejo.md`
 - Related: `docs/issues/11-lidarr-cpu-spin.md` (the boot-time contention engine)

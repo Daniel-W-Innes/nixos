@@ -23,4 +23,4 @@ iperf3[4093845]: segfault at 28 ip 00007b9af296af87 sp 00007ffe23e631e0 error 4 
 
 ### References
 
-- `docs/debug.md` §"Known noise"
+- `docs/debug/known-noise.md`

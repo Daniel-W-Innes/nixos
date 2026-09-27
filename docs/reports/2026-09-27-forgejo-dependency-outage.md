@@ -4,7 +4,7 @@
 - **Impact:** `git.lc.brotherwolf.ca` down ~39.5 h (2026-09-25 19:32 EDT → 2026-09-27 11:05 EDT); CI runners down the same period (melon's runner: 56,807 crash-loop restarts before the 09-27 reboot); **no data loss** (postgres recovered automatically after an unclean shutdown this boot)
 - **Onset:** 2026-09-25 19:32 EDT (start-job dependency failure at the 19:25 reboot)
 - **Recovery:** forgejo active 11:05:13 EDT 2026-09-27 (manual `systemctl start` via `/tmp/forgejo-recovery.sh`); melon runner still needs `reset-failed` + start (start-limit-hit from the crash-loop)
-- **Status:** resolved; config fix implemented (`generic/server/forgejo.nix`, uncommitted, deploy pending) — `docs/issues/10-forgejo-dependency-fail-after-reboot.md`
+- **Status:** resolved; config fix committed (`cf9faf0`) and deployed with the 2026-09-27 switch; reboot verification pending — `docs/issues/done/10-forgejo-dependency-fail-after-reboot.md`
 - **Methodology:** Loki + Prometheus via the mcp-grafana MCP (four parallel lanes: journal timeline, metrics, repo config, live SSH state), plus one independent verification pass. All times EDT (UTC−4).
 
 ## 1. Executive summary
@@ -117,16 +117,16 @@ A clean reboot triggers podman's all-containers-at-once start storm. Boot-time b
 
 ## 7. Fix and follow-ups
 
-1. **`upholds=` (implemented, uncommitted, deploy pending)** — `generic/server/forgejo.nix` now sets `upholds = [ "${backend}-forgejo-db.service" ]` beside `requires`. When the DB unit comes up via its own `Restart=`, systemd re-queues forgejo's start job; `requires` still propagates failures. `docs/issues/10-forgejo-dependency-fail-after-reboot.md`.
+1. **`upholds=` (committed `cf9faf0`, deployed 2026-09-27; reboot verification pending)** — `generic/server/forgejo.nix` now sets `upholds = [ "${backend}-forgejo-db.service" ]` beside `requires`. When the DB unit comes up via its own `Restart=`, systemd re-queues forgejo's start job; `requires` still propagates failures. `docs/issues/done/10-forgejo-dependency-fail-after-reboot.md`.
 2. **melon runner** — pending at time of writing: `sudo systemctl reset-failed gitea-runner-melon.service && sudo systemctl start gitea-runner-melon.service` (crash-loop burned the start-limit; onion's self-heals).
-3. **Alert blind spot** — add a companion rule `max_over_time(traefik_service_server_up{service=~".*@file"}[1h]) == 0` so a multi-hour backend outage is distinguishable from a reboot-reset blip at a glance.
+3. **Alert blind spot** — add a companion rule `max_over_time(traefik_service_server_up{service=~".*@file"}[1h]) == 0` so a multi-hour backend outage is distinguishable from a reboot-reset blip at a glance. Implemented 2026-09-27: `traefik-backend-down-1h` in `generic/server/visibility.nix` (commit `2d01856`).
 4. **Postgres unclean shutdown every boot** — podman removes the DB container mid-write during the boot storm; postgres performed crash recovery both boots. Recurring data-integrity risk worth its own investigation.
 5. **Booting the intended generation** — melon booted a closure built from the 09-15 nixpkgs while the newest generation on disk is 09-19 (system-368). Several repo fixes postdate the booted closure; confirm the next boot picks up the newest generation.
 6. **Debug decoders learned** — added to `docs/debug.md`: forgejo's unit-lifecycle lines live in `init.scope` (no `unit` label); `!= "caller="` dodges Loki self-echoes in `count_over_time`; Grafana-restart re-stamps `activeAt`.
 
 ## References
 
-- `docs/issues/10-forgejo-dependency-fail-after-reboot.md`, `docs/issues/11-lidarr-cpu-spin.md`
+- `docs/issues/done/10-forgejo-dependency-fail-after-reboot.md`, `docs/issues/11-lidarr-cpu-spin.md`
 - `docs/issues/done/08-forgejo-db-start-race.md` (same symptom class, prior mechanism)
-- `docs/debug.md` §Forgejo specifics, §Known noise, §Prometheus playbook
+- `docs/debug/forgejo.md`, `docs/debug/known-noise.md`, `docs/debug/prometheus.md`
 - Evidence: Loki `{service_name="systemd-journal"} |= "forgejo.service"` and `|~ "Failed to start podman-"` over both boots; Prometheus `traefik_service_server_up{service="git@file"}` (3 d range), `namedprocess_namegroup_num_procs{groupname="forgejo"}` (7 d), `node_boot_time_seconds` (7 d), `node_vmstat_oom_kill`, `node_filesystem_avail_bytes`

@@ -24,4 +24,4 @@ Transmission runs confined in the `proton` network namespace (`vpnNamespaces`/`v
 
 ### References
 
-- `docs/debug.md` §"Topology cheat sheet" and §"Planned fixes"
+- `docs/debug.md` §"Topology cheat sheet" and `docs/debug/planned-fixes.md`

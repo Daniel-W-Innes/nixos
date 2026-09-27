@@ -22,5 +22,5 @@ Every journal log line is stored as a full 1–2 KB JSON blob (all ~30 journald 
 
 ### References
 
-- `docs/debug.md` (sections "Journal data: live reality vs. repo intent" and "Planned fixes")
+- `docs/debug/journal.md`, `docs/debug/planned-fixes.md`
 - Incident report from the 2026-09-03 transmission outage (session transcript)

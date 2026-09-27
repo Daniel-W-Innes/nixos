@@ -23,4 +23,4 @@ For each: either fix the underlying config (tokens/API keys/URLs, or container D
 
 ### References
 
-- `docs/debug.md` §"Known noise"
+- `docs/debug/known-noise.md`

@@ -14,7 +14,7 @@ Personal NixOS configuration flake for three machines (single `x86_64-linux` sys
 
 Pinned to `nixpkgs/nixos-26.05` and `home-manager/release-26.05`; home-manager and agenix `follow` nixpkgs. There is no devShell — the repo is the config itself. Deployed by running `nixos-rebuild switch --flake .` on each machine (hostname matches the `nixosConfigurations` attr name).
 
-A broader view of the infra lives in `docs/`: `docs/debug.md` (topology incl. the flake-unmanaged pumpkin NAS and radish UniFi controller, plus the debugging playbook), `docs/issues/` (known problems, dated), `docs/reports/` (post-incident write-ups). Read these before debugging a service — the answer is often already there.
+A broader view of the infra lives in `docs/`: `docs/debug.md` (the always-read debug index: topology incl. the flake-unmanaged pumpkin NAS and radish UniFi controller, datasource UIDs, time anchoring, workflow rules, and a symptom→topic table) and `docs/debug/` (per-symptom playbooks — transmission, forgejo, journal, loki, prometheus, switch storms, known noise, planned fixes, worked example; read the index first, then only the topic files the symptom matches), `docs/issues/` (known problems, dated), `docs/reports/` (post-incident write-ups). Read these before debugging a service — the answer is often already there.
 
 ## Commands
 

@@ -1,6 +1,6 @@
 # Postgres unclean shutdown every stop — podman stop's 10s default SIGKILLs postgres
 
-**Open.** Opened 2026-09-27. Fix implemented (uncommitted diff in `generic/server/forgejo.nix`), deploy + verification pending.
+**Open.** Opened 2026-09-27. Fix committed (`07e5f95`) and deployed 2026-09-27; verification pending.
 
 ### Problem
 
@@ -23,4 +23,4 @@ The same one-liner is applied to the other DB containers too (2026-09-27): `upti
 ### References
 
 - `docs/reports/2026-09-27-forgejo-dependency-outage.md` §4.2, §7.4
-- `docs/debug.md` §Forgejo specifics
+- `docs/debug/forgejo.md`

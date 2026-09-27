@@ -41,4 +41,4 @@ process = {
 
 ### References
 
-- `docs/debug.md` §"Planned fixes"
+- `docs/debug/planned-fixes.md`

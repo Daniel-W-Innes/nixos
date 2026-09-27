@@ -130,4 +130,4 @@ The switch legitimately recreated the `forgejo-db` container (flake update → c
 - **Repo**: `generic/server/forgejo.nix` (+ fix diff), `generic/forgejoRunner.nix`, `generic/server/arr.nix`, pinned nixpkgs `forgejo.nix` module
 - All UTC timestamps converted to EDT (UTC−4); journal MESSAGE fields already carry EDT
 
-Follow-up: `docs/issues/done/08-forgejo-db-start-race.md`; playbook updates in `docs/debug.md` (§Forgejo specifics, §Transmission specifics, §Switch storms, §Journal data).
+Follow-up: `docs/issues/done/08-forgejo-db-start-race.md`; playbook updates in `docs/debug/forgejo.md`, `docs/debug/transmission.md`, `docs/debug/switch-storms.md`, `docs/debug/journal.md`.

@@ -28,4 +28,4 @@ Systemic amplifiers: `Restart=no` (nixpkgs default), unset `TimeoutStartSec` (90
 
 ### References
 
-- `docs/reports/2026-09-18-transmission-wedge.md`; `docs/debug.md` §Transmission specifics; `generic/server/arr.nix`, `generic/server/visibility.nix`; `docs/issues/06-transmission-watchdog.md`
+- `docs/reports/2026-09-18-transmission-wedge.md`; `docs/debug/transmission.md`; `generic/server/arr.nix`, `generic/server/visibility.nix`; `docs/issues/06-transmission-watchdog.md`
