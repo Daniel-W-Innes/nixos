@@ -85,6 +85,11 @@
   systemd.services.forgejo = {
     after = [ "${config.virtualisation.oci-containers.backend}-forgejo-db.service" ];
     requires = [ "${config.virtualisation.oci-containers.backend}-forgejo-db.service" ];
+    # If the DB unit fails at boot (podman contention) and its Restart= brings it
+    # back, re-queue forgejo's start job — a 'dependency'-failed job is never retried
+    # otherwise (2026-09-27 outage, forgejo down ~40h;
+    # docs/reports/2026-09-27-forgejo-dependency-outage.md).
+    upholds = [ "${config.virtualisation.oci-containers.backend}-forgejo-db.service" ];
 
     preStart = lib.mkMerge [
       (lib.mkBefore ''
