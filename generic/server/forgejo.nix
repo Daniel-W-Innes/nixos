@@ -40,6 +40,11 @@
       "${config.age.secrets.forgejo-db-password.path}:/run/secrets/db-password:ro"
       "/run/forgejo-db:/var/run/postgresql"
     ];
+    # podman stop's default timeout is 10s; postgres fast shutdown takes ~16s+
+    # under load, so every stop was ending in SIGKILL and dirty-shutdown crash
+    # recovery on the next start (2026-09-27, docs/issues/12-postgres-unclean-shutdown.md).
+    # 90s stays inside the unit's TimeoutStopSec=120.
+    extraOptions = [ "--stop-timeout=90" ];
   };
 
   services.forgejo = {

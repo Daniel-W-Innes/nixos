@@ -48,6 +48,9 @@
       "${config.age.secrets.uptime-kuma-db-root-password-mariadb.path}:/run/secrets/db-root-password:ro"
     ];
     ports = [ "127.0.0.1:3306:3306" ];
+    # Same reason as forgejo-db (docs/issues/12-postgres-unclean-shutdown.md):
+    # podman stop's 10s default can SIGKILL mariadb before its shutdown finishes.
+    extraOptions = [ "--stop-timeout=90" ];
   };
 
   systemd.tmpfiles.rules = [

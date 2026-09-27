@@ -113,7 +113,12 @@ in
           };
           environmentFiles = [ cfg.environmentFile ];
           volumes = [ "/var/lib/bookorbit/postgres:/var/lib/postgresql/data" ];
-          extraOptions = [ "--network=bookorbit-net" ];
+          extraOptions = [
+            "--network=bookorbit-net"
+            # Same reason as forgejo-db (docs/issues/12-postgres-unclean-shutdown.md):
+            # podman stop's 10s default can SIGKILL postgres before its shutdown finishes.
+            "--stop-timeout=90"
+          ];
         };
         bookorbit-app = {
           image = "ghcr.io/bookorbit/bookorbit:latest";
