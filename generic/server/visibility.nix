@@ -442,6 +442,41 @@
                   labels.severity = "critical";
                 }
                 {
+                  # Companion to traefik-backend-down: fires only once a backend has
+                  # been down for a full hour. Grafana restarts re-stamp the 3m rule's
+                  # activeAt, so a 40h outage looked 3 min old (2026-09-27) — this
+                  # rule's 1h window lives in Prometheus data, survives restarts, and
+                  # never trips on blips.
+                  uid = "traefik-backend-down-1h";
+                  title = "Traefik backend down for over an hour";
+                  condition = "A";
+                  data = [
+                    {
+                      refId = "A";
+                      datasourceUid = "PBFA97CFB590B2093";
+                      model = {
+                        expr = "max_over_time(traefik_service_server_up{service=~\".*@file\"}[1h]) == bool 0";
+                        instant = true;
+                        range = false;
+                        refId = "A";
+                        datasource = {
+                          type = "prometheus";
+                          uid = "PBFA97CFB590B2093";
+                        };
+                      };
+                      relativeTimeRange = {
+                        from = 300;
+                        to = 0;
+                      };
+                    }
+                  ];
+                  noDataState = "OK";
+                  execErrState = "KeepLast";
+                  for = "0m";
+                  annotations.summary = "{{ $labels.service }} has been down for over an hour ({{ $labels.url }})";
+                  labels.severity = "critical";
+                }
+                {
                   uid = "traefik-down";
                   title = "Traefik down";
                   condition = "A";
