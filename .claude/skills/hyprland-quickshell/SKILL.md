@@ -11,8 +11,8 @@ Everything here is hard-won from the 2026-09 waybar/wofi → quickshell migratio
 
 | Concern | File |
 |---|---|
-| HM module (laptop home) | `home/hypr.nix` — `programs.quickshell.configs.main = ./quickshell`, packages (alacritty, wofi, playerctl, brightnessctl, pavucontrol, dolphin) |
-| Hyprland config | `home/hyprland/hyprland.conf` — classic (non-Lua) syntax; `$menu = wofi --show drun` on SUPER+d, quickshell launcher on SUPER+Space (kill\|spawn toggle) |
+| HM module (laptop home) | `home/hypr.nix` — `programs.quickshell.configs.main = ./quickshell`, packages (alacritty, playerctl, brightnessctl, pavucontrol, libqalculate, dolphin) |
+| Hyprland config | `home/hyprland/hyprland.conf` — classic (non-Lua) syntax; `$launcher = sh -c 'quickshell kill -c launcher \|\| quickshell --config launcher'` on SUPER+d (replaced wofi 2026-10-03) |
 | Shell entry | `home/quickshell/shell.qml` — `ShellRoot` with one `Variants { model: Quickshell.screens }` per window type (Bar, Osd, PowerMenu). Windows cannot nest; per-screen state flows through the `Ui` singleton |
 | Lockscreen | `home/quickshell-lock/` — its own `lock` config (replaces swaylock), spawned on demand as `quickshell --config lock` by the hyprland keybind and the power menu |
 | Launcher | `home/quickshell/launcher/` — its own `launcher` config/process (2026-10-03 full version: fzf search over reactive DesktopEntries, `>` actions, `>calc` via qalc, frequency ranking via JSON state file, `@k`/`@g` scopes; `Data.qml` logic singleton + `Launcher.qml` UI; separate `Theme.qml` copy + vendored `scripts/fzf.js` BSD-3; see the retry addendum in issue 08). Never fold it back into the bar config (rule 1) |
