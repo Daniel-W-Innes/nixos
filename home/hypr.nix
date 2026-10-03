@@ -8,6 +8,7 @@
     playerctl
     brightnessctl
     pavucontrol
+    libqalculate # qalc, for the launcher's >calc mode
   ];
   programs = {
     alacritty = {

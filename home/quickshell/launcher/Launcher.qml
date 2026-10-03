@@ -4,7 +4,6 @@ import Quickshell.Widgets
 import QtQuick
 import QtQuick.Controls
 import QtQml
-import "scripts/fzf.js" as Fzf
 
 // Full-screen transparent surface with the launcher card anchored top-center
 // below the bar (same pattern as PowerMenu.qml). Visible from the moment the
@@ -29,37 +28,176 @@ PanelWindow {
   readonly property int maxRows: 8
   readonly property int pad: 10
 
-  // DesktopEntries scans XDG dirs asynchronously (~2s) — these bindings must
-  // stay reactive so the list repopulates when the scan completes. A one-shot
-  // read is permanently empty (docs/issues/08).
-  readonly property var allApps: DesktopEntries.applications.values
-  readonly property var finder: new Fzf.Finder(allApps, { selector: e => e.name })
-  readonly property var matches: {
-    const q = search.text.trim();
-    if (!q)
-      return [...allApps];
-    return finder.find(q).sort((a, b) => {
-      if (a.score === b.score)
-        return a.item.name.trim().length - b.item.name.trim().length;
-      return b.score - a.score;
-    }).map(r => r.item);
-  }
-  readonly property int listH: matches.length === 0
+  readonly property int listH: Data.matches.length === 0
     ? win.rowH
-    : Math.min(matches.length, win.maxRows) * win.rowH
+    : Math.min(Data.matches.length, win.maxRows) * win.rowH
 
-  onMatchesChanged: list.currentIndex = 0
+  function activate(index) {
+    list.currentIndex = index;
+    if (Data.activate(Data.matches[index]))
+      Qt.quit();
+  }
 
-  function launch() {
-    const entry = matches[list.currentIndex];
-    if (!entry)
-      return;
-    if (entry.runInTerminal)
-      // execute() ignores Terminal=true, so wrap terminal apps ourselves.
-      Quickshell.execDetached(["alacritty", "-e", ...entry.command]);
-    else
-      entry.execute();
-    Qt.quit();
+  // Row components. Component { id: ... } objects (not inline `component`
+  // types) so the delegate binding can reference them — type names don't
+  // resolve inside JS bindings.
+
+  Component {
+    id: appDelegate
+    Item {
+    width: ListView.view.width
+    height: win.rowH
+    readonly property var entry: modelData
+
+    IconImage {
+      anchors { left: parent.left; leftMargin: 10; verticalCenter: parent.verticalCenter }
+      width: 22
+      height: 22
+      // entry is briefly undefined when the model array swaps mid-typing.
+      source: entry && entry.icon ? Quickshell.iconPath(entry.icon, true) : ""
+    }
+
+    Column {
+      anchors {
+        left: parent.left
+        leftMargin: 42
+        right: parent.right
+        rightMargin: 10
+        verticalCenter: parent.verticalCenter
+      }
+
+      Text {
+        width: parent.width
+        text: entry && entry.name ? entry.name : ""
+        color: Theme.fg
+        font.family: Theme.textFont
+        font.pixelSize: Theme.fontSize + 1
+        elide: Text.ElideRight
+      }
+
+      Text {
+        width: parent.width
+        visible: text.length > 0
+        text: entry && entry.genericName ? entry.genericName : ""
+        color: Theme.fgDim
+        font.family: Theme.textFont
+        font.pixelSize: Theme.fontSize - 2
+        elide: Text.ElideRight
+      }
+    }
+
+    MouseArea {
+      anchors.fill: parent
+      onClicked: win.activate(index)
+    }
+    }
+  }
+
+  Component {
+    id: actionDelegate
+    Item {
+    width: ListView.view.width
+    height: win.rowH
+
+    Text {
+      anchors { left: parent.left; leftMargin: 12; verticalCenter: parent.verticalCenter }
+      text: modelData && modelData.glyph ? modelData.glyph : ""
+      color: Theme.fg
+      font.family: Theme.iconFont
+      font.pixelSize: Theme.iconSize
+    }
+
+    Text {
+      anchors { left: parent.left; leftMargin: 40; verticalCenter: parent.verticalCenter }
+      text: modelData && modelData.name ? modelData.name : ""
+      color: Theme.fg
+      font.family: Theme.textFont
+      font.pixelSize: Theme.fontSize + 1
+    }
+
+    MouseArea {
+      anchors.fill: parent
+      onClicked: win.activate(index)
+    }
+    }
+  }
+
+  Component {
+    id: calcDelegate
+    Item {
+    width: ListView.view.width
+    height: win.rowH
+
+    Text {
+      anchors { left: parent.left; leftMargin: 12; verticalCenter: parent.verticalCenter }
+      text: String.fromCodePoint(0xF00EC) // md-calculator, verified in font cmap
+      color: Theme.fg
+      font.family: Theme.iconFont
+      font.pixelSize: Theme.iconSize
+    }
+
+    Text {
+      anchors {
+        left: parent.left
+        leftMargin: 40
+        right: chip.left
+        rightMargin: 10
+        verticalCenter: parent.verticalCenter
+      }
+      text: Data.calcError
+        ? "Invalid expression"
+        : Data.calcPending
+          ? "Calculating..."
+          : Data.calcResult
+            ? Data.calcResult
+            : "Type an expression"
+      color: Data.calcError
+        ? Theme.critical
+        : Data.calcResult ? Theme.fg : Theme.fgDim
+      font.family: Theme.textFont
+      font.pixelSize: Theme.fontSize + 1
+      elide: Text.ElideLeft
+    }
+
+    // Row click copies the result (see win.activate); the chip opens qalc.
+    MouseArea {
+      anchors.fill: parent
+      onClicked: win.activate(index)
+    }
+
+    Rectangle {
+      id: chip
+      anchors { right: parent.right; rightMargin: 10; verticalCenter: parent.verticalCenter }
+      width: label.implicitWidth + 16
+      height: label.implicitHeight + 8
+      radius: Theme.chipRadius
+      color: Theme.bgHover
+
+      Text {
+        id: label
+        anchors.centerIn: parent
+        text: "qalc"
+        color: Theme.fgDim
+        font.family: Theme.textFont
+        font.pixelSize: Theme.fontSize - 1
+      }
+
+      MouseArea {
+        anchors.fill: parent
+        onClicked: {
+          if (Data.openInQalc())
+            Qt.quit();
+        }
+      }
+    }
+    }
+  }
+
+  Connections {
+    target: Data
+    function onMatchesChanged() {
+      list.currentIndex = 0;
+    }
   }
 
   // Click anywhere outside the card to dismiss.
@@ -89,7 +227,16 @@ PanelWindow {
         anchors.left: parent.left
         anchors.right: parent.right
         height: win.searchH
-        placeholderText: "Type to search..."
+        text: Data.query
+        onTextChanged: {
+          if (text !== Data.query)
+            Data.query = text;
+        }
+        placeholderText: Data.mode === "actions"
+          ? "Type an action..."
+          : Data.mode === "calc"
+            ? "Type an expression..."
+            : "Type to search..."
         placeholderTextColor: Theme.fgFaint
         color: Theme.fg
         font.family: Theme.textFont
@@ -107,7 +254,27 @@ PanelWindow {
         Keys.onDownPressed: move(1)
         Keys.onUpPressed: move(-1)
         Keys.onEscapePressed: Qt.quit()
-        onAccepted: win.launch()
+        Keys.onPressed: event => {
+          if (event.key === Qt.Key_Tab) {
+            if (list.count > 0)
+              list.currentIndex = (list.currentIndex + 1) % list.count;
+            event.accepted = true;
+          } else if (event.key === Qt.Key_Backtab
+              || (event.key === Qt.Key_Tab && (event.modifiers & Qt.ShiftModifier))) {
+            if (list.count > 0)
+              list.currentIndex = (list.currentIndex - 1 + list.count) % list.count;
+            event.accepted = true;
+          } else if (event.modifiers & Qt.ControlModifier) {
+            if (event.key === Qt.Key_J || event.key === Qt.Key_N) {
+              move(1);
+              event.accepted = true;
+            } else if (event.key === Qt.Key_K || event.key === Qt.Key_P) {
+              move(-1);
+              event.accepted = true;
+            }
+          }
+        }
+        onAccepted: win.activate(list.currentIndex)
 
         function move(delta) {
           const i = list.currentIndex + delta;
@@ -128,7 +295,12 @@ PanelWindow {
         ListView {
           id: list
           anchors.fill: parent
-          model: win.matches
+          model: Data.matches
+          delegate: Data.mode === "apps"
+            ? appDelegate
+            : Data.mode === "actions"
+              ? actionDelegate
+              : calcDelegate
           clip: true
           interactive: false
           preferredHighlightBegin: 0
@@ -139,52 +311,18 @@ PanelWindow {
             radius: Theme.chipRadius
             color: Theme.bgHover
           }
-
-          delegate: Item {
-            width: ListView.view.width
-            height: win.rowH
-            readonly property var entry: modelData
-
-            Row {
-              anchors.fill: parent
-              anchors.leftMargin: 10
-              anchors.rightMargin: 10
-              spacing: 10
-
-              IconImage {
-                anchors.verticalCenter: parent.verticalCenter
-                width: 22
-                height: 22
-                source: Quickshell.iconPath(entry.icon, true)
-              }
-
-              Text {
-                anchors.verticalCenter: parent.verticalCenter
-                text: entry.name
-                color: Theme.fg
-                font.family: Theme.textFont
-                font.pixelSize: Theme.fontSize + 1
-              }
-            }
-
-            MouseArea {
-              anchors.fill: parent
-              onClicked: {
-                list.currentIndex = index;
-                win.launch();
-              }
-            }
-          }
         }
 
         // Distinguish the async-scan state from a genuinely empty result
         // (docs/issues/08).
         Text {
           anchors.centerIn: parent
-          visible: win.matches.length === 0
-          text: DesktopEntries.applications.values.length === 0
-            ? "Loading apps..."
-            : "No matches"
+          visible: Data.matches.length === 0
+          text: Data.mode === "actions"
+            ? "No matching actions"
+            : DesktopEntries.applications.values.length === 0
+              ? "Loading apps..."
+              : "No matches"
           color: Theme.fgDim
           font.family: Theme.textFont
           font.pixelSize: Theme.fontSize
