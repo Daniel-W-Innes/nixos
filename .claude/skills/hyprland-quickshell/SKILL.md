@@ -1,11 +1,11 @@
 ---
 name: hyprland-quickshell
-description: Edit or debug the Hyprland + quickshell desktop on cucamelon (bar, OSD, power menu, widgets, keybinds, theming, new windows). Use when the user asks for DE changes or reports rendering bugs. Contains the verified quickshell 0.3.0 API facts, the hard architectural lessons (hidden-window lazy content, async DesktopEntries, ly/systemd traps), and the live-testing harness that actually works on onion/cucamelon.
+description: Edit or debug the Hyprland + quickshell desktop on cucamelon (bar, OSD, power menu, app launcher, widgets, keybinds, theming, new windows). Use when the user asks for DE changes or reports rendering bugs. Contains the verified quickshell 0.3.0 API facts, the hard architectural lessons (hidden-window lazy content, async DesktopEntries, ly/systemd traps), and the live-testing harness that actually works on onion/cucamelon.
 ---
 
 # Editing the Hyprland + quickshell desktop (cucamelon)
 
-Everything here is hard-won from the 2026-09 waybar/wofi → quickshell migration. Read `docs/issues/08-quickshell-launcher-abandoned.md` before touching anything launcher-shaped. The bar itself works; the launcher was abandoned then retried (2026-10-03 MVP, see the addendum in issue 08).
+Everything here is hard-won from the 2026-09 waybar/wofi → quickshell migration. Read `docs/issues/done/08-quickshell-launcher-abandoned.md` (the full saga + retry addendum) before touching anything launcher-shaped. The launcher shipped 2026-10-03 and replaced wofi entirely.
 
 ## Architecture map
 

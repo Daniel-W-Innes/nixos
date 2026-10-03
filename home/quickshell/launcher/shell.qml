@@ -6,7 +6,7 @@ import QtQml
 // launcher || quickshell --config launcher). One window per screen, visible
 // from startup: quickshell 0.3.0 lazily builds hidden-window content and a
 // ListView can skip delegate creation on the first show (see
-// docs/issues/08-quickshell-launcher-abandoned.md).
+// docs/issues/done/08-quickshell-launcher-abandoned.md).
 ShellRoot {
   Variants {
     model: Quickshell.screens

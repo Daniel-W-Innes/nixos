@@ -1,4 +1,6 @@
-# quickshell app launcher abandoned; wofi restored
+# quickshell app launcher abandoned; wofi restored — retried and shipped 2026-10-03
+
+**DONE 2026-10-03.** The abandoned launcher was retried after studying https://github.com/caelestia-dots/shell, and this time it shipped: a separate `launcher` quickshell config/process (window visible from startup — the lesson that broke attempt 1), fzf search over reactive `DesktopEntries` bindings, `>` action mode, `>calc` mode via `qalc -t` (Process + StdioCollector, Enter copies), launch-frequency ranking via a JSON state file, and `@k`/`@g` scoped search. Verified with zero QML errors on both onion (niri, wtype-driven) and cucamelon's live hyprland session; the user confirmed real-keyboard use. wofi removed from `home/hypr.nix` and `hyprland.conf`; the launcher is on SUPER+d. See the retry addendum below for architecture and the new QML gotchas.
 
 ### Summary
 
@@ -42,7 +44,7 @@ Two data-layer fixes were needed:
 
 ### Current state / rollback
 
-- wofi restored: package in `home/hypr.nix`, `$menu = wofi --show drun` + `bind = $mainMod, d, exec, $menu` in `home/hyprland/hyprland.conf`.
+- wofi restored: package in `home/hypr.nix`, `$menu = wofi --show drun` + `bind = $mainMod, d, exec, $menu` in `home/hyprland/hyprland.conf`. (Superseded by the retry addendum: wofi removed again 2026-10-03.)
 - Deleted: `home/quickshell/launcher/`, `home/quickshell/Launcher.qml`, the IpcHandler/launcher bits from `home/quickshell/shell.qml` + `Ui.qml` + `Theme.qml` (all recoverable from git history: the migration commits on the `hypr-laptop` branch).
 - The quickshell **bar** (main config: bar, OSD, power menu) is unaffected and works.
 
