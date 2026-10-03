@@ -8,9 +8,6 @@
     playerctl
     brightnessctl
     pavucontrol
-    kdePackages.dolphin
-    kdePackages.dolphin-plugins
-    kdePackages.qtsvg
   ];
   programs = {
     alacritty = {
