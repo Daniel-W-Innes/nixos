@@ -5,16 +5,17 @@ description: Edit or debug the Hyprland + quickshell desktop on cucamelon (bar, 
 
 # Editing the Hyprland + quickshell desktop (cucamelon)
 
-Everything here is hard-won from the 2026-09 waybar/wofi → quickshell migration. Read `docs/issues/08-quickshell-launcher-abandoned.md` before touching anything launcher-shaped. The bar itself works; the launcher attempt failed.
+Everything here is hard-won from the 2026-09 waybar/wofi → quickshell migration. Read `docs/issues/08-quickshell-launcher-abandoned.md` before touching anything launcher-shaped. The bar itself works; the launcher was abandoned then retried (2026-10-03 MVP, see the addendum in issue 08).
 
 ## Architecture map
 
 | Concern | File |
 |---|---|
 | HM module (laptop home) | `home/hypr.nix` — `programs.quickshell.configs.main = ./quickshell`, packages (alacritty, wofi, playerctl, brightnessctl, pavucontrol, dolphin) |
-| Hyprland config | `home/hyprland/hyprland.conf` — classic (non-Lua) syntax; `$menu = wofi --show drun` is the launcher (quickshell launcher was abandoned) |
+| Hyprland config | `home/hyprland/hyprland.conf` — classic (non-Lua) syntax; `$menu = wofi --show drun` on SUPER+d, quickshell launcher on SUPER+Space (kill\|spawn toggle) |
 | Shell entry | `home/quickshell/shell.qml` — `ShellRoot` with one `Variants { model: Quickshell.screens }` per window type (Bar, Osd, PowerMenu). Windows cannot nest; per-screen state flows through the `Ui` singleton |
 | Lockscreen | `home/quickshell-lock/` — its own `lock` config (replaces swaylock), spawned on demand as `quickshell --config lock` by the hyprland keybind and the power menu |
+| Launcher | `home/quickshell/launcher/` — its own `launcher` config/process (2026-10-03 MVP: fzf search over reactive DesktopEntries, separate `Theme.qml` copy + vendored `scripts/fzf.js` BSD-3; see the retry addendum in issue 08). Never fold it back into the bar config (rule 1) |
 | Design tokens | `home/quickshell/Theme.qml` (pragma Singleton) — colors, metrics, fonts, motion |
 | Cross-window state | `home/quickshell/Ui.qml` (pragma Singleton) — OSD + power-menu state and functions |
 | Widgets | `home/quickshell/widgets/*.qml` — Workspaces, SystemStats, Network, Audio, Brightness, Battery, Clock, Tray |

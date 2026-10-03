@@ -51,3 +51,12 @@ Two data-layer fixes were needed:
 - quickshell windows that must render on demand: prefer a separate process whose window is visible from startup over a toggled-hidden window (lazy content build can skip ListView delegate creation on first show, silently — no errors, `hyprctl layers` shows the surface mapped).
 - `DesktopEntries` populates asynchronously (~2s); data must be a reactive binding, never a one-shot read.
 - Debug recipes that worked: `quickshell -p /tmp/...` scratch instances in the live session (config copies from the store are read-only until `chmod -R u+w`); console.log diagnostics into stderr; grim + ImageMagick crop/zoom for instant screenshots; `pkill -f 'quickshell-0.3[.]0'` (bracket trick to avoid matching the invoking shell).
+
+## Retry (2026-10-03): separate-process launcher MVP
+
+Built after studying https://github.com/caelestia-dots/shell (their launcher: `modules/launcher/`). Borrowed: their vendored pure-JS fzf search (BSD-3, `scripts/fzf.js`), the reactive apps-service shape, the highlight/empty-state list UX, the alacritty wrap for `Terminal=true`. Skipped: their C++ plugin (appdb, qalc, config system) and their hidden-panel-in-bar architecture — they run quickshell from git master, we pin 0.3.0, so lesson 1 stands.
+
+- `home/quickshell/launcher/` — own `launcher` config/process, window **visible from startup** (lesson 1), plain JS-array model (attempt-1 lesson 2), reactive `DesktopEntries` bindings (attempt-2 fix), own `Theme.qml` copy (config dirs can't import across).
+- Toggle: `quickshell kill -c launcher || quickshell --config launcher` bound to SUPER+Space; wofi stays on SUPER+d until the retry is proven.
+- Verified: onion smoke test (fresh-process first open renders populated rows; typing, filtering, arrow-key selection via wtype; clean load/exit) and pre-deploy test in cucamelon's live hyprland session (first open of a fresh process renders populated rows, zero QML errors).
+- Still open: real keyboard focus on hyprland (wtype's virtual keyboard never reaches it) — needs the user's first-press test. Enter-launch (`execute()` / `execDetached` alacritty wrap) is likewise only user-verifiable.

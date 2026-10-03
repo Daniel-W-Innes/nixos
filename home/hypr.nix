@@ -20,6 +20,7 @@
       enable = true;
       configs.main = ./quickshell;
       configs.lock = ./quickshell-lock;
+      configs.launcher = ./quickshell/launcher;
       # Inert without systemd.enable (ly never activates graphical-session.target):
       # the exec-once in hyprland.conf is what selects the config. Kept to
       # document which of the named configs is active.
