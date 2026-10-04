@@ -18,7 +18,11 @@
     nvidia = {
       prime.offload.enable = false;
       modesetting.enable = true;
-      powerManagement.enable = true;
+      # powerManagement.enable adds NVreg_PreserveVideoMemoryAllocations=1, a
+      # suspend feature this desktop doesn't need. Disabled as an A/B: the
+      # 2026-10-04 game session logged 49 NVRM VA-space mapping failures while
+      # VRAM was full. Re-enable if suspend/resume starts misbehaving.
+      powerManagement.enable = false;
       powerManagement.finegrained = false;
       open = true;
       nvidiaSettings = true;

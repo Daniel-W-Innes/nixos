@@ -19,6 +19,9 @@
       name = "${config.networking.hostName}";
       tokenFile = config.age.secrets.forgejo-runner-token.path;
       url = "https://git.lc.brotherwolf.ca/";
+      # NOTE: the docker:// labels are currently broken — podman 5.8.7 rejects
+      # the runner's copy of JS actions into /var/run/act ("path escapes from
+      # parent", forgejo/runner#1524, #1758). Prefer the native/host labels.
       labels = [
         "debian:docker://docker.io/library/node:lts"
         "ubuntu-latest:docker://ghcr.io/catthehacker/ubuntu:act-22.04"
