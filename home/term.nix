@@ -3,7 +3,6 @@
 {
   home.packages = with pkgs; [
     lynx
-    nnn # terminal file manager
     pre-commit
     dstask
 
@@ -14,7 +13,7 @@
     p7zip
 
     # utils
-    yazi
+    yazi # terminal file manager
     ripgrep # recursively searches directories for a regex pattern
     jq # A lightweight and flexible command-line JSON processor
     yq-go # yaml processor https://github.com/mikefarah/yq
