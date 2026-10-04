@@ -183,12 +183,21 @@ Singleton {
 
   function recordLaunch(id) {
     freq[id] = (freq[id] || 0) + 1;
-    saveFreq.running = true;
+    // Detached, because the launcher quits right after launching: a regular
+    // Process child gets killed by its destructor during engine teardown
+    // (quickshell 0.3.0 Process::~Process calls kill()), losing the write.
+    // The JSON travels as a positional arg, so no shell quoting is involved.
+    Quickshell.execDetached([
+      "sh", "-c",
+      "mkdir -p \"$2\" && printf '%s' \"$1\" > \"$2/launcher-freq.json\"",
+      "sh",
+      JSON.stringify(freq),
+      stateDir,
+    ]);
   }
 
   Process {
     id: loadFreq
-    running: true
     command: ["sh", "-c", "test -f \"$1\" && cat \"$1\"", "sh", root.stateFile]
     stdout: StdioCollector {
       onStreamFinished: {
@@ -203,14 +212,14 @@ Singleton {
     }
   }
 
-  // sh reads one line from stdin (this avoids shell-quoting the JSON) and
-  // writes it to the state file.
-  Process {
-    id: saveFreq
-    command: ["sh", "-c", "mkdir -p \"$1\" && read -r line && printf '%s' \"$line\" > \"$1/launcher-freq.json\"", "sh", root.stateDir]
-    stdinEnabled: true
-    // write() is a no-op until the process object exists, so wait for the
-    // started signal (same pattern as the lock config).
-    onStarted: write(JSON.stringify(root.freq) + "\n")
+  // quickshell 0.3.0 never starts Processes created during config load (no
+  // started/exited/stream signals fire at all — verified). Start from a
+  // Timer like the calc debounce instead.
+  Timer {
+    interval: 100
+    running: true
+    repeat: false
+    onTriggered: loadFreq.running = true
   }
+
 }
