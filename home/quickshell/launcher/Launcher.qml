@@ -54,7 +54,10 @@ PanelWindow {
       width: 22
       height: 22
       // entry is briefly undefined when the model array swaps mid-typing.
-      source: entry && entry.icon ? Quickshell.iconPath(entry.icon, true) : ""
+      // iconPath(icon, fallback) renders the fallback when the icon name
+      // doesn't resolve — Steam installs game icons lazily, so their
+      // steam_icon_* names are often unresolvable and would render blank.
+      source: entry ? Quickshell.iconPath(entry.icon, "image-missing") : ""
     }
 
     Column {
