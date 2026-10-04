@@ -126,14 +126,14 @@ PanelWindow {
   }
 
   Component {
-    id: calcDelegate
+    id: queryDelegate
     Item {
     width: ListView.view.width
     height: win.rowH
 
     Text {
       anchors { left: parent.left; leftMargin: 12; verticalCenter: parent.verticalCenter }
-      text: String.fromCodePoint(0xF00EC) // md-calculator, verified in font cmap
+      text: Data.modeGlyph
       color: Theme.fg
       font.family: Theme.iconFont
       font.pixelSize: Theme.iconSize
@@ -147,16 +147,16 @@ PanelWindow {
         rightMargin: 10
         verticalCenter: parent.verticalCenter
       }
-      text: Data.calcError
-        ? "Invalid expression"
-        : Data.calcPending
-          ? "Calculating..."
-          : Data.calcResult
-            ? Data.calcResult
-            : "Type an expression"
-      color: Data.calcError
+      text: Data.answerError
+        ? "No result"
+        : Data.answerPending
+          ? "Working..."
+          : Data.answer
+            ? Data.answerLine
+            : Data.modeHint
+      color: Data.answerError
         ? Theme.critical
-        : Data.calcResult ? Theme.fg : Theme.fgDim
+        : Data.answer ? Theme.fg : Theme.fgDim
       font.family: Theme.textFont
       font.pixelSize: Theme.fontSize + 1
       elide: Text.ElideLeft
@@ -170,6 +170,8 @@ PanelWindow {
 
     Rectangle {
       id: chip
+      // Only the calc mode has a secondary action (open in qalc).
+      visible: Data.mode === "calc"
       anchors { right: parent.right; rightMargin: 10; verticalCenter: parent.verticalCenter }
       width: label.implicitWidth + 16
       height: label.implicitHeight + 8
@@ -303,7 +305,7 @@ PanelWindow {
             ? appDelegate
             : Data.mode === "actions"
               ? actionDelegate
-              : calcDelegate
+              : queryDelegate
           clip: true
           interactive: false
           preferredHighlightBegin: 0
