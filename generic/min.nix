@@ -35,7 +35,14 @@
     "flakes"
   ];
   nixpkgs.config.allowUnfree = true;
-  nix.settings.auto-optimise-store = true;
+  # Weekly nh clean replaces per-build auto-optimise-store: the store is
+  # already deduplicated, so optimising after every build was a full-store
+  # scan (slow on melon, 2026-10-04: 58m for gc+optimise) to find ~nothing.
+  programs.nh.clean = {
+    enable = true;
+    dates = "Sat *-*-* 04:00";
+    extraArgs = "--keep 20 --keep-since 30d --optimise";
+  };
   networking = {
     networkmanager.enable = true;
     nftables.enable = true;
