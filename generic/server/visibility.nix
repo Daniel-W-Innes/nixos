@@ -793,6 +793,16 @@
           ];
         }
         {
+          job_name = "whisper";
+          static_configs = [
+            {
+              targets = [
+                "onion.lc.brotherwolf.ca:8002"
+              ];
+            }
+          ];
+        }
+        {
           job_name = "grafana";
           static_configs = [
             {

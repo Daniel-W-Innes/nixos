@@ -11,5 +11,6 @@ _:
     ./steam.nix
     ./vscode.nix
     ./claude.nix
+    ./speech.nix
   ];
 }

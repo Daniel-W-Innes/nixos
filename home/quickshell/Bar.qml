@@ -68,6 +68,7 @@ PanelWindow {
     SystemStats {}
     Network {}
     Audio {}
+    Speech {}
     Brightness {}
     Battery {}
     Clock {}

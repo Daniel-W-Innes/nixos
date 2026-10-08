@@ -1,0 +1,35 @@
+{
+  // Hyprland owns push-to-talk (see home/hyprland/hyprland.conf). Both null:
+  // the daemon then opens no /dev/input device, so no 'input' group is needed.
+  "shortcuts": { "press": null, "hold": null },
+
+  "audio_feedback": true,
+  "auto_copy_clipboard": true,
+  "shift_paste": true,
+  "audio_device": null, // default PipeWire source
+
+  // earshot VAD trimming (in-process, no model file)
+  "fast_vad": {
+    "enabled": true,
+    "profile": "aggressive",
+    "min_speech_ms": 120,
+    "silence_timeout_ms": 500,
+    "pre_roll_ms": 120,
+    "post_roll_ms": 150
+  },
+
+  "transcription": {
+    // 0.3.27 has no custom provider; the groq provider's endpoint field is
+    // user-configurable, so point it at the local whisper-server.
+    "provider": "groq",
+    "request_timeout_secs": 45,
+    "max_retries": 2,
+    "groq": {
+      "model": "Systran/faster-whisper-large-v3", // ignored by the server
+      "endpoint": "http://127.0.0.1:8002/v1/audio/transcriptions",
+      // Override the built-in "technical docs, do not add punctuation" prompt
+      // so Whisper punctuates prose normally.
+      "prompt": ""
+    }
+  }
+}

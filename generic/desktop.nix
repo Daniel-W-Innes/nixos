@@ -19,6 +19,7 @@ _:
     ./podman.nix
     ./forgejoRunner.nix
     ./lokiShipper.nix
+    ./speech.nix
   ];
 
   # Expose alloy's HTTP server on the LAN so melon's Prometheus can scrape its

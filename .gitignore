@@ -1,3 +1,5 @@
 .pre-commit-config.yaml
 result
+# python bytecode caches (generic/speech-server/server.py)
+__pycache__/
 
