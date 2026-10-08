@@ -48,14 +48,43 @@ REQUESTS = Counter(
     "Transcription requests, by outcome.",
     labelnames=["result"],  # ok | error | loading
 )
+# Buckets sized for dictation, not web requests: clips run ~1–15 s,
+# large-v3 inference runs ~1–5 s, and the client gives up at 45 s
+# (request_timeout_secs) — sub-100 ms detail is meaningless here.
+LATENCY_BUCKETS = [
+    0.25,
+    0.5,
+    0.75,
+    1.0,
+    1.5,
+    2.0,
+    3.0,
+    5.0,
+    7.5,
+    10.0,
+    15.0,
+    30.0,
+    60.0,
+]
+AUDIO_BUCKETS = [0.5, 1.0, 2.0, 3.0, 5.0, 7.5, 10.0, 15.0, 20.0, 30.0]
+
 REQUEST_SECONDS = Histogram(
     "whisper_request_duration_seconds",
     "End-to-end transcription request wall time, by outcome.",
     labelnames=["result"],
+    buckets=LATENCY_BUCKETS,
+)
+INFERENCE_SECONDS = Histogram(
+    "whisper_inference_seconds",
+    "Time spent inside model.transcribe() — GPU decode + beam search, "
+    "excluding upload and response handling. Observed only on success; "
+    "failures surface via whisper_transcriptions_total{result=\"error\"}.",
+    buckets=LATENCY_BUCKETS,
 )
 AUDIO_SECONDS = Histogram(
     "whisper_audio_seconds",
     "Duration of the submitted audio clip.",
+    buckets=AUDIO_BUCKETS,
 )
 MODEL_LOADED = Gauge(
     "whisper_model_loaded",
@@ -127,6 +156,7 @@ def transcribe(
     try:
         # PyAV decodes the FLAC; the client already trimmed the recording
         # with its VAD, so leave server-side VAD off.
+        inference_start = time.monotonic()
         segments, info = model.transcribe(
             io.BytesIO(data),
             language=language or LANGUAGE,
@@ -135,6 +165,7 @@ def transcribe(
             temperature=temperature,
             vad_filter=False,
         )
+        INFERENCE_SECONDS.observe(time.monotonic() - inference_start)
         text = "".join(s.text for s in segments).strip()
     except Exception as exc:
         REQUESTS.labels("error").inc()

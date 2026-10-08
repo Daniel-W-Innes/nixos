@@ -29,14 +29,17 @@ text <- Hyprland IPC paste  <-      {"text": "..."}
   switches).
 - Metrics: the server exposes `/metrics` (prometheus-client) with
   transcription counters/histograms (`whisper_transcriptions_total`,
-  `whisper_request_duration_seconds`, `whisper_audio_seconds`,
-  `whisper_model_loaded`). To make that scrapeable, the server binds
-  `0.0.0.0` (`WHISPER_HOST`) and `generic/speech.nix` opens TCP 8002 on
-  `enp8s0` only — same LAN-exposure decision as alloy:12345 and the node
-  exporter. melon's Prometheus scrapes it as job `whisper`
-  (`generic/server/visibility.nix`). Note this also puts the transcription
-  API on the trusted LAN, not just /metrics; drop `WHISPER_HOST` and the
-  firewall rule to go back to loopback-only.
+  `whisper_request_duration_seconds`, `whisper_inference_seconds` — GPU
+  decode + beam search only, `whisper_audio_seconds`,
+  `whisper_model_loaded`). Histogram buckets are sized for dictation
+  (0.25–60 s latency, 0.5–30 s clips; client timeout is 45 s), not the
+  prometheus defaults which topped out at 10 s. To make that scrapeable,
+  the server binds `0.0.0.0` (`WHISPER_HOST`) and `generic/speech.nix`
+  opens TCP 8002 on `enp8s0` only — same LAN-exposure decision as
+  alloy:12345 and the node exporter. melon's Prometheus scrapes it as job
+  `whisper` (`generic/server/visibility.nix`). Note this also puts the
+  transcription API on the trusted LAN, not just /metrics; drop
+  `WHISPER_HOST` and the firewall rule to go back to loopback-only.
 - **Why the client uses `provider: "groq"`**: hyprwhspr-rs 0.3.27 has no
   generic custom provider (that landed later upstream). Its groq provider's
   `endpoint` field is user-configurable, so it's pointed at the local server;
@@ -60,9 +63,12 @@ hyprwhspr-rs record status              # control socket: $XDG_RUNTIME_DIR/hyprw
 
 Prometheus queries (job `whisper`): dictation usage
 `rate(whisper_transcriptions_total{result="ok"}[5m])`, error rate
-`rate(whisper_transcriptions_total{result="error"}[5m])`, latency
+`rate(whisper_transcriptions_total{result="error"}[5m])`, end-to-end latency
 `histogram_quantile(0.9, rate(whisper_request_duration_seconds_bucket{result="ok"}[5m]))`,
-server down `up{job="whisper"} == 0`.
+GPU-only latency
+`histogram_quantile(0.9, rate(whisper_inference_seconds_bucket[5m]))`
+(the gap between the two is upload + decode overhead), server down
+`up{job="whisper"} == 0`.
 
 Smoke-test the contract without the keybind:
 
