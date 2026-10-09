@@ -32,3 +32,7 @@ Then rebuild melon and confirm the got-hash is stable (if it differs again, the 
 - `modules/airzone-exporter.nix` (vendorHash)
 - `.forgejo/workflows/test.yml` (melon CI build)
 - `f5c180a fix sha go` (same fix in module history)
+
+### Resolution
+
+Applied 2026-10-08: the fix above had been documented but never committed — the got-hash was still `YtsKf…` (stable across the intervening flake updates). Updated `vendorHash` and verified with a full `nixos-rebuild build --flake .#melon`; konnected and openweathermap go-modules FODs built clean in the same run.
