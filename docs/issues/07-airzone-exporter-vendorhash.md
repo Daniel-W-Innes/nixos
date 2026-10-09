@@ -35,4 +35,6 @@ Then rebuild melon and confirm the got-hash is stable (if it differs again, the 
 
 ### Resolution
 
-Applied 2026-10-08: the fix above had been documented but never committed — the got-hash was still `YtsKf…` (stable across the intervening flake updates). Updated `vendorHash` and verified with a full `nixos-rebuild build --flake .#melon`; konnected and openweathermap go-modules FODs built clean in the same run.
+Applied 2026-10-08: the fix above had been documented but never committed — a forced fresh build (`--rebuild`) confirms the got-hash is `YtsKf…` at both the pre- (825e202) and post-update (2efa67f) nixpkgs pins. Updated `vendorHash` and verified with a full `nixos-rebuild build --flake .#melon`; konnected and openweathermap go-modules FODs built clean in the same run.
+
+Note: melon kept switching successfully between 09-06 and 10-07 despite the stale hash, because the cached go-modules FOD output was still valid in the store — nix reuses a valid output without re-checking the hash. The 2026-10-04 manual gc+optimise (58m, see `b2949fd`) collected it, so the 10-07 switch had to rebuild the FOD and finally hit the mismatch.
