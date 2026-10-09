@@ -1,5 +1,7 @@
 # airzone-exporter vendorHash drift breaks melon build
 
+**DONE 2026-10-08.** `vendorHash` updated to the got-hash (`YtsKf…`), verified by a full `nixos-rebuild build --flake .#melon` plus forced fresh FOD builds at both the pre- and post-update nixpkgs pins. Melon had kept building in between only because the cached FOD output was reused without re-checking — the 2026-10-04 gc+optimise removed it and forced the first real build since the drift.
+
 ### Problem
 
 `nixos-rebuild build --flake .#melon` fails (2026-09-06) with a hash mismatch in the fixed-output derivation `airzone-exporter-0.1.1-go-modules.drv`:
