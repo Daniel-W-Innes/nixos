@@ -71,7 +71,7 @@ PanelWindow {
     Speech {}
     Brightness {}
     Battery {}
-    Clock {}
+    Clock { barScreen: bar.screen; barWindow: bar }
     Tray {}
     PowerButton { barScreen: bar.screen }
   }

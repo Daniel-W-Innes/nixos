@@ -31,6 +31,11 @@ Singleton {
   readonly property int osdWidth: 210
   readonly property int osdHeight: 40
 
+  // calendar menu
+  readonly property int calCell: 28
+  readonly property int calHeaderHeight: 30
+  readonly property int calWeekHeight: 24
+
   // fonts
   readonly property string textFont: "Liberation Sans"
   readonly property string iconFont: "Symbols Nerd Font"

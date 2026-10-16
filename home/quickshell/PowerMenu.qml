@@ -26,8 +26,14 @@ PanelWindow {
 
   Rectangle {
     // Right edge flush with the power button (which sits inset by padH),
-    // hovering just below the bar.
-    anchors { top: parent.top; right: parent.right; topMargin: Theme.barHeight + 6; rightMargin: Theme.padH }
+    // hovering padH below the bar. The window itself starts below the bar's
+    // exclusive zone, so its origin (screen height minus its own height —
+    // windows don't expose x/y in QML) is subtracted; otherwise the bar
+    // height would count twice and the card would sit a bar-height too low.
+    readonly property real originY: root.screen ? root.screen.height - root.height : 0
+    anchors { top: parent.top; right: parent.right }
+    anchors.topMargin: Theme.barHeight + Theme.padH - originY
+    anchors.rightMargin: Theme.padH
     width: 200
     height: column.implicitHeight + 12
     radius: Theme.radius

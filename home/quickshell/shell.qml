@@ -29,4 +29,11 @@ ShellRoot {
       PowerMenu { screen: modelData }
     }
   }
+
+  Variants {
+    model: Quickshell.screens
+    delegate: Component {
+      CalendarMenu { screen: modelData }
+    }
+  }
 }
