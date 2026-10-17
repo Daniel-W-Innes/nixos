@@ -10,7 +10,7 @@ This file is the index — always read in full. Load a topic file only when the 
 |---|---|---|
 | transmission hung/slow, torrents stalled, RPC timeouts, traefik 499/502, `proton`/`proton-br`, path-MTU, CIFS metadata latency | `docs/debug/transmission.md` | "Transmission specifics that decode symptoms" |
 | forgejo down/won't start, `forgejo-db`, postgres crash recovery, runner 503s, dependency-fail, `upholds`, `pg_filenode.map` EACCES, tmpfiles ownership | `docs/debug/forgejo.md` | "Forgejo specifics that decode symptoms" |
-| audiomuse down/broken, `audiomuse-net`, instant mix empty, plugin 401, wizard connection refused, supervisord FATAL, `podman-audiomuse-*` | `docs/debug/audiomuse.md` | — |
+| audiomuse down/broken, `audiomuse-net`, instant mix empty, plugin 401, wizard connection refused, supervisord FATAL, `podman-audiomuse-*`, jellyfin instant mix | `docs/debug/audiomuse.md` | — |
 | journal labels missing/wrong, `unit` label, `init.scope`, `service_name` values, trimmed JSON fields | `docs/debug/journal.md` | "Journal data: live reality vs. repo intent" |
 | "is this error real?", constant background errors, podman exporters, `[TTM]`, loki self-echoes, stuck `up=0` targets | `docs/debug/known-noise.md` | "Known noise — ignore, don't chase" |
 | units failed after `nixos-rebuild switch`, same-second timeout cluster, container recreation | `docs/debug/switch-storms.md` | "Switch storms: units failed after `nixos-rebuild switch`" |

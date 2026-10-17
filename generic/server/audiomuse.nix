@@ -35,6 +35,34 @@ let
     POSTGRES_PORT = "5432";
     TEMP_DIR = "/app/temp_audio";
   };
+
+  # Prebuilt .NET plugin (targetAbi 12.0.0.0 = jellyfin 10.11). Installed by
+  # symlinking into jellyfin's data dir plugins folder (jellyfin loads plugins
+  # from <datadir>/plugins, see BaseApplicationPaths.PluginsPath).
+  audiomuseJellyfinPlugin = pkgs.stdenv.mkDerivation {
+    pname = "jellyfin-plugin-audiomuse-ai";
+    version = "0.3.5.0";
+
+    src = pkgs.fetchurl {
+      url = "https://github.com/NeptuneHub/audiomuse-ai-plugin/releases/download/v0.3.5/audiomuse-ai_0.3.5.0.zip";
+      hash = "sha256-YrwlpLXTu2NoRVzsCXOKdPL9XjOjHfbvUzi5nzx5Tlk=";
+    };
+
+    dontUnpack = true;
+
+    nativeBuildInputs = [ pkgs.unzip ];
+
+    installPhase = ''
+      mkdir -p $out/plugins
+      unzip -q $src -d $out/plugins
+    '';
+
+    meta = {
+      description = "AudioMuse-AI plugin for Jellyfin";
+      homepage = "https://github.com/NeptuneHub/audiomuse-ai-plugin";
+      license = lib.licenses.agpl3Only;
+    };
+  };
 in
 {
   options.services.audiomuse = {
@@ -70,7 +98,21 @@ in
           "d /var/lib/audiomuse/flask/plugins 0700 root root -"
           "d /var/lib/audiomuse/worker/temp-audio 0700 root root -"
           "d /var/lib/audiomuse/worker/plugins 0700 root root -"
-        ];
+        ]
+        ++ [
+          # Jellyfin loads plugins from <datadir>/plugins; symlink the
+          # AudioMuse-AI plugin in. The d rule creates the dir at switch time
+          # so the L+ rules succeed even before jellyfin's first start.
+          "d /var/lib/jellyfin/plugins 0755 ${config.services.jellyfin.user} ${config.services.jellyfin.group} -"
+        ]
+        ++
+          map
+            (file: "L+ /var/lib/jellyfin/plugins/${file} - - - - ${audiomuseJellyfinPlugin}/plugins/${file}")
+            [
+              "Jellyfin.Plugin.AudioMuseAi.dll"
+              "meta.json"
+              "audiomuseai.png"
+            ];
 
         # Dedicated bridged network (bookorbit init-*-network pattern).
         # The flask and worker overrides are identical, so both are generated
@@ -91,6 +133,10 @@ in
                 ${bin} network create audiomuse-net
               '';
             };
+
+          # Restart jellyfin when the AudioMuse plugin package changes (first
+          # switch with this trigger also restarts it, loading the plugin).
+          jellyfin.restartTriggers = [ audiomuseJellyfinPlugin ];
         }
         //
           lib.genAttrs
