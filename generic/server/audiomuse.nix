@@ -13,10 +13,12 @@ let
   # Flask calls init_db() at import; supervisord gives up after 3 quick retries.
   # dependsOn orders starts but gives no readiness, so wait for accept() over
   # the loopback-published postgres port (uptime-kuma-mariadb pattern).
+  # 5433, not 5432: the dawarich module enables host postgresql, which owns
+  # 127.0.0.1:5432.
   waitForPostgres = pkgs.writeShellScript "audiomuse-wait-for-postgres" ''
     pg_isready="${lib.getExe' pkgs.postgresql "pg_isready"}"
     for _ in $(seq 1 90); do
-      if "$pg_isready" -h 127.0.0.1 -p 5432 -U audiomuse -d audiomusedb -t 2 -q; then
+      if "$pg_isready" -h 127.0.0.1 -p 5433 -U audiomuse -d audiomusedb -t 2 -q; then
         exit 0
       fi
       sleep 1
@@ -169,7 +171,9 @@ in
           volumes = [ "/var/lib/audiomuse/postgres:/var/lib/postgresql/data" ];
           # Loopback publish exists only for the host-side pg_isready wait (and
           # debugging); the app containers reach it over audiomuse-net.
-          ports = [ "127.0.0.1:5432:5432" ];
+          # Host-side 5433: 127.0.0.1:5432 is taken by the host postgresql
+          # service (auto-enabled by the dawarich module).
+          ports = [ "127.0.0.1:5433:5432" ];
           extraOptions = [
             "--network=audiomuse-net"
             # podman stop's 10s default SIGKILLs postgres mid fast-shutdown
