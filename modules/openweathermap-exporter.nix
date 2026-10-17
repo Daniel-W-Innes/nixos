@@ -10,7 +10,7 @@ let
 
   package = pkgs.buildGoModule {
     pname = "openweathermap-exporter";
-    version = "0.1.1";
+    version = "0.1.2";
     src = ./openweathermap-exporter;
     vendorHash = "sha256-ZheHi/nsY59l9e1WU+13n17b7xL77R4KckcnaJf1QxU=";
   };

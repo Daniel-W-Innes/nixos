@@ -11,4 +11,5 @@ Tracked as GitHub issues in `docs/issues/`:
 10. ~~Forgejo stranded after reboot: `podman-forgejo-db` boot-failure (podman contention) cancels forgejo's start job via `requires` and it's never re-queued~~ — DONE 2026-09-27: `upholds=` fix committed (`cf9faf0`) and deployed; reboot verification pending — `docs/issues/done/10-forgejo-dependency-fail-after-reboot.md`.
 11. Lidarr CPU spin (thread-pool starvation, ~1172% CPU / 11.1G RSS) is the boot-time SQLite-lock contention engine behind the 2026-09-27 failure — `docs/issues/11-lidarr-cpu-spin.md`.
 12. Postgres unclean shutdown every stop: `podman stop` 10s default SIGKILLs postgres mid-shutdown — `--stop-timeout=90` fix in `forgejo.nix` (2026-09-27, deployed; verification pending) — `docs/issues/12-postgres-unclean-shutdown.md`.
+13. OpenWeatherMap rain/snow/wind_gust metrics carry forward stale values (library decodes in place; OWM omits `rain` when dry) — fix applied in working tree 2026-10-16, pending deploy; moves to `done/` once deployed and verified — `docs/issues/13-openweathermap-rain-carry-forward.md`.
 

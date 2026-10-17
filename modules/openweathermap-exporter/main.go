@@ -63,6 +63,7 @@ func (e *exporter) refresh() {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	e.lastAttempt = time.Now()
+	e.client.Current = owm.OneCallCurrentData{}
 
 	if err := e.client.OneCallByCoordinates(e.coords); err != nil {
 		e.scrapeOK = false
