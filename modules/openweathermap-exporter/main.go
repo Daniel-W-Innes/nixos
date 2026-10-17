@@ -64,6 +64,10 @@ func (e *exporter) refresh() {
 	defer e.mu.Unlock()
 	e.lastAttempt = time.Now()
 	e.client.Current = owm.OneCallCurrentData{}
+	e.client.Minutely = nil
+	e.client.Hourly = nil
+	e.client.Daily = nil
+	e.client.Alerts = nil
 
 	if err := e.client.OneCallByCoordinates(e.coords); err != nil {
 		e.scrapeOK = false

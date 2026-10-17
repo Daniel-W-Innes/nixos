@@ -6,14 +6,24 @@
 
 Root cause: `main.go` `refresh()` calls briandowns/openweathermap v0.21.1 `OneCallByCoordinates`, which does `json.NewDecoder(resp.Body).Decode(&w)` — decoding **in place into the receiver struct**. OWM omits `rain` (also `snow`, `wind_gust`) from `current` when no precipitation is falling, and Go's `encoding/json` leaves absent keys untouched, so `Current.Rain.OneH` keeps its previous value and is re-emitted at every scrape (10 s) across every refresh (2 m). The metric effectively reads "rain depth at the most recent poll where OWM reported rain" — a sticky max. Same bug class silently affects `current_snow_depth_meters` and `current_wind_gust_meters_per_second`.
 
+Same bug class also affects the forecast slices: `Hourly`/`Daily` are decoded in place, and Go's `encoding/json` decodes into existing slice elements, so `forecast_rain_depth_meters`, `forecast_snow_depth_meters`, `forecast_wind_gust_meters_per_second`, and `forecast_uv_index` carry per-forecast-hour values forward across polls (verified with a minimal decoder test against Go's behavior; after slice shrink/grow cycles an element can even retain a value from multiple polls back via un-zeroed backing-array memory). `forecast_uv_index` is additionally affected because OWM only sends `uvi` in hourly entries during daylight.
+
 Ruled out: exporter down (up=1, 360/360 scrapes per hour), failed refreshes serving cache (attempt≈success to within −76 ms; on failure the exporter emits no current metrics at all, so temperature would go stale too), wrong JSON field (Collect reads `Current.Rain.OneH`, not daily/hourly), and series gaps (samples continuously present). History is unrecoverable — including the genuinely-dry frozen-0 runs (e.g. Sep 19–26) that are indistinguishable from stuck values.
 
 ### Fix
 
-Reset `Current` before each refresh so omitted fields emit 0:
+Reset all decoded state before each refresh so omitted fields emit 0:
 
 ```go
+// OneCallByCoordinates decodes into e.client in place and json.Decode
+// leaves absent fields untouched (including slice elements), so reset
+// everything before each poll: rain/snow/wind_gust/uvi would otherwise
+// carry forward stale values from previous responses.
 e.client.Current = owm.OneCallCurrentData{}
+e.client.Minutely = nil
+e.client.Hourly = nil
+e.client.Daily = nil
+e.client.Alerts = nil
 ```
 
 Applied in the working tree 2026-10-16 (uncommitted — `modules/openweathermap-exporter/main.go`, `refresh()`). Source-only change; the pinned `vendorHash` in `modules/openweathermap-exporter.nix` is unaffected. `go build ./...` passes.
@@ -25,6 +35,7 @@ After deploy (`nixos-rebuild switch --flake .#melon`; the unit restarts with the
 - Dry hours read exactly 0: `openweathermap_current_rain_depth_meters` returns to 0 between rain events instead of plateauing.
 - `changes(openweathermap_current_rain_depth_meters[7d])` tracks actual rain events.
 - Prometheus: rain/snow/wind_gust series present and updating at the same cadence as temperature.
+- Forecasts: `forecast_rain_depth_meters` reads 0 for forecast hours with no rain instead of echoing a previous poll's value.
 
 ### References
 
