@@ -24,8 +24,14 @@
 
   systemd.tmpfiles.rules = [
     "d /run/forgejo-db 0700 ${config.services.forgejo.user} ${config.services.forgejo.group}"
-    "d /var/lib/forgejo/postgres 0700 999 999 -"
-    "Z /var/lib/forgejo/postgres - 999 999 - -"
+    # postgres:16-alpine runs postgres as uid/gid 70 (999 is the Debian
+    # image's uid). With mismatched ownership, every switch's tmpfiles re-run
+    # chowns the live data dir out from under the running postmaster and all
+    # new connections fail with EACCES on global/pg_filenode.map
+    # (2026-10-16 outage; the image entrypoint chowns the dir on container
+    # recreate, which is what had been masking this).
+    "d /var/lib/forgejo/postgres 0700 70 70 -"
+    "Z /var/lib/forgejo/postgres - 70 70 - -"
   ];
 
   virtualisation.oci-containers.containers.forgejo-db = {
