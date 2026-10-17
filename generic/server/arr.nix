@@ -13,6 +13,35 @@ let
       log.analyticsEnabled = true;
     };
   };
+
+  # Prebuilt WASM plugin. pname must match the manifest id so navidrome's
+  # package links share/plugins/${pname}.ndp (pkgs/by-name/na/navidrome/package.nix).
+  audiomuseaiPlugin = pkgs.stdenv.mkDerivation {
+    pname = "audiomuseai";
+    version = "10.0.0";
+
+    src = pkgs.fetchurl {
+      url = "https://github.com/NeptuneHub/AudioMuse-AI-NV-plugin/releases/download/v10/audiomuseai.ndp";
+      hash = "sha256-wTjprxbwl9jNB6yVf7iknZGn2gZuW0oUV8rb1HmqEKc=";
+    };
+
+    dontUnpack = true;
+    dontBuild = true;
+
+    installPhase = ''
+      install -Dm644 $src $out/share/audiomuseai.ndp
+    '';
+
+    passthru = {
+      isNavidromePlugin = true;
+    };
+
+    meta = {
+      description = "AudioMuse-AI Instant Mix plugin for Navidrome";
+      homepage = "https://github.com/NeptuneHub/AudioMuse-AI-NV-plugin";
+      license = lib.licenses.agpl3Only;
+    };
+  };
 in
 {
   age.secrets = {
@@ -149,11 +178,17 @@ in
     navidrome = {
       enable = true;
       group = "media";
+      plugins = [ audiomuseaiPlugin ];
       settings = {
         EnableInsightsCollector = true;
         MusicFolder = "/mnt/media/music";
         BaseUrl = "https://navidrome.lc.brotherwolf.ca";
         "Prometheus.Enabled" = true;
+        # Plugin docs require audiomuseai first (replaces default
+        # "deezer,lastfm,listenbrainz"); lastfm/deezer stay inert without keys.
+        Agents = "audiomuseai,lastfm,deezer";
+        # v10 plugin README recommends this so fresh analyses are visible.
+        DevArtistInfoTimeToLive = "1s";
       };
     };
     jellyfin = {

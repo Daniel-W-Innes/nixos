@@ -178,4 +178,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "audiomuse-env.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }

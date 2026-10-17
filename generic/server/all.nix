@@ -3,6 +3,7 @@ _:
 {
   imports = [
     ./arr.nix
+    ./audiomuse.nix
     ./lidarr-search-drip.nix
     ./visibility.nix
     ./smb.nix

@@ -105,6 +105,13 @@ in
     {
       inherit enable host port;
     };
+  audiomuse = {
+    inherit (config.services.audiomuse) enable port;
+    healthCheck = {
+      path = "/api/health";
+      interval = "10s";
+    };
+  };
   immich = {
     inherit (config.services.immich) enable host port;
   };
