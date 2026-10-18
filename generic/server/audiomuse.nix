@@ -111,12 +111,14 @@ in
 
     workers = lib.mkOption {
       type = lib.types.ints.between 1 25;
-      default = 4;
+      default = 2;
       description = ''
         Number of analysis worker replicas. Each replica runs one
         default-queue worker (one album at a time, tracks sequential;
         ~1.3 GB RAM). Upstream's dispatch throttle keeps at most 25 album
         tasks queued (MAX_QUEUED_ANALYSIS_JOBS), so more than 25 buys nothing.
+        Each replica's ONNX inference is multi-threaded: 4 replicas
+        oversubscribed melon's 64 cores (load ~73, 2026-10-17), hence 2.
       '';
     };
   };
