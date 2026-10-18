@@ -17,9 +17,9 @@
   # network (podman1 = bookorbit-net, podman2 = audiomuse-net) — a network
   # missing this rule fails every lookup with "Temporary failure in name
   # resolution" (2026-10-17 audiomuse incident).
-  networking.firewall.extraInputRules = [
-    ''iifname "podman*" udp dport 53 accept''
-  ];
+  networking.firewall.extraInputRules = ''
+    iifname "podman*" udp dport 53 accept
+  '';
 
   environment.systemPackages = with pkgs; [
     dive
