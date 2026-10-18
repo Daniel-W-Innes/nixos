@@ -10,6 +10,14 @@ let
   cfg = config.services.audiomuse;
   backend = config.virtualisation.oci-containers.backend;
 
+  # Scaling: the image starts exactly one default-queue worker per container
+  # (plus a high-priority worker and maintenance), and each worker runs one
+  # album task at a time (tracks sequential within the album). Upstream's k8s
+  # manifest scales the same worker pod ("Scale as needed"); the dispatch
+  # throttle MAX_QUEUED_ANALYSIS_JOBS (25) bounds how many replicas matter.
+  workerNames = map (n: "worker-${toString n}") (lib.range 1 cfg.workers);
+  appUnitNames = [ "flask" ] ++ workerNames;
+
   # Flask calls init_db() at import; supervisord gives up after 3 quick retries.
   # dependsOn orders starts but gives no readiness, so wait for accept() over
   # the loopback-published postgres port (uptime-kuma-mariadb pattern).
@@ -36,6 +44,30 @@ let
     POSTGRES_HOST = "audiomuse-postgres";
     POSTGRES_PORT = "5432";
     TEMP_DIR = "/app/temp_audio";
+  };
+
+  # One container per replica, each with its own temp-audio and plugins dirs
+  # (upstream gives each worker pod its own PVC; there TEMP_DIR is shared by
+  # every worker process, so per-replica dirs also dodge the shared-wipe
+  # constraint).
+  workerContainer = name: {
+    image = "ghcr.io/neptunehub/audiomuse-ai:latest";
+    dependsOn = [ "audiomuse-postgres" ];
+    environment = appEnvironment // {
+      SERVICE_TYPE = "worker";
+      # Upstream's default tears down and reloads both MusiCNN ONNX models
+      # after every song to bound VRAM leaks (~2-3s per-track overhead).
+      # CPU-only here, and each analysis job runs in a forked child that
+      # os._exits (memory reclaimed at job end anyway), so recycle every
+      # 20 songs instead.
+      PER_SONG_MODEL_RELOAD = "false";
+    };
+    environmentFiles = [ config.age.secrets.audiomuse-env.path ];
+    volumes = [
+      "/var/lib/audiomuse/${name}/temp-audio:/app/temp_audio"
+      "/var/lib/audiomuse/${name}/plugins:/app/plugin/installed"
+    ];
+    extraOptions = [ "--network=audiomuse-net" ];
   };
 
   # Prebuilt .NET plugin (targetAbi 12.0.0.0 = jellyfin 10.11). Installed by
@@ -76,6 +108,17 @@ in
       readOnly = true; # gunicorn bind is fixed in the image
       description = "AudioMuse-AI HTTP port.";
     };
+
+    workers = lib.mkOption {
+      type = lib.types.ints.between 1 25;
+      default = 4;
+      description = ''
+        Number of analysis worker replicas. Each replica runs one
+        default-queue worker (one album at a time, tracks sequential;
+        ~1.3 GB RAM). Upstream's dispatch throttle keeps at most 25 album
+        tasks queued (MAX_QUEUED_ANALYSIS_JOBS), so more than 25 buys nothing.
+      '';
+    };
   };
 
   config = lib.mkMerge [
@@ -98,9 +141,9 @@ in
           "d /var/lib/audiomuse/postgres 0700 70 70 -"
           "d /var/lib/audiomuse/flask/temp-audio 0700 root root -"
           "d /var/lib/audiomuse/flask/plugins 0700 root root -"
-          "d /var/lib/audiomuse/worker/temp-audio 0700 root root -"
-          "d /var/lib/audiomuse/worker/plugins 0700 root root -"
         ]
+        ++ map (name: "d /var/lib/audiomuse/${name}/temp-audio 0700 root root -") workerNames
+        ++ map (name: "d /var/lib/audiomuse/${name}/plugins 0700 root root -") workerNames
         ++ [
           # Jellyfin loads plugins from <datadir>/plugins; symlink the
           # AudioMuse-AI plugin in. The d rule creates the dir at switch time
@@ -140,23 +183,17 @@ in
           # switch with this trigger also restarts it, loading the plugin).
           jellyfin.restartTriggers = [ audiomuseJellyfinPlugin ];
         }
-        //
-          lib.genAttrs
-            (map (name: "${backend}-audiomuse-${name}") [
-              "flask"
-              "worker"
-            ])
-            (_: {
-              # dependsOn gives After/Requires only; upholds re-queues a
-              # dependency-failed start job (forgejo outage precedent,
-              # docs/reports/2026-09-27-forgejo-dependency-outage.md).
-              # The module sets TimeoutStartSec=0, so the 90s wait is safe;
-              # mkAfter appends after the module's own pre-start script.
-              after = [ "init-audiomuse-network.service" ];
-              requires = [ "init-audiomuse-network.service" ];
-              upholds = [ "${backend}-audiomuse-postgres.service" ];
-              serviceConfig.ExecStartPre = lib.mkAfter [ "${waitForPostgres}" ];
-            });
+        // lib.genAttrs (map (name: "${backend}-audiomuse-${name}") appUnitNames) (_: {
+          # dependsOn gives After/Requires only; upholds re-queues a
+          # dependency-failed start job (forgejo outage precedent,
+          # docs/reports/2026-09-27-forgejo-dependency-outage.md).
+          # The module sets TimeoutStartSec=0, so the 90s wait is safe;
+          # mkAfter appends after the module's own pre-start script.
+          after = [ "init-audiomuse-network.service" ];
+          requires = [ "init-audiomuse-network.service" ];
+          upholds = [ "${backend}-audiomuse-postgres.service" ];
+          serviceConfig.ExecStartPre = lib.mkAfter [ "${waitForPostgres}" ];
+        });
       };
 
       virtualisation.oci-containers.containers = {
@@ -197,20 +234,10 @@ in
           extraOptions = [ "--network=audiomuse-net" ];
         };
 
-        audiomuse-worker = {
-          image = "ghcr.io/neptunehub/audiomuse-ai:latest";
-          dependsOn = [ "audiomuse-postgres" ];
-          environment = appEnvironment // {
-            SERVICE_TYPE = "worker";
-          };
-          environmentFiles = [ config.age.secrets.audiomuse-env.path ];
-          volumes = [
-            "/var/lib/audiomuse/worker/temp-audio:/app/temp_audio"
-            "/var/lib/audiomuse/worker/plugins:/app/plugin/installed"
-          ];
-          extraOptions = [ "--network=audiomuse-net" ];
-        };
-      };
+      }
+      // lib.listToAttrs (
+        map (name: lib.nameValuePair "audiomuse-${name}" (workerContainer name)) workerNames
+      );
     })
   ];
 }
