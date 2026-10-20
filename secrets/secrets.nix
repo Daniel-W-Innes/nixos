@@ -182,4 +182,15 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  # Private keys for the audiomuse postgres mTLS setup (public certs live in
+  # generic/server/audiomuse-pg-certs/). Regenerate with
+  # scripts/gen-audiomuse-pg-certs.sh.
+  "audiomuse-pg-server-key.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
+  "audiomuse-pg-client-key.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }

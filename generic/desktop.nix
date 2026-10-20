@@ -17,10 +17,24 @@ _:
     ./smartd.nix
     ./borgmatic.nix
     ./podman.nix
+    ./server/audiomuse.nix
     ./forgejoRunner.nix
     ./lokiShipper.nix
     ./speech.nix
   ];
+
+  # One AudioMuse worker pulling from melon's postgres over the LAN (melon
+  # publishes 5433; mTLS + scram). "melon" resolves via the router's
+  # DHCP-lease DNS, which the worker container can use (containers have no
+  # mDNS, so melon.local would not resolve there) and which auto-tracks
+  # melon's IP. Analysis is CPU-heavy and melon is capped at 2 local
+  # replicas (64-core oversubscription, 2026-10-17); onion's 16 threads take
+  # one more replica without contention.
+  services.audiomuse = {
+    workerOnly = true;
+    postgresHost = "melon";
+    postgresPort = 5433;
+  };
 
   # Expose alloy's HTTP server on the LAN so melon's Prometheus can scrape its
   # pipeline metrics (loki_write retries, journal lines read, ...). pprof stays

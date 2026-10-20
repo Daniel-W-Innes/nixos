@@ -26,7 +26,7 @@ The sections that stay here (old citations still resolve): **Topology cheat shee
 | Host | Role | Notes |
 |------|------|-------|
 | `melon` | server | Observability stack (Prometheus, Grafana, Loki, Tempo, InfluxDB), traefik, arr stack + transmission, jellyfin, immich, forgejo, navidrome + AudioMuse-AI |
-| `onion` | desktop | This Claude session runs here; `mcp-grafana` MCP server runs here as an oci-container |
+| `onion` | desktop | This Claude session runs here; `mcp-grafana` MCP server runs here as an oci-container; one AudioMuse worker replica (worker-only role, pulls from melon's postgres over the LAN) |
 | `cucamelon` | laptop | Often offline (its exporters show up=0) |
 | `pumpkin` | NAS | SMB target for melon's `/mnt/media` (CIFS mount), copyparty |
 | `radish` | UniFi controller | unpoller target (currently 401s) |
