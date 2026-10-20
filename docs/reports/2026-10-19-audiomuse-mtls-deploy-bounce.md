@@ -44,7 +44,7 @@ All times EDT (UTC−4), 2026-10-19. Sources: Loki (journald), live SSH state, u
 |---|-----------|-----|-------|
 | 1 | `Upholds=` intentionally ties app units to postgres lifecycle → any postgres restart bounces the stack | None needed (by design); the byte-identical `waitForPostgres` binding keeps melon switches that don't touch postgres from restarting the app units at all | `generic/server/audiomuse.nix` |
 | 2 | Probe assumed fast failures; firewall DROP + no connect timeout = hours of `start-pre` | `PGCONNECT_TIMEOUT=5`, 30 iterations (~3 min bound) | `generic/server/audiomuse.nix` |
-| 3 | Onion root fs capacity | Vacuum journal (2.3G), prune rootful podman (sudo), keep an eye on rootless storage | user follow-up |
+| 3 | Onion root fs capacity | Vacuum journal (2.3G), prune rootful podman (sudo), keep an eye on rootless storage — **done 2026-10-19** (journal vacuumed, rootful podman pruned +5.4G; root at 81%, 19G free) | user follow-up |
 
 ## 4. Follow-ups
 
