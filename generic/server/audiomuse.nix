@@ -117,7 +117,12 @@ let
   # client key directly.
   waitForRemotePostgres = pkgs.writeShellScript "audiomuse-wait-for-remote-postgres" ''
     psql="${lib.getExe' pkgs.postgresql "psql"}"
-    for _ in $(seq 1 90); do
+    # PGCONNECT_TIMEOUT bounds each attempt: without it, an unreachable
+    # server (firewall DROP, e.g. melon not yet switched) makes each psql
+    # hang for the full TCP timeout and the 30 iterations stretch to hours,
+    # wedging the unit in start-pre during activation (2026-10-19).
+    export PGCONNECT_TIMEOUT=5
+    for _ in $(seq 1 30); do
       if PGPASSWORD="$(cut -d= -f2- ${config.age.secrets.audiomuse-env.path})" \
          PGSSLMODE=verify-full \
          PGSSLROOTCERT=${pgCertDir}/ca.crt \
