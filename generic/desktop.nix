@@ -23,15 +23,21 @@ _:
     ./speech.nix
   ];
 
-  # One AudioMuse worker pulling from melon's postgres over the LAN (melon
+  # AudioMuse workers pulling from melon's postgres over the LAN (melon
   # publishes 5433; mTLS + scram). "melon" resolves via the router's
-  # DHCP-lease DNS, which the worker container can use (containers have no
+  # DHCP-lease DNS, which the worker containers can use (containers have no
   # mDNS, so melon.local would not resolve there) and which auto-tracks
   # melon's IP. Analysis is CPU-heavy and melon is capped at 2 local
   # replicas (64-core oversubscription, 2026-10-17); onion's 16 threads take
-  # one more replica without contention.
+  # one replica without contention — raise `workers` for future library
+  # imports, minding the 16-thread budget (each replica's ONNX inference is
+  # multi-threaded).
   services.audiomuse = {
     workerOnly = true;
+    # Burst capacity for the initial onboarding scan only — flip to false
+    # and switch once the scan is done (units disappear, containers removed).
+    workerEnabled = true;
+    workers = 1;
     postgresHost = "melon";
     postgresPort = 5433;
   };

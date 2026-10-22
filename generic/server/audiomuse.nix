@@ -180,16 +180,33 @@ in
       type = lib.types.ints.between 1 25;
       default = 2;
       description = ''
-        Number of analysis worker replicas. Each replica runs one
-        default-queue worker (one album at a time, tracks sequential;
-        ~1.3 GB RAM). Upstream's dispatch throttle keeps at most 25 album
-        tasks queued (MAX_QUEUED_ANALYSIS_JOBS), so more than 25 buys nothing.
-        Each replica's ONNX inference is multi-threaded: 4 replicas
+        Number of analysis worker replicas on this host (server role:
+        containers on audiomuse-net; worker-only role: containers dialing
+        postgresHost over the LAN). Each replica runs one default-queue
+        worker (one album at a time, tracks sequential; ~1.3 GB RAM).
+        Upstream's dispatch throttle keeps at most 25 album tasks queued
+        (MAX_QUEUED_ANALYSIS_JOBS), so more than 25 buys nothing. Each
+        replica's ONNX inference is multi-threaded: 4 replicas
         oversubscribed melon's 64 cores (load ~73, 2026-10-17), hence 2.
       '';
     };
 
     workerOnly = lib.mkEnableOption "remote worker-only deployment: no postgres/flask; one worker container connects to a server host's postgres over the LAN";
+
+    workerEnabled = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = ''
+        Whether the worker containers actually run in worker-only mode.
+        Onion's remote workers exist to add burst capacity for the
+        initial library onboarding scan; flip to false and switch once
+        the scan is done — the units disappear at switch time, so
+        systemd stops the containers during activation (in-flight album
+        tasks are requeued, but best done with an idle queue). The
+        agenix secrets and pg_hba mTLS entry stay in place, so flipping
+        back re-enables the workers without rekeying or touching melon.
+      '';
+    };
 
     postgresHost = lib.mkOption {
       type = lib.types.str;
@@ -381,48 +398,53 @@ in
         map (name: lib.nameValuePair "audiomuse-${name}" (workerContainer name)) workerNames
       );
     })
-    (lib.mkIf (cfg.enable && cfg.workerOnly) {
+    (lib.mkIf (cfg.enable && cfg.workerOnly && cfg.workerEnabled) {
       systemd = {
         tmpfiles.rules = [
           "d /var/lib/audiomuse 0755 root root -"
-          "d /var/lib/audiomuse/worker-1/temp-audio 0700 root root -"
-          "d /var/lib/audiomuse/worker-1/plugins 0700 root root -"
-        ];
+        ]
+        ++ map (name: "d /var/lib/audiomuse/${name}/temp-audio 0700 root root -") workerNames
+        ++ map (name: "d /var/lib/audiomuse/${name}/plugins 0700 root root -") workerNames;
 
-        services."${backend}-audiomuse-worker-1" = {
+        services = lib.genAttrs (map (name: "${backend}-audiomuse-${name}") workerNames) (_: {
           # The remote postgres lives on the LAN; wait for the network before
           # probing it (Restart=on-failure still requeues if the server is
           # down at boot). The probe is a full mTLS login, not pg_isready.
           after = [ "network-online.target" ];
           serviceConfig.ExecStartPre = lib.mkAfter [ waitForRemotePostgres ];
-        };
+        });
       };
 
-      # No custom network: the worker only makes outbound connections to the
+      # No custom network: the workers only make outbound connections to the
       # server host's postgres, so the default podman bridge suffices.
-      virtualisation.oci-containers.containers."audiomuse-worker-1" = {
-        image = "ghcr.io/neptunehub/audiomuse-ai:latest";
-        environment = appEnvironment // {
-          SERVICE_TYPE = "worker";
-          PER_SONG_MODEL_RELOAD = "false";
-          # mTLS for the LAN postgres connection: psycopg2 (libpq) picks up
-          # the PGSSL* env vars automatically. verify-full checks the server
-          # cert against ca.crt and the client cert is required by pg_hba
-          # (clientcert=verify-full).
-          PGSSLMODE = "verify-full";
-          PGSSLROOTCERT = "/pg-client/ca.crt";
-          PGSSLCERT = "/pg-client/client.crt";
-          PGSSLKEY = "/pg-client/client.key";
-        };
-        environmentFiles = [ config.age.secrets.audiomuse-env.path ];
-        volumes = [
-          "/var/lib/audiomuse/worker-1/temp-audio:/app/temp_audio"
-          "/var/lib/audiomuse/worker-1/plugins:/app/plugin/installed"
-          "${pgCertDir}/ca.crt:/pg-client/ca.crt:ro"
-          "${pgCertDir}/client.crt:/pg-client/client.crt:ro"
-          "${config.age.secrets.audiomuse-pg-client-key.path}:/pg-client/client.key:ro"
-        ];
-      };
+      virtualisation.oci-containers.containers = lib.listToAttrs (
+        map (
+          name:
+          lib.nameValuePair "audiomuse-${name}" {
+            image = "ghcr.io/neptunehub/audiomuse-ai:latest";
+            environment = appEnvironment // {
+              SERVICE_TYPE = "worker";
+              PER_SONG_MODEL_RELOAD = "false";
+              # mTLS for the LAN postgres connection: psycopg2 (libpq)
+              # picks up the PGSSL* env vars automatically. verify-full
+              # checks the server cert against ca.crt and the client cert
+              # is required by pg_hba (clientcert=verify-full).
+              PGSSLMODE = "verify-full";
+              PGSSLROOTCERT = "/pg-client/ca.crt";
+              PGSSLCERT = "/pg-client/client.crt";
+              PGSSLKEY = "/pg-client/client.key";
+            };
+            environmentFiles = [ config.age.secrets.audiomuse-env.path ];
+            volumes = [
+              "/var/lib/audiomuse/${name}/temp-audio:/app/temp_audio"
+              "/var/lib/audiomuse/${name}/plugins:/app/plugin/installed"
+              "${pgCertDir}/ca.crt:/pg-client/ca.crt:ro"
+              "${pgCertDir}/client.crt:/pg-client/client.crt:ro"
+              "${config.age.secrets.audiomuse-pg-client-key.path}:/pg-client/client.key:ro"
+            ];
+          }
+        ) workerNames
+      );
     })
   ];
 }
