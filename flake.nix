@@ -156,6 +156,7 @@
           stateVersion = "25.05";
           extraModules = [
             ./generic/zsa.nix
+            ./generic/ckb.nix
           ];
         };
         cucamelon = {
