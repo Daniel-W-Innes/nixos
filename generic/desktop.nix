@@ -36,7 +36,7 @@ _:
     workerOnly = true;
     # Burst capacity for the initial onboarding scan only — flip to false
     # and switch once the scan is done (units disappear, containers removed).
-    workerEnabled = true;
+    workerEnabled = false;
     workers = 1;
     postgresHost = "melon";
     postgresPort = 5433;
