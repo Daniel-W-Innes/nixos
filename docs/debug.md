@@ -16,6 +16,7 @@ This file is the index — always read in full. Load a topic file only when the 
 | units failed after `nixos-rebuild switch`, same-second timeout cluster, container recreation | `docs/debug/switch-storms.md` | "Switch storms: units failed after `nixos-rebuild switch`" |
 | LogQL, label discovery, `query_loki_stats`, oversized results, parse script | `docs/debug/loki.md` | "Loki playbook (mcp-grafana)" |
 | PromQL, alert rules, `up`/`rate`/`count_over_time` baselines, node_exporter devices, wireguard handshake signals, `activeAt` | `docs/debug/prometheus.md` | "Prometheus playbook (mcp-grafana)" |
+| exporter green but data frozen, konnected, `entity_state_timestamp` missing/stale, `unknown event type`, `scrape_ok` dips, upstream SSE/API payload changed (`id` vs `name_id`), Influx bucket stopped receiving writes with zero failed writes | `docs/debug/schema-drift.md` | — |
 | open gaps, expected/pending failures, MTU permanence, broken exporters | `docs/debug/planned-fixes.md` | "Planned fixes (gaps future sessions should expect, not be surprised by)" |
 | how a session should go, worked walkthrough, 2026-09-03 timeline | `docs/debug/worked-example.md` | "Worked example (abridged)" |
 

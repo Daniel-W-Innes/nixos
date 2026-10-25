@@ -301,19 +301,23 @@ func (e *exporter) refresh(ctx context.Context, msg *sse.Event) error {
 		if err := json.Unmarshal(msg.Data, &state); err != nil {
 			return fmt.Errorf("error unmarshalling JSON: %w", err)
 		}
-		parts := strings.Split(state.NameID, "/")
+		entityID := state.ID
+		if entityID == "" {
+			entityID = state.NameID
+		}
+		parts := strings.Split(entityID, "/")
 		name := parts[len(parts)-1]
 		switch parts[0] {
 		case "binary_sensor":
-			if err := e.binary_sensor(ctx, name, msg); err != nil {
+			if err := e.binary_sensor(ctx, entityID, name, msg); err != nil {
 				return fmt.Errorf("error handling binary_sensor event: %w", err)
 			}
 		case "light":
-			if err := e.light(ctx, name, msg); err != nil {
+			if err := e.light(ctx, entityID, name, msg); err != nil {
 				return fmt.Errorf("error handling light event: %w", err)
 			}
 		case "sensor":
-			if err := e.sensor(name, msg); err != nil {
+			if err := e.sensor(entityID, name, msg); err != nil {
 				return fmt.Errorf("error handling sensor event: %w", err)
 			}
 		case "switch":
@@ -349,7 +353,7 @@ func (e *exporter) ping(msg *sse.Event) error {
 	return nil
 }
 
-func (e *exporter) binary_sensor(ctx context.Context, name string, msg *sse.Event) error {
+func (e *exporter) binary_sensor(ctx context.Context, entityID, name string, msg *sse.Event) error {
 	var binaryState BinaryState
 	if err := json.Unmarshal(msg.Data, &binaryState); err != nil {
 		return fmt.Errorf("error unmarshalling JSON: %w", err)
@@ -386,14 +390,14 @@ func (e *exporter) binary_sensor(ctx context.Context, name string, msg *sse.Even
 	}
 	e.mu.Lock()
 	defer e.mu.Unlock()
-	if e.LastState[binaryState.NameID].value != binaryState.Value {
-		e.LastState[binaryState.NameID] = point{value: binaryState.Value, time: now}
+	if e.LastState[entityID].value != binaryState.Value {
+		e.LastState[entityID] = point{value: binaryState.Value, time: now}
 	}
 
 	return nil
 }
 
-func (e *exporter) light(ctx context.Context, name string, msg *sse.Event) error {
+func (e *exporter) light(ctx context.Context, entityID, name string, msg *sse.Event) error {
 	var lightState LightState
 	if err := json.Unmarshal(msg.Data, &lightState); err != nil {
 		return fmt.Errorf("error unmarshalling JSON: %w", err)
@@ -407,13 +411,13 @@ func (e *exporter) light(ctx context.Context, name string, msg *sse.Event) error
 	}
 	e.mu.Lock()
 	defer e.mu.Unlock()
-	if e.LastState[lightState.NameID].value != lightState.Value {
-		e.LastState[lightState.NameID] = point{value: lightState.Value, time: now}
+	if e.LastState[entityID].value != lightState.Value {
+		e.LastState[entityID] = point{value: lightState.Value, time: now}
 	}
 	return nil
 }
 
-func (e *exporter) sensor(name string, msg *sse.Event) error {
+func (e *exporter) sensor(entityID, name string, msg *sse.Event) error {
 	var uptimeState UptimeState
 	if err := json.Unmarshal(msg.Data, &uptimeState); err != nil {
 		return fmt.Errorf("error unmarshalling JSON: %w", err)
@@ -421,7 +425,7 @@ func (e *exporter) sensor(name string, msg *sse.Event) error {
 	if e.debug {
 		e.logger.Printf("Received sensor state update for %q: %f %q\n", name, uptimeState.Value, uptimeState.Uom)
 	}
-	if uptimeState.NameID == "sensor.uptime" {
+	if strings.EqualFold(entityID, "sensor/uptime") || entityID == "sensor.uptime" {
 		e.mu.Lock()
 		defer e.mu.Unlock()
 		e.Uptime = int(uptimeState.Value)
