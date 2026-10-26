@@ -3,8 +3,8 @@
 - **Systems affected:** `prometheus-konnected-exporter` on melon (entity-state metrics, InfluxDB `konnected` bucket, Gotify door alerts); the "security" Grafana dashboard (uid `adv5bl8`)
 - **Impact:** door/zone state dead for ~52 days. `konnected_entity_state_timestamp` frozen 2026-09-03, then absent entirely from 2026-09-12; zero InfluxDB writes after 2026-09-03 00:51:15Z; no Gotify door-open notifications; the dashboard's door panels (Influx) and entity panel (Prometheus) empty. No data loss of historical state — the Influx bucket (infinite retention) still holds everything through 2026-09-03.
 - **Onset:** 2026-09-03 07:43:33 EDT (panel reboot; first `unknown event type: ""` in exporter history)
-- **Recovery:** fix applied to the working tree 2026-10-25 (uncommitted, per repo convention); melon build passes; **pending deploy** (`sudo nixos-rebuild switch --flake .` on melon)
-- **Status:** resolved in code, pending deploy
+- **Recovery:** deployed to melon with the 2026-10-25 switch (binary `konnected-exporter-0.5.7`, 15:25:54 EDT) and verified ~6 h later — entity metrics, Influx writes, the dashboard, and Gotify all confirmed working
+- **Status:** resolved, deployed, verified
 - **Methodology:** five parallel lanes (Journal/Loki, Prometheus, InfluxDB, config/state, local SSH state) + one independent verification pass. All times EDT (UTC−4) unless noted.
 
 ## 1. Executive summary
@@ -58,6 +58,6 @@ data: {"id":"binary_sensor/Frontdoor","domain":"binary_sensor","name":"Frontdoor
 ## 4. Follow-ups
 
 - `docs/debug/schema-drift.md` decoder added for this symptom class (green liveness + frozen data + `unknown event type` = upstream payload drift); `docs/debug.md` topic table updated; `docs/issues/15-konnected-schema-drift.md` + planned-fixes entry created.
-- **Deploy and verify** (user): commit/push, then on melon `sudo nixos-rebuild switch --flake .`; verify `curl -s localhost:9877/metrics | grep konnected_entity_state_timestamp` shows `binary_sensor/Frontdoor`/`Backdoor` with fresh ms timestamps, the journal errors stop, and the dashboard repopulates within a minute.
+- **Deploy and verify** — DONE 2026-10-25: deployed 15:25 EDT, verified ~21:30 EDT (entity series fresh incl. a real Backdoor open/close at 21:02 EDT end-to-end; 25/26 Influx writes succeeded; journal clean). Residual: Zone 5 absent from `entity_state_timestamp` until its next state change (its initial snapshot point was the single timed-out write).
 - Optional hardening: Grafana alert on `konnected_scrape_ok == 0` (mind the `== bool 0` equality gotcha in `docs/debug/prometheus.md`) or on `time() - konnected_last_update_timestamp` staleness; `/healthz` also ignores the SSE connection.
 - Side observations (not causal): melon load average ~26 with 10 Gi swap in use; the panel's own log shows its Home Assistant integration broken (`Home Assistant 2025.4.2 (10.8.8.130): Reading failed CONNECTION_CLOSED`); Grafana's known SQLite-lock 503s were active during the investigation.
