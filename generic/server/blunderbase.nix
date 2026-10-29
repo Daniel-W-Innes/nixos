@@ -43,6 +43,11 @@ in
       # shares one sign-in-limit bucket and a stranger's guesses lock the owner out
       # too (upstream docker-compose guidance).
       FORWARDED_ALLOW_IPS = "10.89.2.1";
+      # Default is cores-2 — 62 Stockfish processes on melon's 64 cores. A deep
+      # queue (initial library import) would let that herd grab the whole box
+      # while the arr stack/immich/forgejo share it; 8 bounds the burst and is
+      # still far more than a personal library needs.
+      BLUNDERBASE_ANALYSIS_CONCURRENCY = "8";
     };
     volumes = [ "/var/lib/blunderbase:/data" ];
     ports = [ "127.0.0.1:8765:8765" ];
