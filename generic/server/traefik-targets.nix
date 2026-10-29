@@ -54,6 +54,12 @@ in
   bookorbit = {
     inherit (config.services.bookorbit) enable host port;
   };
+  blunderbase = {
+    # oci-container in ./blunderbase.nix, unconditionally enabled.
+    enable = true;
+    port = 8765;
+    healthCheck = healthHealthCheck;
+  };
   jellyfin = {
     inherit (config.services.jellyfin) enable;
     # The NixOS jellyfin module does not expose its HTTP port as a configurable option.

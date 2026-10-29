@@ -9,6 +9,7 @@ _:
     ./smb.nix
     ./dawarich.nix
     ./bookorbit.nix
+    ./blunderbase.nix
     ./immich.nix
     ./iperf-probe.nix
     ./traefik.nix
