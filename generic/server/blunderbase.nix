@@ -11,6 +11,10 @@ in
     tmpfiles.rules = [
       "d /var/lib/blunderbase 0700 10001 10001 -"
       "Z /var/lib/blunderbase - 10001 10001 - -"
+      # Mount source for the maia3 venv below. podman refuses to create missing
+      # bind-mount sources itself (statfs error), so it must exist before both
+      # init-blunderbase-maia3 and the container start.
+      "d /var/lib/blunderbase/maia3 0755 10001 10001 -"
     ];
 
     services = {
@@ -45,6 +49,7 @@ in
         wantedBy = [ "multi-user.target" ];
         serviceConfig.Type = "oneshot";
         script = ''
+          mkdir -p /var/lib/blunderbase/maia3
           if [ -x /var/lib/blunderbase/maia3/bin/maia3-5m ]; then
             exit 0
           fi
