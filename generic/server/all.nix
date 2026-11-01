@@ -18,5 +18,6 @@ _:
     ./weather.nix
     ./forgejo.nix
     ./uptime.nix
+    ./mixarr.nix
   ];
 }

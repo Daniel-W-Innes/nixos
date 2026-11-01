@@ -193,4 +193,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "mixarr-env.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }

@@ -37,9 +37,15 @@ prek run [hook]          # e.g. `prek run statix` for a single hook; no arg runs
 # Update the lockfile (also done daily by the Forgejo update workflow)
 nix flake update
 
-# Edit / rekey agenix secrets (rekey after adding a host's key to secrets/secrets.nix)
-nix shell nixpkgs#agenix -c agenix -e secrets/foo.age
-nix shell nixpkgs#agenix -c agenix -r
+# Edit / rekey agenix secrets (rekey after adding a host's key to secrets/secrets.nix).
+# agenix is no longer in nixpkgs — run it from the upstream flake. The CLI finds
+# recipients via AGENIX_RULES (this repo keeps them in secrets/secrets.nix, which
+# is NOT found from the repo root by default). Verify recipients with -c.
+AGENIX_RULES=secrets/secrets.nix nix run github:ryantm/agenix#agenix -- -e secrets/foo.age
+AGENIX_RULES=secrets/secrets.nix nix run github:ryantm/agenix#agenix -- -r
+AGENIX_RULES=secrets/secrets.nix nix run github:ryantm/agenix#agenix -- -c
+# Non-interactive create/overwrite (no decrypt needed — piped input replaces the secret):
+printf 'SESSION_SECRET=...\n' | AGENIX_RULES=secrets/secrets.nix nix run github:ryantm/agenix#agenix -- -e secrets/foo.age
 ```
 
 ## One-off tooling

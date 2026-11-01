@@ -51,7 +51,7 @@ No traefik router, no `--allowed-hosts` (loopback `Host` is in the default allow
 
 ### 2. agenix secret — onion only
 
-`nix shell nixpkgs#agenix -c agenix -e secrets/grafana-mcp-env.age` with content:
+`AGENIX_RULES=secrets/secrets.nix nix run github:ryantm/agenix#agenix -- -e secrets/grafana-mcp-env.age` with content:
 
 ```
 GRAFANA_URL=https://grafana.lc.brotherwolf.ca

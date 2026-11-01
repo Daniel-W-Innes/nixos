@@ -118,6 +118,9 @@ in
       interval = "10s";
     };
   };
+  mixarr = {
+    inherit (config.services.mixarr) enable port;
+  };
   immich = {
     inherit (config.services.immich) enable host port;
   };
