@@ -21,9 +21,10 @@
       configs.main = ./quickshell;
       configs.lock = ./quickshell-lock;
       configs.launcher = ./quickshell/launcher;
-      # Inert without systemd.enable (ly never activates graphical-session.target):
-      # the exec-once in hyprland.conf is what selects the config. Kept to
-      # document which of the named configs is active.
+      # Deliberately not systemd.enable: the bar stays on exec-once (it is
+      # compositor-critical UI). With UWSM, graphical-session.target is active,
+      # so the HM unit would work now — but exec-once in hyprland.conf is what
+      # selects the config. Kept to document which of the named configs is active.
       activeConfig = "main";
     };
   };

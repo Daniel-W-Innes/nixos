@@ -86,9 +86,10 @@ the VRAM: `sudo systemctl stop whisper-server` (restarts on next boot).
 ## Troubleshooting
 
 - **Dictation does nothing**: is the daemon running? `systemctl --user status
-  hyprwhspr-rs` — the exec-once in `hyprland.conf` starts it because ly never
-  activates `graphical-session.target`; re-login or start it manually after a
-  fresh switch.
+  hyprwhspr-rs` — it is `WantedBy=graphical-session.target`, which UWSM
+  activates at session start (2026-11-03; before that an exec-once in
+  `hyprland.conf` started it because ly never activates that target);
+  re-login or `systemctl --user start hyprwhspr-rs` after a fresh switch.
 - **Client says GROQ_API_KEY not set**: the user unit's `Environment` comes
   from `generic/speech.nix` — the module's `environmentFile` (LoadCredential)
   is deliberately unused, the app can't read credentials directories.

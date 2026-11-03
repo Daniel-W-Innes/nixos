@@ -82,18 +82,31 @@ in
   # ---------- dictation client daemon ----------
   services.hyprwhspr-rs.enable = true;
 
-  systemd.user.services.hyprwhspr-rs.serviceConfig.Environment = [
-    # The app reads GROQ_API_KEY from the environment and refuses to start
-    # without it. The local server ignores the bearer token, so this is a
-    # non-secret dummy. Do NOT use the module's environmentFile: it uses
-    # LoadCredential, which the app has no support for.
-    "GROQ_API_KEY=local"
-    # Earcons: nixpkgs installs assets to share/assets, which the fallback
-    # discovery (share/hyprwhspr-rs/assets) does not find.
-    "HYPRWHSPR_ASSETS_DIR=${pkgs.hyprwhspr-rs}/share/assets"
-    # The groq provider transcodes recordings to FLAC with an external ffmpeg
-    # (src/transcription/audio.rs). systemd's default user PATH has no Nix
-    # binaries, so the spawn fails without this.
-    "PATH=${lib.makeBinPath [ pkgs.ffmpeg-headless ]}"
-  ];
+  systemd.user.services.hyprwhspr-rs = {
+    # The unit is WantedBy=graphical-session.target, which UWSM activates in
+    # parallel with the compositor — without this ordering the daemon starts
+    # before Xwayland is up and crash-loops on clipboard init (X11 unreachable,
+    # verified 2026-11-03). The uwsm compositor unit is instantiated by desktop
+    # file ID ("Selected compositor ID: hyprland.desktop" in the uwsm journal),
+    # so the instance is wayland-wm@hyprland.desktop.service — the shorter
+    # wayland-wm@hyprland.service resolves from the template but is never
+    # started, and After= on it is silently ignored. Plain-session logins never
+    # activate the target, so the unit (and this ordering) stays inert there.
+    after = [ "wayland-wm@hyprland.desktop.service" ];
+
+    serviceConfig.Environment = [
+      # The app reads GROQ_API_KEY from the environment and refuses to start
+      # without it. The local server ignores the bearer token, so this is a
+      # non-secret dummy. Do NOT use the module's environmentFile: it uses
+      # LoadCredential, which the app has no support for.
+      "GROQ_API_KEY=local"
+      # Earcons: nixpkgs installs assets to share/assets, which the fallback
+      # discovery (share/hyprwhspr-rs/assets) does not find.
+      "HYPRWHSPR_ASSETS_DIR=${pkgs.hyprwhspr-rs}/share/assets"
+      # The groq provider transcodes recordings to FLAC with an external ffmpeg
+      # (src/transcription/audio.rs). systemd's default user PATH has no Nix
+      # binaries, so the spawn fails without this.
+      "PATH=${lib.makeBinPath [ pkgs.ffmpeg-headless ]}"
+    ];
+  };
 }
