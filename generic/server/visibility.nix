@@ -670,6 +670,46 @@
                   annotations.description = "Every proton0 peer is stale: the tunnel is down and transmission will freeze.";
                   labels.severity = "critical";
                 }
+                {
+                  uid = "exportarr-scrape-down";
+                  title = "Exportarr scrape failing";
+                  condition = "A";
+                  data = [
+                    {
+                      refId = "A";
+                      datasourceUid = "PBFA97CFB590B2093";
+                      model = {
+                        # up=0 means Prometheus can't scrape the exporter within
+                        # the deadline — usually the arr API it sweeps is
+                        # starved (traefik's /ping stays green through this, so
+                        # the backend-down rules never see it). 15m to skip the
+                        # chronic brief timeouts (4 zero-minutes/24h baseline;
+                        # 265 on the 2026-11-02 lidarr incident). `== bool 0`,
+                        # never `== 0`: a bare `==` filters series instead of
+                        # yielding 1, so the rule can never fire (the
+                        # transmission-down lesson, 2026-09-18).
+                        expr = "up{job=\"exportarr\"} == bool 0";
+                        instant = true;
+                        range = false;
+                        refId = "A";
+                        datasource = {
+                          type = "prometheus";
+                          uid = "PBFA97CFB590B2093";
+                        };
+                      };
+                      relativeTimeRange = {
+                        from = 300;
+                        to = 0;
+                      };
+                    }
+                  ];
+                  noDataState = "OK";
+                  execErrState = "KeepLast";
+                  for = "15m";
+                  annotations.summary = "exportarr on {{ $labels.instance }} has been unscrapeable for 15+ minutes";
+                  annotations.description = "The arr API behind this exporter is starved or the exporter is down. Decoder: docs/debug/lidarr.md.";
+                  labels.severity = "critical";
+                }
               ];
             }
           ];
@@ -917,6 +957,12 @@
         }
         {
           job_name = "exportarr";
+          # Do NOT inherit the global 10s scrape interval. Each exportarr
+          # collection is a FULL API sweep (every page of /api/v1/queue plus
+          # /api/v1/artist, no collector-disable flags), so at 10s the exporter
+          # saturates the arr API whenever a queue is large — the 2026-11-02
+          # lidarr loading-screen outage (docs/reports/2026-11-02-lidarr-loading-screen.md).
+          scrape_interval = "5m";
           static_configs = [
             {
               targets = [
@@ -1050,25 +1096,30 @@
         exportarr-sonarr = {
           enable = true;
           port = 9708;
-          url = "https://sonarr.lc.brotherwolf.ca";
+          # Loopback, not traefik: full API sweep every scrape (2026-11-02 incident).
+          url = "http://127.0.0.1:8989";
           apiKeyFile = config.age.secrets.sonarr-api-key.path;
         };
         exportarr-radarr = {
           enable = true;
           port = 9709;
-          url = "https://radarr.lc.brotherwolf.ca";
+          # Loopback, not traefik: full API sweep every scrape (2026-11-02 incident).
+          url = "http://127.0.0.1:7878";
           apiKeyFile = config.age.secrets.radarr-api-key.path;
         };
         exportarr-lidarr = {
           enable = true;
           port = 9710;
-          url = "https://lidarr.lc.brotherwolf.ca";
+          # Loopback, not the traefik URL: the exporter sweeps the whole API,
+          # keep that load off the proxy (2026-11-02 incident).
+          url = "http://127.0.0.1:8686";
           apiKeyFile = config.age.secrets.lidarr-api-key.path;
         };
         exportarr-prowlarr = {
           enable = true;
           port = 9711;
-          url = "https://prowlarr.lc.brotherwolf.ca";
+          # Loopback, not traefik: full API sweep every scrape (2026-11-02 incident).
+          url = "http://127.0.0.1:9696";
           apiKeyFile = config.age.secrets.prowlarr-api-key.path;
         };
         smokeping = {
