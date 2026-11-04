@@ -96,11 +96,6 @@
   systemd.services.forgejo = {
     after = [ "${config.virtualisation.oci-containers.backend}-forgejo-db.service" ];
     requires = [ "${config.virtualisation.oci-containers.backend}-forgejo-db.service" ];
-    # If the DB unit fails at boot (podman contention) and its Restart= brings it
-    # back, re-queue forgejo's start job — a 'dependency'-failed job is never retried
-    # otherwise (2026-09-27 outage, forgejo down ~40h;
-    # docs/reports/2026-09-27-forgejo-dependency-outage.md).
-    upholds = [ "${config.virtualisation.oci-containers.backend}-forgejo-db.service" ];
 
     preStart = lib.mkMerge [
       (lib.mkBefore ''
@@ -120,4 +115,14 @@
 
     serviceConfig.TimeoutStartSec = 600;
   };
+
+  # If the DB unit fails at boot (podman contention) and its Restart= brings it
+  # back, re-queue forgejo's start job — a 'dependency'-failed job is never retried
+  # otherwise (2026-09-27 outage, forgejo down ~40h;
+  # docs/reports/2026-09-27-forgejo-dependency-outage.md). Upholds= must live on
+  # the DB unit: it means "while THIS unit is up, keep the listed units running".
+  # The 2026-09-27 fix put it on forgejo, which only upholds the DB — direction
+  # proven wrong by the 2026-11-03 KVM-pause incident (DB recovered, forgejo
+  # stayed down until manual start).
+  systemd.services."${config.virtualisation.oci-containers.backend}-forgejo-db".upholds = [ "forgejo.service" ];
 }

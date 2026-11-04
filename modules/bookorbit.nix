@@ -91,6 +91,9 @@ in
         requires = [
           "init-bookorbit-network.service"
         ];
+        # Re-queue the app if its start job was dependency-cancelled while the
+        # DB recovered (same rationale as forgejo.nix; 2026-11-03 KVM-pause).
+        upholds = [ "${config.virtualisation.oci-containers.backend}-bookorbit-app.service" ];
       };
       "${config.virtualisation.oci-containers.backend}-bookorbit-app" = {
         after = [

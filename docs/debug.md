@@ -46,7 +46,7 @@ Symptom decoders for transmission, forgejo, and audiomuse live in the topic file
 
 ## Time and anchors
 
-- Loki timestamps are epoch-ns **UTC**. Journal `MESSAGE` fields (uptime-kuma, gotify, arr logs) carry **local EDT** times (`2026-09-03T21:56:58-04:00`). EDT = UTC−4 (summer). Anchor all arithmetic to a MESSAGE timestamp you can see, not to `now` offsets.
+- Loki timestamps are epoch-ns **UTC**. Journal `MESSAGE` fields (uptime-kuma, gotify, arr logs) carry **local time with offset** (`2026-11-03T21:56:58-05:00` — EST = UTC−5 in winter, EDT = UTC−4 in summer; DST switched 2026-11-01). Anchor all arithmetic to a MESSAGE timestamp you can see, not to `now` offsets.
 - uptime-kuma journal lines (`|= "MONITOR"`) are the best incident timeline source: they record monitor state changes with local-time stamps and give you both onset and recovery.
 
 ## Workflow rules

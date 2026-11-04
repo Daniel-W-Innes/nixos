@@ -100,4 +100,8 @@
         ${waitScript}
       '';
   };
+
+  # Same rationale as forgejo.nix: a dependency-cancelled start job is never
+  # retried, so the DB unit upholds its consumer (2026-11-03 KVM-pause incident).
+  systemd.services."${config.virtualisation.oci-containers.backend}-uptime-kuma-mariadb".upholds = [ "uptime-kuma.service" ];
 }

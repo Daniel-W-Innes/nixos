@@ -317,19 +317,21 @@ in
 
           # Postgres gets the mTLS-file install instead of the pg_isready
           # wait (probing itself in its own ExecStartPre would deadlock).
+          # Upholds= must be on the DB unit: "while this unit is up, keep the
+          # listed units running" — the previous placement on the consumers
+          # was inverted and never re-queued their dependency-failed start
+          # jobs (2026-11-03 KVM-pause incident).
           "${backend}-audiomuse-postgres" = {
             serviceConfig.ExecStartPre = lib.mkAfter [ installPgSsl ];
+            upholds = map (name: "${backend}-audiomuse-${name}.service") appUnitNames;
           };
         }
         // lib.genAttrs (map (name: "${backend}-audiomuse-${name}") appUnitNames) (_: {
-          # dependsOn gives After/Requires only; upholds re-queues a
-          # dependency-failed start job (forgejo outage precedent,
-          # docs/reports/2026-09-27-forgejo-dependency-outage.md).
-          # The module sets TimeoutStartSec=0, so the 90s wait is safe;
-          # mkAfter appends after the module's own pre-start script.
+          # dependsOn gives After/Requires only. The module sets
+          # TimeoutStartSec=0, so the 90s wait is safe; mkAfter appends after
+          # the module's own pre-start script.
           after = [ "init-audiomuse-network.service" ];
           requires = [ "init-audiomuse-network.service" ];
-          upholds = [ "${backend}-audiomuse-postgres.service" ];
           serviceConfig.ExecStartPre = lib.mkAfter [ waitForPostgres ];
         });
       };
