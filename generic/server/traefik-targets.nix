@@ -102,6 +102,20 @@ in
     {
       inherit enable host port;
     };
+  porla =
+    let
+      inherit (config.services.porla) enable httpHost httpPort;
+    in
+    {
+      inherit enable;
+      host = httpHost;
+      port = httpPort;
+      healthCheck = {
+        # GET / serves the web UI SPA without authentication.
+        path = "/";
+        interval = "10s";
+      };
+    };
   navidrome =
     let
       inherit (config.services.navidrome) enable;

@@ -89,6 +89,7 @@
         ./modules/openweathermap-exporter.nix
         ./modules/konnected-exporter.nix
         ./modules/bookorbit.nix
+        ./modules/porla.nix
         home-manager.nixosModules.home-manager
         nix-index-database.nixosModules.nix-index
         lanzaboote.nixosModules.lanzaboote

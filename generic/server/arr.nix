@@ -91,13 +91,30 @@ in
         from = 9586;
         to = 9586;
       }
+      {
+        from = 1337;
+        to = 1337;
+      }
     ];
     openVPNPorts = [
       {
         port = config.services.transmission.settings.peer-port;
         protocol = "both";
       }
+      {
+        # Porla listen port. Must match the listen port set per session in
+        # the porla web UI (sessions are not configurable from here).
+        port = 56881;
+        protocol = "both";
+      }
     ];
+  };
+
+  systemd.services.porla = {
+    vpnConfinement = {
+      enable = true;
+      vpnNamespace = "proton";
+    };
   };
 
   systemd.services.transmission = {
@@ -144,6 +161,16 @@ in
       };
 
   services = {
+    porla = {
+      enable = true;
+      # The veth address inside the proton namespace, same as
+      # transmission's rpc-bind-address; traefik reaches it via the bridge.
+      httpHost = "192.168.15.1";
+      allowedHosts = [
+        "porla.lc.brotherwolf.ca"
+        "porla.brotherwolf.ca"
+      ];
+    };
     transmission = {
       enable = true;
       package = pkgs.transmission_4;
