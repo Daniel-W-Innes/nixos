@@ -169,6 +169,9 @@ in
       allowedHosts = [
         "porla.lc.brotherwolf.ca"
         "porla.brotherwolf.ca"
+        # Traefik health-checks the backend with Host: <backend address>,
+        # which porla rejects unless the name is allowed (2026-11-08).
+        "192.168.15.1"
       ];
     };
     transmission = {

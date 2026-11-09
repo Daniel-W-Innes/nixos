@@ -68,8 +68,11 @@ in
       default = [ ];
       description = ''
         Hostnames allowed to access the web interface
-        (`PORLA_HTTP_ALLOWED_HOSTS`). Only enforced when listening on
-        127.0.0.1, but set it anyway when behind a reverse proxy.
+        (`PORLA_HTTP_ALLOWED_HOSTS`). Enforced whenever not listening on
+        localhost (2026-11-08: observed with `httpHost = "192.168.15.1"`).
+        Behind a reverse proxy, include the backend address itself —
+        traefik health-checks with `Host: <backend address>` and gets a
+        403 without it.
       '';
     };
 
