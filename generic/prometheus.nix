@@ -26,6 +26,10 @@ in
             cmdline = [ (bin "transmission-daemon") ];
           }
           {
+            name = "porla";
+            cmdline = [ (bin "porla") ];
+          }
+          {
             name = "jellyfin";
             cmdline = [ (bin "jellyfin") ];
           }

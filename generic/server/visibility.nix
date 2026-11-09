@@ -604,6 +604,39 @@
                   labels.severity = "critical";
                 }
                 {
+                  uid = "porla-down";
+                  title = "Porla down";
+                  condition = "A";
+                  data = [
+                    {
+                      refId = "A";
+                      datasourceUid = "PBFA97CFB590B2093";
+                      model = {
+                        # Same pattern as transmission-down: summed across
+                        # hosts, so hosts that don't run porla export 0, and
+                        # `== bool 0` so a missing series still fires.
+                        expr = "sum(namedprocess_namegroup_num_procs{groupname=\"porla\"}) == bool 0";
+                        instant = true;
+                        range = false;
+                        refId = "A";
+                        datasource = {
+                          type = "prometheus";
+                          uid = "PBFA97CFB590B2093";
+                        };
+                      };
+                      relativeTimeRange = {
+                        from = 300;
+                        to = 0;
+                      };
+                    }
+                  ];
+                  noDataState = "OK";
+                  execErrState = "KeepLast";
+                  for = "3m";
+                  annotations.summary = "porla daemon is not running on any host";
+                  labels.severity = "critical";
+                }
+                {
                   uid = "wireguard-exporter-down";
                   title = "WireGuard exporter down";
                   condition = "A";
