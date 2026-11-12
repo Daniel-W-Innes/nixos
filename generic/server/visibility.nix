@@ -376,6 +376,10 @@
     grafana = {
       enable = true;
       settings = {
+        # SQLite runs with the rollback journal by default; WAL lets readers
+        # (including /api/health's DB ping) proceed during writes, which
+        # should stop the SQLITE_BUSY 503 storms (docs/issues/16-grafana-sqlite-lock-storms.md).
+        database.wal = true;
         security = {
           admin_user = "admin";
           admin_password = "$__file{${config.age.secrets.grafana-admin-password.path}}";
