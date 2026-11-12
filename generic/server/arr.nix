@@ -146,8 +146,12 @@ in
 
     # Flood reaches rtorrent's SCGI unix socket (/run/rtorrent/rpc.sock, group
     # rtorrent, g+w) from the host namespace — the socket lives in /run, which
-    # the proton network namespace does not isolate.
-    flood.serviceConfig.SupplementaryGroups = [ "rtorrent" ];
+    # the proton network namespace does not isolate. It also mkdirs add-torrent
+    # destinations on /mnt/media itself, so it needs the media group too.
+    flood.serviceConfig.SupplementaryGroups = [
+      "rtorrent"
+      "media"
+    ];
 
     prometheus-wireguard-exporter = lib.mkIf config.services.prometheus.exporters.wireguard.enable {
       vpnConfinement = {
@@ -194,6 +198,14 @@ in
         dht.mode.set = auto
         protocol.pex.set = yes
         trackers.use_udp.set = yes
+
+        # Flood requires these aliases on rakshasa/rtorrent > 0.15.1: without
+        # them load.* is missing from the command map it probes over JSON-RPC,
+        # so every add-torrent call fails instantly (POST /api/torrents/add-urls 500).
+        method.redirect = load.throw,load.normal
+        method.redirect = load.start_throw,load.start
+        method.insert = d.down.sequential,value|const,0
+        method.insert = d.down.sequential.set,value|const,0
       '';
     };
     flood = {
