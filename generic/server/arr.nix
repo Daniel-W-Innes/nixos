@@ -153,6 +153,9 @@ in
       "media"
     ];
 
+    # The XML-RPC proxy only fronts rtorrent's socket — start after it.
+    nginx.after = [ "rtorrent.service" ];
+
     prometheus-wireguard-exporter = lib.mkIf config.services.prometheus.exporters.wireguard.enable {
       vpnConfinement = {
         enable = true;
@@ -249,6 +252,30 @@ in
         "--auth=none"
       ];
     };
+    # HTTP XML-RPC front for rtorrent's SCGI socket so the arr apps can use
+    # rtorrent as a download client: their rTorrent client type speaks
+    # XML-RPC over HTTP, while bare rtorrent serves SCGI only on
+    # /run/rtorrent/rpc.sock. Loopback-only — the arrs connect from this
+    # host. No SCGI auth (the local socket is open; flood and the exporter
+    # already connect without credentials). Port 51821 is the BitTorrent
+    # peer port, not an RPC endpoint.
+    nginx = {
+      enable = true;
+      virtualHosts."rtorrent-rpc" = {
+        listen = [
+          {
+            addr = "127.0.0.1";
+            port = 5000;
+          }
+        ];
+        locations."/RPC2" = {
+          extraConfig = ''
+            include scgi_params;
+            scgi_pass unix:/run/rtorrent/rpc.sock;
+          '';
+        };
+      };
+    };
     flaresolverr.enable = true;
     prowlarr = arrSettings;
     radarr = arrSettings;
@@ -280,6 +307,12 @@ in
     rtorrent = {
       # CIFS mount is uid=media gid=media with 0660/0770 modes.
       extraGroups = [ "media" ];
+    };
+    nginx = {
+      # The nginx workers (master drops privileges) connect to rtorrent's
+      # SCGI socket for the XML-RPC proxy: /run/rtorrent and rpc.sock are
+      # rtorrent:rtorrent.
+      extraGroups = [ "rtorrent" ];
     };
     radarr = {
       isSystemUser = true;
