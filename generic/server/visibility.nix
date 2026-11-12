@@ -103,6 +103,12 @@
       group = "loki";
       mode = "0400";
     };
+    flood-password = lib.mkIf config.services.flood.enable {
+      file = secretsDir + /flood-password.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
     uptime-kuma-metrics-password = lib.mkIf config.services.uptime-kuma.enable {
       file = secretsDir + /uptime-kuma-metrics-password.age;
       owner = "prometheus";
@@ -127,6 +133,19 @@
       script = ''
         ${pkgs.apacheHttpd}/bin/htpasswd -bc /run/traefik-loki-htpasswd admin "$(cat ${config.age.secrets.loki-password.path})"
         ${pkgs.coreutils}/bin/chmod 644 /run/traefik-loki-htpasswd
+      '';
+    };
+    traefik-flood-htpasswd = lib.mkIf config.services.flood.enable {
+      description = "Generate htpasswd file for Flood Traefik basic auth";
+      before = [ "traefik.service" ];
+      requiredBy = [ "traefik.service" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+      };
+      script = ''
+        ${pkgs.apacheHttpd}/bin/htpasswd -bc /run/traefik-flood-htpasswd admin "$(cat ${config.age.secrets.flood-password.path})"
+        ${pkgs.coreutils}/bin/chmod 644 /run/traefik-flood-htpasswd
       '';
     };
   };
@@ -601,6 +620,70 @@
                   execErrState = "KeepLast";
                   for = "3m";
                   annotations.summary = "transmission daemon is not running on any host";
+                  labels.severity = "critical";
+                }
+                {
+                  uid = "rtorrent-scrape-failing";
+                  title = "rTorrent scrape failing";
+                  condition = "A";
+                  data = [
+                    {
+                      refId = "A";
+                      datasourceUid = "PBFA97CFB590B2093";
+                      model = {
+                        # rtorrent_up only exists while the exporter process is
+                        # up, so this catches rtorrent.service being dead,
+                        # wedged, or its socket losing group write access.
+                        expr = "rtorrent_up{job=\"rtorrent\"} == bool 0";
+                        instant = true;
+                        range = false;
+                        refId = "A";
+                        datasource = {
+                          type = "prometheus";
+                          uid = "PBFA97CFB590B2093";
+                        };
+                      };
+                      relativeTimeRange = {
+                        from = 300;
+                        to = 0;
+                      };
+                    }
+                  ];
+                  noDataState = "OK";
+                  execErrState = "KeepLast";
+                  for = "5m";
+                  annotations.summary = "rTorrent exporter cannot reach /run/rtorrent/rpc.sock";
+                  annotations.description = "rtorrent.service is down, wedged, or its socket lost group write access. Decoder: docs/debug/rtorrent.md.";
+                  labels.severity = "critical";
+                }
+                {
+                  uid = "rtorrent-exporter-down";
+                  title = "rTorrent exporter down";
+                  condition = "A";
+                  data = [
+                    {
+                      refId = "A";
+                      datasourceUid = "PBFA97CFB590B2093";
+                      model = {
+                        expr = "up{job=\"rtorrent\"} == bool 0";
+                        instant = true;
+                        range = false;
+                        refId = "A";
+                        datasource = {
+                          type = "prometheus";
+                          uid = "PBFA97CFB590B2093";
+                        };
+                      };
+                      relativeTimeRange = {
+                        from = 300;
+                        to = 0;
+                      };
+                    }
+                  ];
+                  noDataState = "OK";
+                  execErrState = "KeepLast";
+                  for = "3m";
+                  annotations.summary = "rtorrent exporter on {{ $labels.instance }} is unscrapeable";
                   labels.severity = "critical";
                 }
                 {
@@ -1091,6 +1174,15 @@
             }
           ];
         }
+        {
+          # Host-namespace exporter reaching rtorrent's SCGI unix socket.
+          job_name = "rtorrent";
+          static_configs = [
+            {
+              targets = [ "127.0.0.1:9135" ];
+            }
+          ];
+        }
       ];
       exporters = {
         exportarr-sonarr = {
@@ -1180,6 +1272,12 @@
           interfaces = [ "proton0" ];
           withRemoteIp = true;
           latestHandshakeDelay = true;
+        };
+        rtorrent = {
+          enable = true;
+          port = 9135;
+          socket = "/run/rtorrent/rpc.sock";
+          socketGroup = "rtorrent";
         };
       };
     };

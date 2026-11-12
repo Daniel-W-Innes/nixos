@@ -58,6 +58,10 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "flood-password.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
   "proton-vpn.age" = {
     publicKeys = users ++ systems;
     armor = true;

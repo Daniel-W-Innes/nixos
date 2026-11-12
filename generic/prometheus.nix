@@ -26,6 +26,10 @@ in
             cmdline = [ (bin "transmission-daemon") ];
           }
           {
+            name = "rtorrent";
+            cmdline = [ (bin "rtorrent") ];
+          }
+          {
             name = "jellyfin";
             cmdline = [ (bin "jellyfin") ];
           }

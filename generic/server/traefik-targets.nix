@@ -169,5 +169,9 @@ in
     enable = config.services.uptime-kuma.enable;
     port = 3001;
   };
+  flood = {
+    inherit (config.services.flood) enable host port;
+    middleware = "flood-auth";
+  };
 }
 // arrTargetData

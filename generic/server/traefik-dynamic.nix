@@ -139,6 +139,11 @@ in
           usersFile = "/run/traefik-loki-htpasswd";
         };
       })
+      (lib.mkIf config.services.flood.enable {
+        flood-auth.basicAuth = {
+          usersFile = "/run/traefik-flood-htpasswd";
+        };
+      })
     ];
   };
 

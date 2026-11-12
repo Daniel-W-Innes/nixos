@@ -97,6 +97,10 @@ in
         port = config.services.transmission.settings.peer-port;
         protocol = "both";
       }
+      {
+        port = config.services.rtorrent.port;
+        protocol = "both";
+      }
     ];
   };
 
@@ -134,14 +138,24 @@ in
     ];
   };
 
-  systemd.services.prometheus-wireguard-exporter =
-    lib.mkIf config.services.prometheus.exporters.wireguard.enable
-      {
-        vpnConfinement = {
-          enable = true;
-          vpnNamespace = "proton";
-        };
+  systemd.services = {
+    rtorrent.vpnConfinement = {
+      enable = true;
+      vpnNamespace = "proton";
+    };
+
+    # Flood reaches rtorrent's SCGI unix socket (/run/rtorrent/rpc.sock, group
+    # rtorrent, g+w) from the host namespace — the socket lives in /run, which
+    # the proton network namespace does not isolate.
+    flood.serviceConfig.SupplementaryGroups = [ "rtorrent" ];
+
+    prometheus-wireguard-exporter = lib.mkIf config.services.prometheus.exporters.wireguard.enable {
+      vpnConfinement = {
+        enable = true;
+        vpnNamespace = "proton";
       };
+    };
+  };
 
   services = {
     transmission = {
@@ -168,6 +182,32 @@ in
         ratio_limit = 5.0;
         ratio_limit_enabled = true;
       };
+    };
+    rtorrent = {
+      enable = true;
+      port = 51821;
+      downloadDir = "/mnt/media/downloads";
+      # The module template defaults to conservative private-tracker settings
+      # (dht.mode disable, pex no, udp trackers no); this instance targets
+      # public trackers like transmission.
+      configText = ''
+        dht.mode.set = auto
+        protocol.pex.set = yes
+        trackers.use_udp.set = yes
+      '';
+    };
+    flood = {
+      enable = true;
+      # Explicit loopback, not the module's "localhost" default (which can
+      # resolve to ::1 and leave traefik pointing at an unreachable backend).
+      # Auth comes from traefik's flood-auth middleware, so flood's own auth
+      # is off.
+      host = "127.0.0.1";
+      port = 3002;
+      extraArgs = [
+        "--rtsocket=/run/rtorrent/rpc.sock"
+        "--auth=none"
+      ];
     };
     flaresolverr.enable = true;
     prowlarr = arrSettings;
@@ -197,6 +237,10 @@ in
     };
   };
   users.users = {
+    rtorrent = {
+      # CIFS mount is uid=media gid=media with 0660/0770 modes.
+      extraGroups = [ "media" ];
+    };
     radarr = {
       isSystemUser = true;
       group = "radarr";
