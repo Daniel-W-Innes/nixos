@@ -195,9 +195,37 @@ in
       # (dht.mode disable, pex no, udp trackers no); this instance targets
       # public trackers like transmission.
       configText = ''
-        dht.mode.set = auto
+        # dht.mode is "on", not "auto": in rakshasa 0.16 "auto" only starts DHT
+        # from DownloadList::resume() (session recovery at daemon boot) —
+        # torrents added to a running daemon never trigger it, so a trackerless
+        # magnet immediately fails with "No DHT nodes available for peer search"
+        # (the errored arch ISO, 2026-11-12). "on" starts DHT at boot via
+        # load_dht_cache() and has no auto mode's 15-minute idle auto-stop.
+        dht.mode.set = on
         protocol.pex.set = yes
         trackers.use_udp.set = yes
+
+        # DHT bootstrap routers. libtorrent has NO built-in defaults — without
+        # these (or a warm session/rtorrent.dht_cache) bootstrap never starts.
+        # Syntax is host:port (the comma form on old wiki pages silently
+        # resolves the whole "host,port" string as a hostname and fails).
+        dht.add_node = dht.transmissionbt.com:6881
+        dht.add_node = dht.libtorrent.org:25401
+        dht.add_node = dht.aelitis.com:6881
+
+        # Mirror transmission's seeding policy: stop at 5.0 ratio (500%, max
+        # 550% gives hysteresis; upload floor zeroed so small torrents stop
+        # too — transmission's ratio_limit=5.0 has no floor). This uses the
+        # built-in group.insert = seeding,seeding machinery shipped in
+        # rtorrent's own rc: group.seeding.ratio.* values + the on_ratio
+        # schedule (same name the enable method would create, so
+        # group.seeding.ratio.disable still removes it). Close command is the
+        # shipped default d.try_close + d.ignore_commands.set. Remove the
+        # schedule2 line to seed indefinitely.
+        group.seeding.ratio.min.set = 500
+        group.seeding.ratio.max.set = 550
+        group.seeding.ratio.upload.set = 0
+        schedule2 = group.seeding.ratio, 5, 60, ((on_ratio, seeding))
 
         # Flood requires these aliases on rakshasa/rtorrent > 0.15.1: without
         # them load.* is missing from the command map it probes over JSON-RPC,
