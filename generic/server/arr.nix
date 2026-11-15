@@ -51,9 +51,10 @@ let
   # a real file (decluttarr-config.yaml) and only this KEY=VALUE shim is
   # assembled at runtime (podman's environmentFiles can't read the raw key
   # files). The plaintext keys never leave melon; written 0600 root-only.
+  # Also ensures the bind-mount source dirs exist before podman starts.
   decluttarrWriteEnv = pkgs.writeShellScript "decluttarr-write-env" ''
     set -e
-    mkdir -p /var/lib/decluttarr
+    mkdir -p /var/lib/decluttarr/logs
     umask 077
     {
       printf 'RADARR_API_KEY=%s\n' "$(cat ${config.age.secrets.radarr-api-key.path})"
@@ -186,6 +187,7 @@ in
 
   systemd.tmpfiles.rules = [
     "d /var/lib/decluttarr 0755 root root -"
+    "d /var/lib/decluttarr/logs 0755 root root -"
   ];
 
   # Same pattern as audiomuse's installPgSsl: regenerate the env file from
