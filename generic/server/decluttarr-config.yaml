@@ -1,0 +1,36 @@
+# decluttarr v2 config. The arrs are reached over the internal traefik
+# routes (same URLs lidarr-mcp uses). Melon has no qBittorrent/SABnzbd and
+# transmission is not supported, so remove_bad_files and remove_done_seeding
+# cannot work and the search jobs are left off — the rest run off the arr
+# APIs alone.
+#
+# api_key values use the !ENV tag (pyyaml_env_tag, shipped in the image):
+# they are spliced from the container environment, which podman populates
+# from decluttarr.env — written from the agenix secrets by the unit's
+# ExecStartPre. No secrets live in this file or the nix store.
+general:
+  log_level: INFO
+  # Dry run: logs what it would remove. Flip to false once the log output
+  # looks right.
+  test_run: true
+  timer: 10
+jobs:
+  remove_failed_downloads:
+  remove_failed_imports:
+  remove_metadata_missing:
+  remove_missing_files:
+  remove_orphans:
+  remove_slow:
+  remove_stalled:
+  remove_unmonitored:
+instances:
+  radarr:
+    - base_url: "https://radarr.lc.brotherwolf.ca"
+      api_key: !ENV RADARR_API_KEY
+  sonarr:
+    - base_url: "https://sonarr.lc.brotherwolf.ca"
+      api_key: !ENV SONARR_API_KEY
+  lidarr:
+    - base_url: "https://lidarr.lc.brotherwolf.ca"
+      api_key: !ENV LIDARR_API_KEY
+# readarr slots in the same way once a readarr-api-key.age secret exists.

@@ -7,6 +7,8 @@
 }:
 
 let
+  backend = config.virtualisation.oci-containers.backend;
+
   arrSettings = {
     enable = true;
     settings = {
@@ -42,6 +44,23 @@ let
       license = lib.licenses.agpl3Only;
     };
   };
+
+  # Writes decluttarr's environment file from the agenix secrets right
+  # before the container starts. The v2 config format has no api_key_file
+  # option, but supports pyyaml_env_tag's !ENV tag, so the config itself is
+  # a real file (decluttarr-config.yaml) and only this KEY=VALUE shim is
+  # assembled at runtime (podman's environmentFiles can't read the raw key
+  # files). The plaintext keys never leave melon; written 0600 root-only.
+  decluttarrWriteEnv = pkgs.writeShellScript "decluttarr-write-env" ''
+    set -e
+    mkdir -p /var/lib/decluttarr
+    umask 077
+    {
+      printf 'RADARR_API_KEY=%s\n' "$(cat ${config.age.secrets.radarr-api-key.path})"
+      printf 'SONARR_API_KEY=%s\n' "$(cat ${config.age.secrets.sonarr-api-key.path})"
+      printf 'LIDARR_API_KEY=%s\n' "$(cat ${config.age.secrets.lidarr-api-key.path})"
+    } > /var/lib/decluttarr/decluttarr.env
+  '';
 in
 {
   age.secrets = {
@@ -54,6 +73,28 @@ in
 
     proton-vpn = lib.mkIf config.vpnNamespaces.proton.enable {
       file = secretsDir + /proton-vpn.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
+
+    # Also declared (identically, under exportarr guards) in visibility.nix —
+    # identical attrs so the two definitions merge. Declared here so
+    # decluttarr's config assembly doesn't depend on the exporters.
+    radarr-api-key = {
+      file = secretsDir + /radarr-api-key.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
+    sonarr-api-key = {
+      file = secretsDir + /sonarr-api-key.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
+    lidarr-api-key = {
+      file = secretsDir + /lidarr-api-key.age;
       owner = "root";
       group = "root";
       mode = "0400";
@@ -142,6 +183,36 @@ in
           vpnNamespace = "proton";
         };
       };
+
+  systemd.tmpfiles.rules = [
+    "d /var/lib/decluttarr 0755 root root -"
+  ];
+
+  # Same pattern as audiomuse's installPgSsl: regenerate the env file from
+  # the agenix secrets each start, just before podman reads it (podman fails
+  # if an environmentFiles entry is missing). Outbound-only container on the
+  # default bridge; DNS comes from the host's resolv.conf (10.8.8.1), which
+  # resolves the .lc.brotherwolf.ca routes to melon's tailnet IP.
+  systemd.services."${backend}-decluttarr".serviceConfig.ExecStartPre = lib.mkAfter [
+    decluttarrWriteEnv
+  ];
+
+  virtualisation.oci-containers.containers.decluttarr = {
+    # v2.2.0 is the current release (the repo pins versions, cf. mixarr).
+    image = "ghcr.io/manimatter/decluttarr:v2.2.0";
+    environment = {
+      TZ = "America/Toronto";
+    };
+    # Written by the ExecStartPre script above from the agenix secrets;
+    # the config's !ENV tags resolve against this.
+    environmentFiles = [
+      "/var/lib/decluttarr/decluttarr.env"
+    ];
+    volumes = [
+      "${./decluttarr-config.yaml}:/app/config/config.yaml:ro"
+      "/var/lib/decluttarr/logs:/app/logs"
+    ];
+  };
 
   services = {
     transmission = {
