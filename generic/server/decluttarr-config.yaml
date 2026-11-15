@@ -14,13 +14,27 @@ general:
   # looks right.
   test_run: true
   timer: 10
+# Strike counts live in container memory only — any container restart or
+# reboot resets them, so the six-month grace below can only ever get
+# longer, never shorter (a restart re-arms the clock at zero strikes).
 jobs:
   remove_failed_downloads:
   remove_failed_imports:
+    # Six-month grace: 1 strike per 10-min cycle (timer) while the download
+    # stays completed-but-warning with a failed import state. Removal at
+    # strike 26281 ~= 182.5 days without recovery (a successful later import
+    # removes the item from the queue and its strikes reset).
+    max_strikes: 26280
   remove_metadata_missing:
   remove_missing_files:
+    # Same six-month grace before removing a "files missing" queue item.
+    max_strikes: 26280
   remove_orphans:
   remove_slow:
+    # Six-month grace for stalled downloads: one strike each cycle the
+    # download makes less than min_speed (default 100 KB/s) of progress;
+    # any recovered progress resets its strikes.
+    max_strikes: 26280
   remove_stalled:
   remove_unmonitored:
 instances:
