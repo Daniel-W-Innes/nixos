@@ -229,9 +229,11 @@ let
           # Drop directives that fight the unit lifecycle: reconnect and
           # daemonization belong to systemd, auth and remote are supplied
           # explicitly below, and privilege-dropping must not happen inside
-          # the kill-switch namespace.
+          # the kill-switch namespace. ncp-disable is openvpn-2.4-era and
+          # removed in 2.6 (PIA's .ovpn still ships it — parse error without
+          # this).
           sed -E \
-            -e '/^(ping|ping-exit|ping-restart|daemon|user|group|auth-user-pass|remote|up|down)[[:space:]]/d' \
+            -e '/^(ping|ping-exit|ping-restart|daemon|user|group|auth-user-pass|remote|up|down|ncp-disable)([[:space:]]|$)/d' \
             "${ns.openvpn.configFile}" > /run/openvpn/${nsName}.conf
 
           exec openvpn \
