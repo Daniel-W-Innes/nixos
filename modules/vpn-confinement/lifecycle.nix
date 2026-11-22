@@ -131,7 +131,10 @@ let
           first=""
           while read -r remote_host remote_port remote_proto; do
             [ -n "$remote_host" ] || continue
-            ip4="$(${pkgs.glibc.bin}/bin/getent ahostsv4 "$remote_host" | ${pkgs.gawk}/bin/awk 'NR == 1 { print $1 }')"
+            # pkgs.getent, not glibc.bin: nixpkgs moved getent out of the
+            # glibc bin output (2026-11-22 outage — the build embeds the path
+            # string without checking the file exists).
+            ip4="$(${pkgs.getent}/bin/getent ahostsv4 "$remote_host" | ${pkgs.gawk}/bin/awk 'NR == 1 { print $1 }')"
             [ -n "$ip4" ] || { echo "vpn-confinement: could not resolve openvpn remote $remote_host" >&2; exit 1; }
             remote_proto="''${remote_proto:-$proto}"
             ${pkgs.iproute2}/bin/ip -n ${nsName} route add "$ip4/32" via ${
