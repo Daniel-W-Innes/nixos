@@ -78,6 +78,7 @@ let
 
         cleanup_failed_start() {
           ${optionalString withHostLink "${pkgs.iproute2}/bin/ip link del ${ns.hostLink.hostIf} 2>/dev/null || true"}
+          ${optionalString ns.openvpn.enable "${pkgs.nftables}/bin/nft delete table inet vpnc-host-${nsName} 2>/dev/null || true"}
           ${pkgs.iproute2}/bin/ip netns del ${nsName} 2>/dev/null || true
         }
 
@@ -146,6 +147,20 @@ let
           done < <(${pkgs.gawk}/bin/awk '$1 == "remote" { print $2, $3, $4 }' "$cfg_file")
           [ -n "$first" ] || { echo "vpn-confinement: no remote directive in $cfg_file" >&2; exit 1; }
           echo "$first" > /run/openvpn/${nsName}.remote
+
+          # Host-side source NAT for the exemption path. The namespace's
+          # only pre-tunnel egress carries the link-local veth address as
+          # source, and upstream routers will not route replies back to a
+          # link-local address — the TLS handshake blackholes without this
+          # (2026-11-22: 60s TLS timeout, zero inbound packets). Postrouting
+          # only sees forwarded traffic, so veth-local traffic (the
+          # published RPC) is unaffected.
+          ${pkgs.nftables}/bin/nft delete table inet vpnc-host-${nsName} 2>/dev/null || true
+          ${pkgs.nftables}/bin/nft add table inet vpnc-host-${nsName}
+          ${pkgs.nftables}/bin/nft 'add chain inet vpnc-host-${nsName} nat-postrouting { type nat hook postrouting priority srcnat; }'
+          ${pkgs.nftables}/bin/nft add rule inet vpnc-host-${nsName} nat-postrouting ip saddr ${
+            effectiveHostLink.${nsName}.nsAddressIPv4
+          } masquerade
         ''}
 
         ${pkgs.iproute2}/bin/ip netns exec ${nsName} ${pkgs.runtimeShell} -c ${lib.escapeShellArg policy.capture}
@@ -154,6 +169,7 @@ let
       '';
       postStop = ''
         set -eu
+        ${optionalString ns.openvpn.enable "${pkgs.nftables}/bin/nft delete table inet vpnc-host-${nsName} 2>/dev/null || true"}
         ${optionalString withHostLink "${pkgs.iproute2}/bin/ip link del ${ns.hostLink.hostIf} 2>/dev/null || true"}
         ${pkgs.iproute2}/bin/ip netns del ${nsName} 2>/dev/null || true
       '';
