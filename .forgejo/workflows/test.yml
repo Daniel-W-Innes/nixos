@@ -52,3 +52,15 @@ jobs:
           nix shell --inputs-from ./pr nixpkgs#dix -c dix ${{ steps.build-base.outputs.OLD_PATH }} ${{ steps.build-pr.outputs.NEW_PATH }}
         env:
           PATH: /run/current-system/sw/bin:$PATH
+
+      # Boots the PR configuration in a VM and asserts activation +
+      # switch-to-configuration run cleanly. No host state is shared (the
+      # unprivileged runner cannot read it — see docs/testing.md). The
+      # runner's nix daemon must advertise the kvm and nixos-test system
+      # features.
+      - name: VM switch smoke test
+        run: |
+          cd pr
+          nix build --no-link --print-build-logs ".#checks.x86_64-linux.${{ matrix.host }}-vm-test"
+        env:
+          PATH: /run/current-system/sw/bin:$PATH

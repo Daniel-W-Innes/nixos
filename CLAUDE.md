@@ -46,6 +46,12 @@ AGENIX_RULES=secrets/secrets.nix nix run github:ryantm/agenix#agenix -- -r
 AGENIX_RULES=secrets/secrets.nix nix run github:ryantm/agenix#agenix -- -c
 # Non-interactive create/overwrite (no decrypt needed — piped input replaces the secret):
 printf 'SESSION_SECRET=...\n' | AGENIX_RULES=secrets/secrets.nix nix run github:ryantm/agenix#agenix -- -e secrets/foo.age
+
+# VM switch tests (docs/testing.md): boot a host's config in a VM and run
+# switch-to-configuration test inside it. Smoke mode shares no host state (CI-safe);
+# state mode shares the host's /var/lib + /etc/ssh via 9p + overlayfs (root only, never CI).
+nix build --no-link --print-build-logs .#checks.x86_64-linux.onion-vm-test
+sudo env TMPDIR=/var/tmp nix run .#packages.x86_64-linux.onion-vm-test-state
 ```
 
 ## One-off tooling
@@ -62,7 +68,7 @@ These resolve against the unstable nixpkgs channel/registry, not this repo's pin
 
 ## Architecture
 
-`flake.nix` is the hub. `mkHost` assembles each `nixosConfigurations.<name>` from:
+`flake.nix` is the hub. `mkHost` assembles each `nixosConfigurations.<name>` from (via `mkHostModules`, which `tests/vm-test.nix` reuses so the VM tests evaluate the exact host configuration — see `docs/testing.md`):
 
 1. `sharedModules` — agenix, nixos-facter, home-manager, nix-index-database, lanzaboote, the custom modules in `./modules`, plus `_module.args.secretsDir = ./secrets`
 2. `hosts/<name>/configuration.nix` + `facter.json` (hardware report consumed via `config.facter.reportPath`)

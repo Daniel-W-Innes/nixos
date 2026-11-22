@@ -60,6 +60,7 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+      inherit (nixpkgs) lib;
 
       preCommitCheck = pre-commit-hooks.lib.${system}.run {
         src = self;
@@ -109,7 +110,9 @@
         };
       };
 
-      mkHost =
+      # The module list of a host, factored out so the VM tests in
+      # tests/vm-test.nix can evaluate exactly the same configuration.
+      mkHostModules =
         name:
         {
           type,
@@ -117,28 +120,31 @@
           secureBoot ? false,
           extraModules ? [ ],
         }:
+        sharedModules
+        ++ [
+          { config.facter.reportPath = ./. + "/hosts/${name}/facter.json"; }
+          (./. + "/hosts/${name}/configuration.nix")
+          (./. + "/generic/${type}.nix")
+          (mkHomeManagerModule (./. + "/home/${type}.nix"))
+          { _module.args.secureBoot = secureBoot; }
+          {
+            # This value determines the NixOS release from which the default
+            # settings for stateful data, like file locations and database versions
+            # on your system were taken. It‘s perfectly fine and recommended to leave
+            # this value at the release version of the first install of this system.
+            # Before changing this value read the documentation for this option
+            # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+            home-manager.users.daniel.home.stateVersion = stateVersion;
+            system.stateVersion = stateVersion;
+          }
+        ]
+        ++ extraModules;
+
+      mkHost =
+        name: hostAttrs:
         nixpkgs.lib.nixosSystem {
           inherit system;
-          modules =
-            sharedModules
-            ++ [
-              { config.facter.reportPath = ./. + "/hosts/${name}/facter.json"; }
-              (./. + "/hosts/${name}/configuration.nix")
-              (./. + "/generic/${type}.nix")
-              (mkHomeManagerModule (./. + "/home/${type}.nix"))
-              { _module.args.secureBoot = secureBoot; }
-              {
-                # This value determines the NixOS release from which the default
-                # settings for stateful data, like file locations and database versions
-                # on your system were taken. It‘s perfectly fine and recommended to leave
-                # this value at the release version of the first install of this system.
-                # Before changing this value read the documentation for this option
-                # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-                home-manager.users.daniel.home.stateVersion = stateVersion;
-                system.stateVersion = stateVersion;
-              }
-            ]
-            ++ extraModules;
+          modules = mkHostModules name hostAttrs;
         };
 
       hosts = {
@@ -165,10 +171,24 @@
           stateVersion = "26.05";
         };
       };
+
+      vmTests = import ./tests/vm-test.nix {
+        inherit
+          pkgs
+          lib
+          system
+          hosts
+          mkHostModules
+          ;
+      };
     in
     {
       formatter.${system} = pkgs.nixfmt-tree;
-      checks.${system}.pre-commit-check = preCommitCheck;
+      checks.${system} = {
+        pre-commit-check = preCommitCheck;
+      }
+      // vmTests.checks;
+      packages.${system} = vmTests.packages;
       nixosConfigurations = nixpkgs.lib.mapAttrs mkHost hosts;
     };
 }
