@@ -8,7 +8,7 @@ This file is the index — always read in full. Load a topic file only when the 
 
 | Trigger — symptom or keyword | Topic file | Former heading |
 |---|---|---|
-| transmission hung/slow, torrents stalled, RPC timeouts, traefik 499/502, `proton`/`proton-br`, path-MTU, CIFS metadata latency | `docs/debug/transmission.md` | "Transmission specifics that decode symptoms" |
+| transmission hung/slow, torrents stalled, RPC timeouts, traefik 499/502, `pia`/`pia0`/`pia-port-forward`, path-MTU, CIFS metadata latency | `docs/debug/transmission.md` | "Transmission specifics that decode symptoms" |
 | forgejo down/won't start, `forgejo-db`, postgres crash recovery, runner 503s, dependency-fail, `upholds`, `pg_filenode.map` EACCES, tmpfiles ownership | `docs/debug/forgejo.md` | "Forgejo specifics that decode symptoms" |
 | audiomuse down/broken, `audiomuse-net`, instant mix empty, plugin 401, wizard connection refused, supervisord FATAL, `podman-audiomuse-*`, jellyfin instant mix, `name resolution` in containers, down after melon switch, Upholds cascade, worker `start-pre` hang, `PGCONNECT_TIMEOUT`, `pg_hba` rejects, mTLS/`verify-full` | `docs/debug/audiomuse.md` | — |
 | lidarr stuck on loading screen, arr UI hang, `/api/v1/artist` slow or 499, exportarr queue pagination, `database is locked` storms, import storm, `lidarr-search-drip` timeout | `docs/debug/lidarr.md` | — |
@@ -16,9 +16,10 @@ This file is the index — always read in full. Load a topic file only when the 
 | "is this error real?", constant background errors, podman exporters, `[TTM]`, loki self-echoes, stuck `up=0` targets | `docs/debug/known-noise.md` | "Known noise — ignore, don't chase" |
 | units failed after `nixos-rebuild switch`, same-second timeout cluster, container recreation | `docs/debug/switch-storms.md` | "Switch storms: units failed after `nixos-rebuild switch`" |
 | LogQL, label discovery, `query_loki_stats`, oversized results, parse script | `docs/debug/loki.md` | "Loki playbook (mcp-grafana)" |
-| PromQL, alert rules, `up`/`rate`/`count_over_time` baselines, node_exporter devices, wireguard handshake signals, `activeAt` | `docs/debug/prometheus.md` | "Prometheus playbook (mcp-grafana)" |
+| PromQL, alert rules, `up`/`rate`/`count_over_time` baselines, node_exporter devices, openvpn status staleness signals, `activeAt` | `docs/debug/prometheus.md` | "Prometheus playbook (mcp-grafana)" |
 | exporter green but data frozen, konnected, `entity_state_timestamp` missing/stale, `unknown event type`, `scrape_ok` dips, upstream SSE/API payload changed (`id` vs `name_id`), Influx bucket stopped receiving writes with zero failed writes | `docs/debug/schema-drift.md` | — |
 | open gaps, expected/pending failures, MTU permanence, broken exporters | `docs/debug/planned-fixes.md` | "Planned fixes (gaps future sessions should expect, not be surprised by)" |
+| `pia-port-forward` failures, PIA PF API, forwarded port missing from transmission, `vpn-confinement-*` units, `pia0`/`vh-`/`vn-` interfaces | `docs/debug/transmission.md` | — |
 | how a session should go, worked walkthrough, 2026-09-03 timeline | `docs/debug/worked-example.md` | "Worked example (abridged)" |
 
 The sections that stay here (old citations still resolve): **Topology cheat sheet** (hosts table), **Datasource UIDs**, **Time and anchors**, **Workflow rules**.

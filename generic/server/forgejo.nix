@@ -124,5 +124,7 @@
   # The 2026-09-27 fix put it on forgejo, which only upholds the DB — direction
   # proven wrong by the 2026-11-03 KVM-pause incident (DB recovered, forgejo
   # stayed down until manual start).
-  systemd.services."${config.virtualisation.oci-containers.backend}-forgejo-db".upholds = [ "forgejo.service" ];
+  systemd.services."${config.virtualisation.oci-containers.backend}-forgejo-db".upholds = [
+    "forgejo.service"
+  ];
 }

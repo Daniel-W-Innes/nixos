@@ -1,0 +1,67 @@
+{ lib, config, ... }:
+let
+  inherit (lib)
+    attrByPath
+    mkEnableOption
+    mkDefault
+    mkIf
+    mkMerge
+    mkOption
+    types
+    ;
+
+  rootConfig = config;
+in
+{
+  options.systemd.sockets = mkOption {
+    type = types.attrsOf (
+      types.submodule (
+        { config, ... }:
+        let
+          vcfg = rootConfig.services.vpnConfinement;
+          nsName = if config.vpn.namespace != null then config.vpn.namespace else vcfg.defaultNamespace;
+          ns = if nsName == null then null else attrByPath [ nsName ] null vcfg.namespaces;
+          nsExists = ns != null;
+          wgIf = if nsExists then ns.wireguard.interface else "wg0";
+          tunnelUnit =
+            if nsExists && ns.openvpn.enable then
+              "vpn-confinement-openvpn@${nsName}.service"
+            else
+              "wireguard-${wgIf}.service";
+        in
+        {
+          options.vpn = {
+            enable = mkEnableOption "run this socket in the VPN confinement namespace";
+
+            namespace = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "Namespace name override for this socket. Leave unset to use services.vpnConfinement.defaultNamespace when one is configured.";
+            };
+          };
+
+          config = mkIf (vcfg.enable && config.vpn.enable && nsName != null) (mkMerge [
+            {
+              after = [ "vpn-confinement-netns@${nsName}.service" ];
+              requires = [ "vpn-confinement-netns@${nsName}.service" ];
+              bindsTo = [ "vpn-confinement-netns@${nsName}.service" ];
+              # Namespace preparation is a service ordered after basic.target.
+              # The socket must not hold sockets.target (and thus basic.target)
+              # waiting for that preparation service.
+              unitConfig.DefaultDependencies = false;
+              before = [ "shutdown.target" ];
+              conflicts = [ "shutdown.target" ];
+              socketConfig.NetworkNamespacePath = mkDefault "/run/netns/${nsName}";
+            }
+            (mkIf nsExists {
+              after = [ tunnelUnit ];
+              requires = [ tunnelUnit ];
+              bindsTo = [ tunnelUnit ];
+              partOf = [ tunnelUnit ];
+            })
+          ]);
+        }
+      )
+    );
+  };
+}

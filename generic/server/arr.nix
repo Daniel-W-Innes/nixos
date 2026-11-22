@@ -42,6 +42,132 @@ let
       license = lib.licenses.agpl3Only;
     };
   };
+
+  piaNs = config.services.vpnConfinement.namespaces.pia;
+  # The host reaches services in the pia namespace over the hostLink veth
+  # pair (a /30 carved from 169.254.0.0/16, derived from the namespace name).
+  piaNsAddr = piaNs.derived.hostLink.nsAddressIPv4;
+  piaHostAddr = piaNs.derived.hostLink.hostAddressIPv4;
+
+  # Fetches the PIA forwarded port and keeps the mapping alive. Runs inside
+  # the pia namespace (the PF API lives on the tunnel gateway). Flow follows
+  # PIA's official manual-connections scripts:
+  #   token (24h) -> getSignature -> bindPort keepalive every 15 min.
+  piaPortForward = pkgs.writeShellApplication {
+    name = "pia-port-forward";
+    runtimeInputs = with pkgs; [
+      curl
+      jq
+      coreutils
+      gnused
+      gawk
+      iproute2
+    ];
+    text = ''
+      set -euo pipefail
+
+      # $CREDENTIALS_DIRECTORY (systemd LoadCredential) holds the agenix
+      # secrets with the dynamic user's ownership.
+      state_dir=/run/pia-port-forward
+
+      user=$(sed -n '1p' "$CREDENTIALS_DIRECTORY/pia-creds")
+      pass=$(sed -n '2p' "$CREDENTIALS_DIRECTORY/pia-creds")
+
+      # Gateway of the tunnel inside this namespace (redirect-gateway def1
+      # installs 0.0.0.0/1 and 128.0.0.0/1 via the gateway).
+      gw=$(ip route show | awk '/ via / { print $3; exit }')
+      [ -n "$gw" ] || gw=10.0.0.1
+
+      # Server hostname (TLS verification) and CA, both from the .ovpn.
+      host=$(awk '$1 == "remote" { print $2; exit }' "$CREDENTIALS_DIRECTORY/pia-vpn")
+      ca="$state_dir/ca.crt"
+      awk '/<ca>/{ f = 1; next } /<\/ca>/{ f = 0 } f' "$CREDENTIALS_DIRECTORY/pia-vpn" > "$ca"
+
+      # Reuse the signature while the token is fresh (24h) so the port stays
+      # pinned; regenerate both afterwards.
+      state="$state_dir/state"
+      if [ -f "$state" ] && [ "$(( $(date +%s) - $(jq -r '.created' "$state") ))" -lt 86400 ]; then
+        token=$(jq -r '.token' "$state")
+        payload=$(jq -r '.payload' "$state")
+        signature=$(jq -r '.signature' "$state")
+      else
+        token=$(curl -sS --fail --location --request POST \
+          'https://www.privateinternetaccess.com/api/client/v2/token' \
+          --form "username=$user" --form "password=$pass" | jq -r '.token')
+        payload_and_signature=$(curl -sS --fail -G \
+          --connect-to "$host::$gw:" --cacert "$ca" \
+          --data-urlencode "token=$token" \
+          "https://$host:19999/getSignature")
+        [ "$(echo "$payload_and_signature" | jq -r '.status')" = "OK" ] ||
+          { echo "getSignature failed: $payload_and_signature" >&2; exit 1; }
+        payload=$(echo "$payload_and_signature" | jq -r '.payload')
+        signature=$(echo "$payload_and_signature" | jq -r '.signature')
+        jq -n --arg t "$token" --arg p "$payload" --arg s "$signature" \
+          '{ token: $t, payload: $p, signature: $s, created: '"$(date +%s)"' }' > "$state"
+      fi
+
+      # The server drops the mapping without a bindPort every 15 minutes.
+      curl -sS --fail -G \
+        --connect-to "$host::$gw:" --cacert "$ca" \
+        --data-urlencode "payload=$payload" \
+        --data-urlencode "signature=$signature" \
+        "https://$host:19999/bindPort" >/dev/null
+
+      port=$(echo "$payload" | base64 -d | jq -r '.port')
+      echo "$port" > "$state_dir/port"
+    '';
+  };
+
+  # Applies the fetched port on the host: opens it on the tunnel interface in
+  # the namespace firewall and pushes it into transmission (live via RPC,
+  # persisted into settings.json for restarts).
+  piaPortForwardApply = pkgs.writeShellApplication {
+    name = "pia-port-forward-apply";
+    runtimeInputs = with pkgs; [
+      coreutils
+      iproute2
+      nftables
+      jq
+      transmission_4
+    ];
+    text = ''
+      set -euo pipefail
+
+      state_dir=/run/pia-port-forward
+      port_file="$state_dir/port"
+      current_file="$state_dir/current"
+      [ -f "$port_file" ] || exit 0
+      port=$(cat "$port_file")
+      current=$(cat "$current_file" 2>/dev/null || true)
+      [ "$port" = "$current" ] && exit 0
+
+      # Swap the inbound ACCEPT rules on the tunnel interface in the netns.
+      if [ -n "$current" ]; then
+        ip netns exec pia nft delete rule inet vpnc input iifname "pia0" tcp dport "$current" accept 2>/dev/null || true
+        ip netns exec pia nft delete rule inet vpnc input iifname "pia0" udp dport "$current" accept 2>/dev/null || true
+      fi
+      ip netns exec pia nft add rule inet vpnc input iifname "pia0" tcp dport "$port" accept
+      ip netns exec pia nft add rule inet vpnc input iifname "pia0" udp dport "$port" accept
+
+      # Live update via RPC (the host reaches the namespace over the veth).
+      # The credentialsFile is JSON merged into settings (nixpkgs module),
+      # so pull rpc-username/rpc-password out of it.
+      creds_file=${config.age.secrets.transmission.path}
+      rpc_user=$(jq -r '."rpc-username" // empty' "$creds_file")
+      rpc_pass=$(jq -r '."rpc-password" // empty' "$creds_file")
+      transmission-remote ${piaNsAddr}:${toString config.services.transmission.settings.rpc-port} \
+        -n "$rpc_user:$rpc_pass" --port "$port"
+
+      # Persist for restarts (the daemon loads settings.json on start).
+      settings=/var/lib/transmission/.config/transmission-daemon/settings.json
+      jq --argjson p "$port" '."peer-port" = $p' "$settings" > "$settings.tmp" \
+        && chown transmission:media "$settings.tmp" \
+        && chmod 600 "$settings.tmp" \
+        && mv "$settings.tmp" "$settings"
+
+      echo "$port" > "$current_file"
+    '';
+  };
 in
 {
   age.secrets = {
@@ -52,8 +178,15 @@ in
       mode = "0400";
     };
 
-    proton-vpn = lib.mkIf config.vpnNamespaces.proton.enable {
-      file = secretsDir + /proton-vpn.age;
+    pia-vpn = lib.mkIf config.services.transmission.enable {
+      file = secretsDir + /pia-vpn.age;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
+
+    pia-credentials = lib.mkIf config.services.transmission.enable {
+      file = secretsDir + /pia-credentials.age;
       owner = "root";
       group = "root";
       mode = "0400";
@@ -75,35 +208,34 @@ in
     ];
   };
 
-  vpnNamespaces.proton = {
+  services.vpnConfinement = {
     enable = true;
-    wireguardConfigFile = config.age.secrets.proton-vpn.path;
-    accessibleFrom = [
-      "10.8.8.0/24"
-      "127.0.0.1/32"
-    ];
-    portMappings = [
-      {
-        from = 9091;
-        to = 9091;
-      }
-      {
-        from = 9586;
-        to = 9586;
-      }
-    ];
-    openVPNPorts = [
-      {
-        port = config.services.transmission.settings.peer-port;
-        protocol = "both";
-      }
-    ];
+    namespaces.pia = {
+      enable = true;
+      openvpn = {
+        enable = true;
+        interface = "pia0";
+        configFile = config.age.secrets.pia-vpn.path;
+        credentialsFile = config.age.secrets.pia-credentials.path;
+      };
+      dns.servers = [
+        "10.0.0.243"
+        "10.0.0.244"
+      ];
+      # The RPC is reachable from the host at the veth address (traefik's
+      # target is rpc-bind-address below, and port-forward-apply pushes the
+      # peer-port over it).
+      publishToHost.tcp = [ 9091 ];
+    };
   };
 
   systemd.services.transmission = {
-    vpnConfinement = {
+    vpn = {
       enable = true;
-      vpnNamespace = "proton";
+      namespace = "pia";
+      # baseline, not strict: strict makes the whole tree read-only, which
+      # would break downloads on the /mnt/media CIFS mount.
+      hardeningProfile = "baseline";
     };
 
     # After an unclean power-off the daemon can wedge during startup (blocks
@@ -134,14 +266,47 @@ in
     ];
   };
 
-  systemd.services.prometheus-wireguard-exporter =
-    lib.mkIf config.services.prometheus.exporters.wireguard.enable
-      {
-        vpnConfinement = {
-          enable = true;
-          vpnNamespace = "proton";
-        };
-      };
+  systemd.services.pia-port-forward = {
+    description = "PIA port-forward keepalive (runs inside the pia namespace)";
+    wantedBy = [ "vpn-confinement-openvpn@pia.service" ];
+    vpn = {
+      enable = true;
+      namespace = "pia";
+    };
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${piaPortForward}/bin/pia-port-forward";
+      DynamicUser = true;
+      LoadCredential = [
+        "pia-creds:${config.age.secrets.pia-credentials.path}"
+        "pia-vpn:${config.age.secrets.pia-vpn.path}"
+      ];
+      RuntimeDirectory = "pia-port-forward";
+      RuntimeDirectoryMode = "0755";
+    };
+  };
+
+  systemd.services.pia-port-forward-apply = {
+    description = "Apply the PIA forwarded port to transmission and the namespace firewall";
+    wants = [ "pia-port-forward.service" ];
+    after = [
+      "pia-port-forward.service"
+      "vpn-confinement-openvpn@pia.service"
+    ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${piaPortForwardApply}/bin/pia-port-forward-apply";
+    };
+  };
+
+  systemd.timers.pia-port-forward = {
+    description = "PIA port-forward keepalive timer (every 15 minutes)";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "*:0/15";
+      Persistent = true;
+    };
+  };
 
   services = {
     transmission = {
@@ -156,8 +321,8 @@ in
         incomplete-dir = "/mnt/media/downloads/incomplete";
         incomplete-dir-enabled = true;
         download-queue-enabled = false;
-        rpc-bind-address = "192.168.15.1";
-        rpc-whitelist = "192.168.15.5";
+        rpc-bind-address = piaNsAddr;
+        rpc-whitelist = piaHostAddr;
         rpc-whitelist-enabled = true;
         rpc-host-whitelist = "transmission.brotherwolf.ca,transmission.lc.brotherwolf.ca";
         lpd-enabled = true;

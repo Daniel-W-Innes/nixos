@@ -58,7 +58,11 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
-  "proton-vpn.age" = {
+  "pia-vpn.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
+  "pia-credentials.age" = {
     publicKeys = users ++ systems;
     armor = true;
   };

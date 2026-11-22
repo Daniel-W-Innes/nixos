@@ -604,15 +604,15 @@
                   labels.severity = "critical";
                 }
                 {
-                  uid = "wireguard-exporter-down";
-                  title = "WireGuard exporter down";
+                  uid = "openvpn-exporter-down";
+                  title = "OpenVPN exporter down";
                   condition = "A";
                   data = [
                     {
                       refId = "A";
                       datasourceUid = "PBFA97CFB590B2093";
                       model = {
-                        expr = "up{job=\"wireguard\"} == bool 0";
+                        expr = "up{job=\"openvpn\"} == bool 0";
                         instant = true;
                         range = false;
                         refId = "A";
@@ -630,25 +630,23 @@
                   noDataState = "OK";
                   execErrState = "KeepLast";
                   for = "3m";
-                  annotations.summary = "wireguard exporter on {{ $labels.instance }} is down";
-                  annotations.description = "The exporter runs inside the proton netns and is bound to its service, so this fires when the namespace or proton0 disappears.";
+                  annotations.summary = "openvpn exporter on {{ $labels.instance }} is down";
+                  annotations.description = "The exporter scrapes the openvpn --status file of the pia namespace; this fires when the exporter dies or the status file is unreadable.";
                   labels.severity = "critical";
                 }
                 {
-                  uid = "wireguard-handshake-stall";
-                  title = "WireGuard handshake stalled";
+                  uid = "pia-tunnel-stalled";
+                  title = "PIA tunnel stalled";
                   condition = "A";
                   data = [
                     {
                       refId = "A";
                       datasourceUid = "PBFA97CFB590B2093";
                       model = {
-                        # Delay = seconds since each proton0 peer's last handshake.
-                        # min() over peers, not any-peer: Proton keeps the three
-                        # failover peers handshaking every ~20-120s while the active
-                        # 0.0.0.0/0 peer routinely sits 20+ min stale when idle.
-                        # min > 300 only when every peer has stalled (tunnel down).
-                        expr = "min(wireguard_latest_handshake_delay_seconds{job=\"wireguard\"}) > 300";
+                        # openvpn rewrites the status file every 10 seconds.
+                        # A stale Updated timestamp means the daemon is wedged
+                        # or dead; transmission's whole world goes through it.
+                        expr = "time() - openvpn_status_update_time_seconds > 300";
                         instant = true;
                         range = false;
                         refId = "A";
@@ -666,8 +664,8 @@
                   noDataState = "OK";
                   execErrState = "KeepLast";
                   for = "3m";
-                  annotations.summary = "Proton tunnel (proton0) has had no WireGuard handshake for 5+ minutes";
-                  annotations.description = "Every proton0 peer is stale: the tunnel is down and transmission will freeze.";
+                  annotations.summary = "PIA tunnel (pia0) status file has not updated for 5+ minutes";
+                  annotations.description = "openvpn stopped writing /run/openvpn/pia.status: the tunnel is down and transmission will freeze.";
                   labels.severity = "critical";
                 }
                 {
@@ -1084,10 +1082,10 @@
           };
         }
         {
-          job_name = "wireguard";
+          job_name = "openvpn";
           static_configs = [
             {
-              targets = [ "192.168.15.1:9586" ];
+              targets = [ "127.0.0.1:9176" ];
             }
           ];
         }
@@ -1174,14 +1172,13 @@
           gotifyTokenPath = config.age.secrets.konnected-gotify-token.path;
           gotifyAllowList = "Frontdoor,Backdoor";
         };
-        wireguard = {
-          enable = true;
-          listenAddress = "192.168.15.1";
-          interfaces = [ "proton0" ];
-          withRemoteIp = true;
-          latestHandshakeDelay = true;
-        };
       };
+    };
+    # Custom exporter (modules/openvpn-exporter.nix): scrapes the
+    # OpenVPN --status file of the pia namespace tunnel.
+    openvpn-exporter = {
+      enable = true;
+      statusPath = "/run/openvpn/pia.status";
     };
     influxdb2 = {
       enable = true;

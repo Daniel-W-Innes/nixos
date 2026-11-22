@@ -36,8 +36,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
-
     # MCP server for the Lidarr API (https://github.com/abl030/lidarr-mcp)
     lidarr-mcp = {
       url = "github:abl030/lidarr-mcp";
@@ -55,7 +53,6 @@
       nix-index-database,
       nixos-facter-modules,
       pre-commit-hooks,
-      vpn-confinement,
       lanzaboote,
       lidarr-mcp,
       ...
@@ -89,6 +86,7 @@
         ./modules/openweathermap-exporter.nix
         ./modules/konnected-exporter.nix
         ./modules/bookorbit.nix
+        ./modules/openvpn-exporter.nix
         home-manager.nixosModules.home-manager
         nix-index-database.nixosModules.nix-index
         lanzaboote.nixosModules.lanzaboote
@@ -148,7 +146,9 @@
           type = "server";
           stateVersion = "25.11";
           extraModules = [
-            vpn-confinement.nixosModules.default # TODO: This should be in the server module not here.
+            # Vendored from github:nix-forge/vpn-confinement with an OpenVPN
+            # transport added (see modules/vpn-confinement/VENDORED.md).
+            ./modules/vpn-confinement
           ];
         };
         onion = {
