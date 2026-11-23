@@ -80,10 +80,18 @@ let
       gw=$(ip route show dev pia0 | awk '/ via / { print $3; exit }')
       [ -n "$gw" ] || gw=10.0.0.1
 
-      # Server hostname (TLS verification) and CA, both from the .ovpn.
+      # Server hostname (TLS SNI) from the .ovpn, plus a combined trust
+      # bundle. This fleet serves the PF API (gateway:19999) with Let's
+      # Encrypt certs — verified only by the system store (2026-11-22:
+      # ca-montreal gateway chain, curl 60 against the .ovpn CA alone) —
+      # while older servers still use certs from the .ovpn's own CA.
+      # Concatenating both covers either generation.
       host=$(awk '$1 == "remote" { print $2; exit }' "$CREDENTIALS_DIRECTORY/pia-vpn")
-      ca="$state_dir/ca.crt"
-      awk '/<ca>/{ f = 1; next } /<\/ca>/{ f = 0 } f' "$CREDENTIALS_DIRECTORY/pia-vpn" > "$ca"
+      ca="$state_dir/ca-combined.crt"
+      {
+        cat /etc/ssl/certs/ca-certificates.crt
+        awk '/<ca>/{ f = 1; next } /<\/ca>/{ f = 0 } f' "$CREDENTIALS_DIRECTORY/pia-vpn"
+      } > "$ca"
 
       # Reuse the signature while the token is fresh (24h) so the port stays
       # pinned; regenerate both afterwards.
