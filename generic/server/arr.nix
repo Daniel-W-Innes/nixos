@@ -74,8 +74,10 @@ let
       pass=$(sed -n '2p' "$CREDENTIALS_DIRECTORY/pia-creds")
 
       # Gateway of the tunnel inside this namespace (redirect-gateway def1
-      # installs 0.0.0.0/1 and 128.0.0.0/1 via the gateway).
-      gw=$(ip route show | awk '/ via / { print $3; exit }')
+      # installs 0.0.0.0/1 and 128.0.0.0/1 via the gateway). Scoped to pia0:
+      # the endpoint-exemption /32 route via the hostLink sorts first in an
+      # unscoped listing and would be picked as the "gateway" (2026-11-22).
+      gw=$(ip route show dev pia0 | awk '/ via / { print $3; exit }')
       [ -n "$gw" ] || gw=10.0.0.1
 
       # Server hostname (TLS verification) and CA, both from the .ovpn.
@@ -141,6 +143,17 @@ let
       current=$(cat "$current_file" 2>/dev/null || true)
       [ "$port" = "$current" ] && exit 0
 
+      # Live update via RPC first — idempotent, and it fails clean when the
+      # daemon is still loading its session, leaving no half-applied
+      # firewall state behind (2026-11-22). The host reaches the namespace
+      # over the veth. The credentialsFile is JSON merged into settings
+      # (nixpkgs module), so pull rpc-username/rpc-password out of it.
+      creds_file=${config.age.secrets.transmission.path}
+      rpc_user=$(jq -r '."rpc-username" // empty' "$creds_file")
+      rpc_pass=$(jq -r '."rpc-password" // empty' "$creds_file")
+      transmission-remote ${piaNsAddr}:${toString config.services.transmission.settings.rpc-port} \
+        -n "$rpc_user:$rpc_pass" --port "$port"
+
       # Swap the inbound ACCEPT rules on the tunnel interface in the netns.
       if [ -n "$current" ]; then
         ip netns exec pia nft delete rule inet vpnc input iifname "pia0" tcp dport "$current" accept 2>/dev/null || true
@@ -148,15 +161,6 @@ let
       fi
       ip netns exec pia nft add rule inet vpnc input iifname "pia0" tcp dport "$port" accept
       ip netns exec pia nft add rule inet vpnc input iifname "pia0" udp dport "$port" accept
-
-      # Live update via RPC (the host reaches the namespace over the veth).
-      # The credentialsFile is JSON merged into settings (nixpkgs module),
-      # so pull rpc-username/rpc-password out of it.
-      creds_file=${config.age.secrets.transmission.path}
-      rpc_user=$(jq -r '."rpc-username" // empty' "$creds_file")
-      rpc_pass=$(jq -r '."rpc-password" // empty' "$creds_file")
-      transmission-remote ${piaNsAddr}:${toString config.services.transmission.settings.rpc-port} \
-        -n "$rpc_user:$rpc_pass" --port "$port"
 
       # Persist for restarts (the daemon loads settings.json on start).
       settings=/var/lib/transmission/.config/transmission-daemon/settings.json
@@ -269,9 +273,19 @@ in
   systemd.services.pia-port-forward = {
     description = "PIA port-forward keepalive (runs inside the pia namespace)";
     wantedBy = [ "vpn-confinement-openvpn@pia.service" ];
+    # Pull the apply unit into every keepalive transaction. (Service-level
+    # wantedBy on the apply unit is inert on NixOS — it only emits an
+    # [Install] section, and nothing ever runs systemctl enable.)
+    wants = [ "pia-port-forward-apply.service" ];
     vpn = {
       enable = true;
       namespace = "pia";
+      # iproute2 inspects the ns route table; the wrapper's
+      # RestrictAddressFamilies default is AF_UNIX+AF_INET only when ipv6
+      # is disabled, which kills AF_NETLINK with EAFNOSUPPORT ("Cannot open
+      # netlink socket: Address family not supported by protocol",
+      # 2026-11-22).
+      extraAddressFamilies = [ "AF_NETLINK" ];
     };
     serviceConfig = {
       Type = "oneshot";
@@ -288,7 +302,7 @@ in
 
   systemd.services.pia-port-forward-apply = {
     description = "Apply the PIA forwarded port to transmission and the namespace firewall";
-    wants = [ "pia-port-forward.service" ];
+    # Triggered by pia-port-forward's wants (see there).
     after = [
       "pia-port-forward.service"
       "vpn-confinement-openvpn@pia.service"

@@ -273,13 +273,18 @@ let
           coreutils
         ];
         text = ''
+          # "Tunnel usable" means more than an address on the interface:
+          # redirect-gateway routes land a beat after the addr, and a
+          # dependent that races them (pia-port-forward) picks a wrong
+          # gateway (2026-11-22). Wait for both.
           for _ in $(seq 1 60); do
-            if ip addr show dev "${ns.openvpn.interface}" 2>/dev/null | grep -q 'inet '; then
+            if ip addr show dev "${ns.openvpn.interface}" 2>/dev/null | grep -q 'inet ' \
+              && ip route show dev "${ns.openvpn.interface}" 2>/dev/null | grep -q ' via '; then
               exit 0
             fi
             sleep 1
           done
-          echo "vpn-confinement: openvpn interface ${ns.openvpn.interface} did not come up in 60s" >&2
+          echo "vpn-confinement: openvpn interface ${ns.openvpn.interface} did not become usable in 60s" >&2
           exit 1
         '';
       };
