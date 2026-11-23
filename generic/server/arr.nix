@@ -68,7 +68,7 @@ let
 
       # $CREDENTIALS_DIRECTORY (systemd LoadCredential) holds the agenix
       # secrets with the dynamic user's ownership.
-      state_dir=/run/pia-port-forward
+      state_dir=/var/lib/pia-port-forward
 
       user=$(sed -n '1p' "$CREDENTIALS_DIRECTORY/pia-creds")
       pass=$(sed -n '2p' "$CREDENTIALS_DIRECTORY/pia-creds")
@@ -116,12 +116,19 @@ let
           '{ token: $t, payload: $p, signature: $s, created: '"$(date +%s)"' }' > "$state"
       fi
 
-      # The server drops the mapping without a bindPort every 15 minutes.
-      curl -sS --fail -G \
+      # The server drops the mapping without a bindPort every 15 minutes. A
+      # stale signature fails here (the gateway changes when the tunnel
+      # reconnects, and a cached signature from the previous session is then
+      # invalid) — drop the cache so the next run regenerates the token.
+      if ! curl -sS --fail -G \
         --connect-to "$host::$gw:" --cacert "$ca" \
         --data-urlencode "payload=$payload" \
         --data-urlencode "signature=$signature" \
-        "https://$host:19999/bindPort" >/dev/null
+        "https://$host:19999/bindPort" >/dev/null; then
+        rm -f "$state"
+        echo "bindPort failed (stale signature?) — cache dropped, will refetch next run" >&2
+        exit 1
+      fi
 
       port=$(echo "$payload" | base64 -d | jq -r '.port')
       echo "$port" > "$state_dir/port"
@@ -143,7 +150,7 @@ let
     text = ''
       set -euo pipefail
 
-      state_dir=/run/pia-port-forward
+      state_dir=/var/lib/pia-port-forward
       port_file="$state_dir/port"
       current_file="$state_dir/current"
       [ -f "$port_file" ] || exit 0
@@ -303,8 +310,11 @@ in
         "pia-creds:${config.age.secrets.pia-credentials.path}"
         "pia-vpn:${config.age.secrets.pia-vpn.path}"
       ];
-      RuntimeDirectory = "pia-port-forward";
-      RuntimeDirectoryMode = "0755";
+      # StateDirectory, not RuntimeDirectory: a oneshot's RuntimeDirectory is
+      # removed the moment the unit stops, so the port/state files never
+      # reached the apply unit (apply exited 0 via its no-op guard and
+      # transmission kept the stale peer-port, 2026-11-22).
+      StateDirectory = "pia-port-forward";
     };
   };
 
