@@ -64,3 +64,19 @@ jobs:
           nix build --no-link --print-build-logs ".#checks.x86_64-linux.${{ matrix.host }}-vm-test"
         env:
           PATH: /run/current-system/sw/bin:$PATH
+
+      # The real base -> PR transition: boots the PR configuration, switches
+      # to a VM-adapted generation of the base flake, and back — unit
+      # restarts in both directions against the PR's activation logic.
+      # Still no host state; the base generation is re-evaluated with the
+      # VM adapter module so activation works without secrets (see
+      # docs/testing.md).
+      - name: VM switch transition test (base → PR)
+        run: |
+          cd pr
+          pr_dir="$(realpath .)"
+          base_dir="$(realpath ../base)"
+          nix build --no-link --print-build-logs --impure --expr \
+            "let pr = builtins.getFlake \"path:$pr_dir\"; in (pr.lib.vmTransitionTests.${{ matrix.host }} \"path:$base_dir\").test"
+        env:
+          PATH: /run/current-system/sw/bin:$PATH

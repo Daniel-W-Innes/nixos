@@ -49,9 +49,11 @@ printf 'SESSION_SECRET=...\n' | AGENIX_RULES=secrets/secrets.nix nix run github:
 
 # VM switch tests (docs/testing.md): boot a host's config in a VM and run
 # switch-to-configuration test inside it. Smoke mode shares no host state (CI-safe);
-# state mode shares the host's /var/lib + /etc/ssh via 9p + overlayfs (root only, never CI).
+# state mode shares the host's /var/lib + /etc/ssh via 9p + overlayfs (root only, never CI);
+# transition modes additionally switch master->build->master (real unit restarts).
 nix build --no-link --print-build-logs .#checks.x86_64-linux.onion-vm-test
 sudo env TMPDIR=/var/tmp nix run .#packages.x86_64-linux.onion-vm-test-state
+nix run .#packages.x86_64-linux.onion-vm-test-transition
 ```
 
 ## One-off tooling

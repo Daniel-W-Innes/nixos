@@ -189,6 +189,12 @@
       }
       // vmTests.checks;
       packages.${system} = vmTests.packages;
+      # Base-flake-path -> transition test functions (see tests/vm-test.nix).
+      # Only called from impure evaluations (the CI --expr step and the
+      # transition wrappers); pure evals never force them, so the
+      # builtins.getFlake inside is fine.
+      lib.vmTransitionTests = vmTests.vmTransitionTests;
+      lib.vmTransitionStateTests = vmTests.vmTransitionStateTests;
       nixosConfigurations = nixpkgs.lib.mapAttrs mkHost hosts;
     };
 }

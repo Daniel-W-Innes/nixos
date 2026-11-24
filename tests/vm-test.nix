@@ -10,6 +10,14 @@
 # plumbing (read-only 9p shares, ephemeral overlay upper, agenix decryption
 # with the real host key). Requires root; never run it in CI.
 #
+# lib.vmTransitionTests.<host> baseFlake — old->new transition test. Boots
+# the evaluated (new) configuration, switches to a VM-adapted generation of
+# the base flake, and back — the real base -> new transition with unit
+# restarts in both directions. No host state; safe for CI and local users.
+# lib.vmTransitionStateTests.<host> baseFlake — the same on top of the live
+# state plumbing (root only). The wrappers packages.<host>-vm-test-transition
+# [-state] resolve baseFlake to a fresh checkout of master.
+#
 # See docs/testing.md for usage, limitations, and safety notes.
 {
   pkgs,
@@ -55,6 +63,15 @@ let
         "forgejo-db-password"
         "user-daniel"
       ];
+      # Files the driver stats on the host before and after the run (the
+      # driver executes on the host — see stateScript). Must never be
+      # written by host services during the test window (logrotate.status
+      # is deliberately excluded: logrotate may legitimately touch it).
+      stableFiles = [
+        "/var/lib/nixos/uid-map"
+        "/etc/ssh/ssh_host_ed25519_key"
+        "/var/lib/forgejo/postgres/PG_VERSION"
+      ];
       extraAssertions = ''
         # Ownership matches the age.secrets declarations in
         # generic/server/forgejo.nix (forgejo user; uid 999 for the
@@ -68,6 +85,10 @@ let
       probes = [ "/var/lib/logrotate.status" ];
       stateUnits = commonUnits ++ [ "NetworkManager.service" ];
       secrets = [ "user-daniel" ];
+      stableFiles = [
+        "/var/lib/nixos/uid-map"
+        "/etc/ssh/ssh_host_ed25519_key"
+      ];
       extraAssertions = "";
     };
   };
@@ -75,6 +96,37 @@ let
   unitCheck = units: ''
     for unit in ${toJSON units}:
         machine.succeed("systemctl is-active " + unit)
+  '';
+
+  restartCheck = units: ''
+    for unit in ${toJSON units}:
+        machine.succeed("systemctl restart " + unit)
+        machine.succeed("systemctl is-active " + unit)
+  '';
+
+  noFailed = ''
+    machine.succeed('test -z "$(systemctl --failed --plain --no-legend)"')
+  '';
+
+  # Heavy/stateful services must stay off in the VM (they are suppressed by
+  # vm-test-module.nix); guard against a suppression regression letting one
+  # through. traefik is expected up in state mode (asserted in stateUnits),
+  # so only smoke mode requires it off.
+  offCheck = withHostState: ''
+    machine.fail(
+        "systemctl list-units --type=service --state=running --plain --no-legend | "
+        + "grep -qE 'forgejo|gitea|sonarr|radarr|prowlarr|lidarr|bazarr|readarr|transmission|"
+        + "postgres|audiomuse|immich|searx|jellyfin|navidrome|meilisearch|blunderbase|dawarich"
+        + "${lib.optionalString (!withHostState) "|traefik"}'"
+    )
+  '';
+
+  # The switch step is idempotent: a second run against the same generation
+  # must also be clean.
+  switchCheck = units: ''
+    machine.succeed("/run/current-system/bin/switch-to-configuration test")
+    ${unitCheck units}
+    ${noFailed}
   '';
 
   smokeScript = ''
@@ -89,15 +141,33 @@ let
     machine.succeed('test -z "$(swapon --show)"')
 
     ${unitCheck commonUnits}
+    ${noFailed}
+
+    # Home-manager activation ran for daniel (files are store symlinks).
+    machine.succeed("test -L /home/daniel/.zshrc")
+
+    # Heavy services stayed off.
+    ${offCheck false}
+
+    # Every core unit survives a restart.
+    ${restartCheck commonUnits}
 
     # The point of the exercise: the activation + unit restart logic runs
-    # cleanly against the booted system.
+    # cleanly against the booted system...
     machine.succeed("/run/current-system/bin/switch-to-configuration test")
-
     ${unitCheck commonUnits}
+    ${noFailed}
+
+    # ...and again (idempotency).
+    machine.succeed("/run/current-system/bin/switch-to-configuration test")
+    ${unitCheck commonUnits}
+    ${noFailed}
   '';
 
   stateScript = p: ''
+    import os
+    host_snapshot = {path: os.stat(path).st_mtime_ns for path in ${toJSON p.stableFiles}}
+
     machine.start()
     machine.wait_for_unit("multi-user.target")
 
@@ -139,27 +209,159 @@ let
     ${p.extraAssertions}
 
     ${unitCheck p.stateUnits}
+    ${noFailed}
 
-    machine.succeed("/run/current-system/bin/switch-to-configuration test")
+    # Heavy services stayed off (traefik excluded: melon asserts it active).
+    ${offCheck true}
+
+    # Every state unit survives a restart on top of live state.
+    ${restartCheck p.stateUnits}
+
+    ${switchCheck p.stateUnits}
+
+    # The driver runs on the host: stat the real files and require them
+    # untouched by the VM.
+    for path, mtime_ns in host_snapshot.items():
+        assert os.stat(path).st_mtime_ns == mtime_ns, f"host path {path} was modified by the VM test"
+  '';
+
+  # Rolls to the base generation and back. The last switch is the real
+  # old -> new transition: /run/current-system is the base generation and
+  # every unit whose definition changed is restarted by the new
+  # switch-to-configuration. The booted system path is captured at runtime
+  # (it is the VM's own /run/current-system before the first switch).
+  transitionTail = units: oldSystem: ''
+    machine.succeed("readlink -f /run/current-system > /run/vm-test-new-system")
+
+    # Roll forward to the base generation (VM-adapted, so activation is
+    # clean even without host state).
+    machine.succeed("${oldSystem}/bin/switch-to-configuration test")
+    ${unitCheck units}
+    ${noFailed}
+
+    # And back: the real base -> new transition.
+    machine.succeed("$(cat /run/vm-test-new-system)/bin/switch-to-configuration test")
+    ${unitCheck units}
+    ${noFailed}
+  '';
+
+  transitionScript = oldSystem: ''
+    machine.start()
+    machine.wait_for_unit("multi-user.target")
+
+    machine.succeed("test ! -e /mnt/host")
+    machine.succeed("test ! -e /run/agenix")
+    machine.succeed('test -z "$(swapon --show)"')
+
+    ${unitCheck commonUnits}
+    ${noFailed}
+    ${offCheck false}
+
+    ${transitionTail commonUnits oldSystem}
+  '';
+
+  transitionStateScript = p: oldSystem: ''
+    import os
+    host_snapshot = {path: os.stat(path).st_mtime_ns for path in ${toJSON p.stableFiles}}
+
+    machine.start()
+    machine.wait_for_unit("multi-user.target")
+
+    machine.succeed('test -z "$(swapon --show)"')
+    machine.succeed("mountpoint -q /var/lib")
+    machine.succeed("findmnt -n -o FSTYPE /var/lib | grep -qx overlay")
+    machine.succeed("findmnt -n -o FSTYPE /mnt/host/var-lib | grep -q 9p")
+    machine.succeed("findmnt -n -o FSTYPE /mnt/host/ssh | grep -q 9p")
+
+    # The shared host key decrypts the real secrets in this mode too.
+    machine.succeed("test -d /run/agenix")
+    for secret in ${toJSON p.secrets}:
+        machine.succeed("test -s /run/agenix/" + secret)
+
+    for probe in ${toJSON p.probes}:
+        machine.succeed("test -e " + probe)
 
     ${unitCheck p.stateUnits}
+    ${noFailed}
+
+    ${transitionTail p.stateUnits oldSystem}
+
+    for path, mtime_ns in host_snapshot.items():
+        assert os.stat(path).st_mtime_ns == mtime_ns, f"host path {path} was modified by the VM test"
   '';
 
   mkTest =
-    { hostName, withHostState }:
+    {
+      hostName,
+      withHostState,
+      oldBaseFlake ? null,
+    }:
     let
       p = policy.${hostName};
       nodeModule = import ./vm-test-module.nix { inherit withHostState; };
+      # The old generation must be built as a test node too: the plain host
+      # toplevel's agenix activation would fail in the VM (the
+      # guest-generated SSH keys are no valid recipients), and — the
+      # reason it must be a full test-node build — switch-to-configuration
+      # stops every unit present in the current system but absent from the
+      # target. Without the test framework modules below, switching to the
+      # plain old toplevel would stop backdoor.service (the driver's shell),
+      # the store/shared-dir mounts and the VLAN unit, killing the test
+      # connection mid-switch. The framework modules must come from the
+      # base's own nixpkgs: importing this flake's copies would duplicate
+      # option declarations (e.g. virtualisation.diskSize is part of the
+      # base module list in the base's rev) and fail evaluation.
+      # NB: `.config` must be selected from the let-bound result — Nix
+      # parses `f { x = 1; }.config` as `f ({x = 1;}.config)`.
+      oldSystem =
+        if oldBaseFlake == null then
+          null
+        else
+          let
+            baseSystem = (builtins.getFlake oldBaseFlake).nixosConfigurations.${hostName};
+            oldExtended = baseSystem.extendModules {
+              modules = [
+                (baseSystem.pkgs.path + "/nixos/modules/virtualisation/qemu-vm.nix")
+                (baseSystem.pkgs.path + "/nixos/lib/testing/nixos-test-base.nix")
+                (baseSystem.pkgs.path + "/nixos/modules/testing/test-instrumentation.nix")
+                (import ./vm-test-module.nix { inherit withHostState; })
+              ];
+            };
+          in
+          oldExtended.config.system.build.toplevel;
     in
     pkgs.testers.runNixOSTest {
-      name = "${hostName}-vm-test${optionalString withHostState "-state"}";
+      name = "${hostName}-vm-test${optionalString withHostState "-state"}${
+        optionalString (oldSystem != null) "-transition"
+      }";
       # The host configs set nixpkgs.config (allowUnfree); the test
       # framework's read-only nixpkgs module would conflict.
       node.pkgsReadOnly = false;
       nodes.machine = {
-        imports = mkHostModules hostName hosts.${hostName} ++ [ nodeModule ];
+        imports =
+          mkHostModules hostName hosts.${hostName}
+          ++ [
+            nodeModule
+          ]
+          ++ lib.optionals (oldSystem != null) [
+            {
+              # The image must hold two toplevel closures. mkOverride 60
+              # outranks the adapter's mkForce (priority 50).
+              virtualisation.diskSize = lib.mkOverride 60 32768;
+            }
+          ];
+      }
+      // lib.optionalAttrs (oldSystem != null) {
+        # Make the old generation's closure available in the guest store.
+        virtualisation.additionalPaths = [ oldSystem ];
       };
-      testScript = if withHostState then stateScript p else smokeScript;
+      testScript =
+        if oldSystem != null then
+          (if withHostState then transitionStateScript p oldSystem else transitionScript oldSystem)
+        else if withHostState then
+          stateScript p
+        else
+          smokeScript;
     };
 
   smokeTests = genAttrs [ "melon" "onion" ] (
@@ -190,6 +392,62 @@ let
         stateTests.${hostName}.${if interactive then "driverInteractive" else "driver"}
       }/bin/nixos-test-driver "$@"
     '';
+
+  # Transition wrappers: the old generation is master, checked out to a
+  # temp worktree and re-evaluated with the VM adapter by the test itself.
+  transitionWrapper =
+    withHostState: interactive: hostName:
+    let
+      flakeFn = if withHostState then "vmTransitionStateTests" else "vmTransitionTests";
+      drvSel = if interactive then "driverInteractive" else "driver";
+    in
+    pkgs.writeShellScriptBin "${hostName}-vm-test-transition${optionalString withHostState "-state"}${optionalString interactive "-interactive"}" ''
+      set -e
+      repo="${toString ../.}"
+      [ -d "$repo/.git" ] || {
+        echo "error: not a git checkout: $repo" >&2
+        exit 1
+      }
+      base_dir="$(mktemp -d /var/tmp/vm-transition-base.XXXXXX)"
+      trap 'rm -rf "$base_dir"' EXIT
+      if ! git -C "$repo" worktree add --detach "$base_dir/base" master >/dev/null 2>&1; then
+        # master may be checked out elsewhere; a plain archive works too.
+        mkdir -p "$base_dir/base"
+        git -C "$repo" archive master | tar -x -C "$base_dir/base"
+      fi
+      ${lib.optionalString withHostState ''
+        if [ "$(id -u)" -ne 0 ]; then
+          echo "error: ${hostName}-vm-test-transition-state shares the host's /var/lib and /etc/ssh" >&2
+          echo "       into the VM (9p passthrough) and must run as root." >&2
+          echo "Run: sudo env TMPDIR=/var/tmp nix run .#packages.${system}.${hostName}-vm-test-transition-state" >&2
+          exit 1
+        fi
+      ''}
+      out="$(nix build --no-link --print-out-paths --impure --expr "
+        let pr = builtins.getFlake \"path:$repo\";
+        in (pr.lib.${flakeFn}.${hostName} \"path:$base_dir/base\").${drvSel}
+      " | tail -1)"
+      exec "$out/bin/nixos-test-driver" "$@"
+    '';
+
+  # Functions from the base flake path to the transition test (the old
+  # generation is re-evaluated with the VM adapter inside mkTest).
+  transitionTests = genAttrs [ "melon" "onion" ] (
+    hostName: baseFlakePath:
+    mkTest {
+      inherit hostName;
+      oldBaseFlake = baseFlakePath;
+      withHostState = false;
+    }
+  );
+  transitionStateTests = genAttrs [ "melon" "onion" ] (
+    hostName: baseFlakePath:
+    mkTest {
+      inherit hostName;
+      oldBaseFlake = baseFlakePath;
+      withHostState = true;
+    }
+  );
 in
 {
   checks = mapAttrs' (hostName: test: nameValuePair "${hostName}-vm-test" test) smokeTests;
@@ -204,6 +462,10 @@ in
           "${hostName}-vm-test-driver-interactive" = smokeTests.${hostName}.driverInteractive;
           "${hostName}-vm-test-state" = stateWrapper false hostName;
           "${hostName}-vm-test-state-interactive" = stateWrapper true hostName;
+          "${hostName}-vm-test-transition" = transitionWrapper false false hostName;
+          "${hostName}-vm-test-transition-interactive" = transitionWrapper false true hostName;
+          "${hostName}-vm-test-transition-state" = transitionWrapper true false hostName;
+          "${hostName}-vm-test-transition-state-interactive" = transitionWrapper true true hostName;
         }
       )
       { }
@@ -211,4 +473,11 @@ in
         "melon"
         "onion"
       ];
+
+  # Exposed for the CI workflow and the transition wrappers: functions from
+  # a base flake path to the corresponding transition test. Only called
+  # from impure evaluations (the wrappers / --expr in CI), so the
+  # builtins.getFlake inside is fine; pure evals never force these.
+  vmTransitionTests = transitionTests;
+  vmTransitionStateTests = transitionStateTests;
 }

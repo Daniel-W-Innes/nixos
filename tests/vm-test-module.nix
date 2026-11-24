@@ -18,7 +18,9 @@
 #
 # Both modes run with restrictNetwork: the guest cannot reach the LAN or
 # the internet, so no external side effects (ACME renewals, API calls).
-{ withHostState }:
+{
+  withHostState,
+}:
 {
   config,
   lib,
@@ -64,7 +66,7 @@ let
   lower9pOptions = [
     "trans=virtio"
     "version=9p2000.L"
-    "msize=${toString config.virtualisation.msize}"
+    "msize=262144"
     "ro"
     "x-systemd.requires=modprobe@9pnet_virtio.service"
   ];
@@ -91,6 +93,13 @@ in
     oomd.enable = lib.mkForce false;
     suppressedSystemUnits = lib.mkForce suppress;
   };
+
+  # Smoke mode has no secrets: disable agenix so activation cannot fail on
+  # undecryptable files. State mode reads the real host key from the shared
+  # /etc/ssh (all secrets are encrypted to every host key, so any one host
+  # key decrypts everything).
+  age.enable = lib.mkForce withHostState;
+  age.identityPaths = lib.mkIf withHostState (lib.mkForce [ "/mnt/host/ssh/ssh_host_ed25519_key" ]);
 
   virtualisation = {
     memorySize = lib.mkForce (if withHostState then 8192 else 4096);
@@ -142,11 +151,4 @@ in
       };
     };
   };
-
-  # Smoke mode has no secrets: disable agenix so activation cannot fail on
-  # undecryptable files. State mode reads the real host key from the shared
-  # /etc/ssh (all secrets are encrypted to every host key, so any one host
-  # key decrypts everything).
-  age.enable = lib.mkForce withHostState;
-  age.identityPaths = lib.mkIf withHostState (lib.mkForce [ "/mnt/host/ssh/ssh_host_ed25519_key" ]);
 }
