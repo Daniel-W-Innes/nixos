@@ -423,7 +423,7 @@ let
           exit 1
         fi
       ''}
-      out="$(nix build --no-link --print-out-paths --impure --expr "
+      out="$(nix build --no-link --print-build-logs --print-out-paths --impure --expr "
         let pr = builtins.getFlake \"path:$repo\";
         in (pr.lib.${flakeFn}.${hostName} \"path:$base_dir/base\").${drvSel}
       " | tail -1)"

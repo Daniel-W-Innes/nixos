@@ -50,6 +50,14 @@ framework modules the switch would stop the driver's own units
 ## Commands
 
 ```bash
+# Everything at once: both hosts, every mode the current user may run.
+# Writes per-test logs + a SUMMARY.md index to ~/vm-test-logs/<timestamp>
+# (also reachable via ~/vm-test-logs/latest) — paste it into an AI with @<path>.
+tests/run-vm-tests.sh
+tests/run-vm-tests.sh --hosts onion            # just this host
+tests/run-vm-tests.sh --with-state             # include the root-only state tests (sudo)
+tests/run-vm-tests.sh smoke transition         # just these modes
+
 # Smoke test (no host state) — safe for CI and any local user.
 nix build --no-link --print-build-logs .#checks.x86_64-linux.onion-vm-test
 

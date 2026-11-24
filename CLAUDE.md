@@ -54,6 +54,7 @@ printf 'SESSION_SECRET=...\n' | AGENIX_RULES=secrets/secrets.nix nix run github:
 nix build --no-link --print-build-logs .#checks.x86_64-linux.onion-vm-test
 sudo env TMPDIR=/var/tmp nix run .#packages.x86_64-linux.onion-vm-test-state
 nix run .#packages.x86_64-linux.onion-vm-test-transition
+tests/run-vm-tests.sh          # all permitted modes, both hosts; per-test logs + SUMMARY.md in ~/vm-test-logs/latest
 ```
 
 ## One-off tooling
