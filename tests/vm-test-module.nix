@@ -105,7 +105,17 @@ in
   age.enable = lib.mkForce withHostState;
   age.identityPaths = lib.mkIf withHostState (lib.mkForce [ "/mnt/host/ssh/ssh_host_ed25519_key" ]);
 
+  # Boot through the real bootloader: EFI + systemd-boot (what every
+  # non-secureBoot host runs) instead of the qemu-vm default direct kernel
+  # boot. This exercises the loader install + boot path and makes boot-mode
+  # switches (bootctl install, loader entries) testable — the qemu-vm
+  # systemImage is built with installBootLoader and touchEFIVars for this.
+  boot.loader.efi.canTouchEfiVariables = true;
+
   virtualisation = {
+    useBootLoader = true;
+    useEFIBoot = true;
+
     memorySize = lib.mkForce (if withHostState then 8192 else 4096);
     cores = lib.mkForce 4;
     diskSize = lib.mkForce (if withHostState then 32768 else 8192);

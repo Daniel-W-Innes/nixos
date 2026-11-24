@@ -37,6 +37,16 @@ let
     ;
   inherit (builtins) toJSON;
 
+  # Tiny OCI image for the offline podman plumbing check: busybox ships the
+  # applet multiplexer at /bin/busybox. Baked into the VM image via
+  # virtualisation.additionalPaths (the store path is embedded in the test
+  # scripts below) — no network, no real host containers.
+  testImage = pkgs.dockerTools.buildImage {
+    name = "vm-test-busybox";
+    tag = "latest";
+    copyToRoot = pkgs.busybox;
+  };
+
   # Units that must come up in both modes. Secret-free by design: these are
   # the only units asserted in smoke mode, where agenix is disabled.
   commonUnits = [
@@ -108,6 +118,33 @@ let
     machine.succeed('test -z "$(systemctl --failed --plain --no-legend)"')
   '';
 
+  # The VM must boot through the real bootloader (EFI + systemd-boot, the
+  # loader every non-secureBoot host uses) rather than the qemu-vm default
+  # direct kernel boot. LoaderEntrySelected is written by systemd-boot
+  # itself while booting, so its presence proves the boot went through the
+  # loader.
+  bootloaderCheck = ''
+    machine.succeed("test -e /boot/loader/loader.conf")
+    machine.succeed("test -e /boot/loader/entries/nixos-generation-1.conf")
+    machine.succeed("test -e /sys/firmware/efi/efivars/LoaderEntrySelected-4a67b082-0a4c-41cf-b6c7-440b29bb8c4f")
+  '';
+
+  # restrictNetwork (slirp with restrict=on) must keep the guest off the
+  # internet — in state mode the guest holds the real secrets, so "no way
+  # out" is a safety property worth asserting.
+  networkCheck = ''
+    machine.fail("ping -c 1 -W 1 -n 1.1.1.1")
+  '';
+
+  # The container plumbing works offline — storage driver, runtime, and (in
+  # state mode) the tmpfs-shadowed container store. run --rm leaves no
+  # containers behind.
+  podmanCheck = ''
+    machine.succeed("podman load -i ${testImage}")
+    machine.succeed("podman run --rm vm-test-busybox:latest /bin/busybox true")
+    machine.succeed('test -z "$(podman ps -aq)"')
+  '';
+
   # Heavy/stateful services must stay off in the VM (they are suppressed by
   # vm-test-module.nix); guard against a suppression regression letting one
   # through. traefik is expected up in state mode (asserted in stateUnits),
@@ -122,29 +159,47 @@ let
   '';
 
   # The switch step is idempotent: a second run against the same generation
-  # must also be clean.
-  switchCheck = units: ''
+  # must also be clean, and every run must keep /run/current-system pointing
+  # at the tested toplevel.
+  switchCheck = units: newSystem: ''
+    machine.succeed('test "$(readlink -f /run/current-system)" = "${newSystem}"')
     machine.succeed("/run/current-system/bin/switch-to-configuration test")
+    machine.succeed('test "$(readlink -f /run/current-system)" = "${newSystem}"')
     ${unitCheck units}
     ${noFailed}
   '';
 
-  smokeScript = ''
+  # Boot-mode switch: activation plus a real bootloader install (bootctl
+  # install, loader entries) against the VM's ESP — the mode that updates
+  # /boot for the next reboot.
+  bootSwitchCheck = newSystem: ''
+    machine.succeed("/run/current-system/bin/switch-to-configuration boot")
+    machine.succeed("grep -qF '${newSystem}' /boot/loader/entries/*.conf")
+  '';
+
+  smokeScript = newSystem: ''
     machine.start()
     machine.wait_for_unit("multi-user.target")
 
+    # Booted through the real bootloader, running the tested toplevel.
+    ${bootloaderCheck}
+    machine.succeed('test "$(readlink -f /run/current-system)" = "${newSystem}"')
+
     # No host state, no secrets, no swap (melon's swapfile is stripped by
-    # the VM variant).
+    # the VM variant), no way off the VM.
     machine.succeed("test ! -e /mnt/host")
     machine.succeed("test ! -e /run/agenix")
     machine.succeed("! mountpoint -q /var/lib")
     machine.succeed('test -z "$(swapon --show)"')
+    ${networkCheck}
 
     ${unitCheck commonUnits}
     ${noFailed}
 
-    # Home-manager activation ran for daniel (files are store symlinks).
+    # Home-manager activation ran for daniel (files are store symlinks) and
+    # the unit reports success.
     machine.succeed("test -L /home/daniel/.zshrc")
+    machine.succeed('test "$(systemctl show -p Result --value home-manager-daniel.service)" = success')
 
     # Heavy services stayed off.
     ${offCheck false}
@@ -152,26 +207,33 @@ let
     # Every core unit survives a restart.
     ${restartCheck commonUnits}
 
-    # The point of the exercise: the activation + unit restart logic runs
-    # cleanly against the booted system...
-    machine.succeed("/run/current-system/bin/switch-to-configuration test")
-    ${unitCheck commonUnits}
-    ${noFailed}
+    # The container plumbing works offline.
+    ${podmanCheck}
 
-    # ...and again (idempotency).
-    machine.succeed("/run/current-system/bin/switch-to-configuration test")
-    ${unitCheck commonUnits}
-    ${noFailed}
+    # The point of the exercise: the activation + unit restart logic runs
+    # cleanly against the booted system, twice (idempotency)...
+    ${switchCheck commonUnits newSystem}
+    ${switchCheck commonUnits newSystem}
+
+    # ...and the boot-mode switch installs a real bootloader entry for it.
+    ${bootSwitchCheck newSystem}
   '';
 
-  stateScript = p: ''
+  stateScript = p: newSystem: ''
     import os
     host_snapshot = {path: os.stat(path).st_mtime_ns for path in ${toJSON p.stableFiles}}
 
     machine.start()
     machine.wait_for_unit("multi-user.target")
 
+    # Booted through the real bootloader, running the tested toplevel.
+    ${bootloaderCheck}
+    machine.succeed('test "$(readlink -f /run/current-system)" = "${newSystem}"')
+
     machine.succeed('test -z "$(swapon --show)"')
+
+    # The guest holds the real secrets: it must have no way off the VM.
+    ${networkCheck}
 
     # /var/lib is an overlay of the host share; the lower path keeps its
     # initrd /sysroot prefix after switch-root.
@@ -217,7 +279,16 @@ let
     # Every state unit survives a restart on top of live state.
     ${restartCheck p.stateUnits}
 
-    ${switchCheck p.stateUnits}
+    # The container plumbing works against the tmpfs-shadowed container
+    # store.
+    ${podmanCheck}
+
+    # The switch runs cleanly against live state, twice (idempotency)...
+    ${switchCheck p.stateUnits newSystem}
+    ${switchCheck p.stateUnits newSystem}
+
+    # ...and the boot-mode switch installs a real bootloader entry for it.
+    ${bootSwitchCheck newSystem}
 
     # The driver runs on the host: stat the real files and require them
     # untouched by the VM.
@@ -234,13 +305,16 @@ let
     machine.succeed("readlink -f /run/current-system > /run/vm-test-new-system")
 
     # Roll forward to the base generation (VM-adapted, so activation is
-    # clean even without host state).
+    # clean even without host state). /run/current-system must follow each
+    # switch.
     machine.succeed("${oldSystem}/bin/switch-to-configuration test")
+    machine.succeed('test "$(readlink -f /run/current-system)" = "${oldSystem}"')
     ${unitCheck units}
     ${noFailed}
 
     # And back: the real base -> new transition.
     machine.succeed("$(cat /run/vm-test-new-system)/bin/switch-to-configuration test")
+    machine.succeed('test "$(readlink -f /run/current-system)" = "$(cat /run/vm-test-new-system)"')
     ${unitCheck units}
     ${noFailed}
   '';
@@ -249,9 +323,12 @@ let
     machine.start()
     machine.wait_for_unit("multi-user.target")
 
+    ${bootloaderCheck}
+
     machine.succeed("test ! -e /mnt/host")
     machine.succeed("test ! -e /run/agenix")
     machine.succeed('test -z "$(swapon --show)"')
+    ${networkCheck}
 
     ${unitCheck commonUnits}
     ${noFailed}
@@ -267,7 +344,11 @@ let
     machine.start()
     machine.wait_for_unit("multi-user.target")
 
+    ${bootloaderCheck}
+
     machine.succeed('test -z "$(swapon --show)"')
+    # The guest holds the real secrets: it must have no way off the VM.
+    ${networkCheck}
     machine.succeed("mountpoint -q /var/lib")
     machine.succeed("findmnt -n -o FSTYPE /var/lib | grep -qx overlay")
     machine.succeed("findmnt -n -o FSTYPE /mnt/host/var-lib | grep -q 9p")
@@ -350,18 +431,22 @@ let
               virtualisation.diskSize = lib.mkOverride 60 32768;
             }
           ];
-      }
-      // lib.optionalAttrs (oldSystem != null) {
-        # Make the old generation's closure available in the guest store.
-        virtualisation.additionalPaths = [ oldSystem ];
+        # Extra store paths baked into the VM image: the old generation's
+        # closure (transition) or the podman test image (smoke/state).
+        virtualisation.additionalPaths =
+          lib.optional (oldSystem != null) oldSystem ++ lib.optionals (oldSystem == null) [ testImage ];
       };
       testScript =
+        { nodes, ... }:
+        let
+          newSystem = builtins.toString nodes.machine.system.build.toplevel;
+        in
         if oldSystem != null then
           (if withHostState then transitionStateScript p oldSystem else transitionScript oldSystem)
         else if withHostState then
-          stateScript p
+          stateScript p newSystem
         else
-          smokeScript;
+          smokeScript newSystem;
     };
 
   smokeTests = genAttrs [ "melon" "onion" ] (

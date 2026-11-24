@@ -134,7 +134,11 @@ for h in "${hosts[@]}"; do
 
     case "$m" in
       smoke)
-        cmd=(nix build --no-link --print-build-logs ".#checks.x86_64-linux.$h-vm-test")
+        # The driver, not `nix build` of the check: building a cached check
+        # derivation is a silent no-op (the test does not re-run), so the
+        # driver always executes it. CI's `nix build` keeps its own
+        # cache-hit semantics on purpose.
+        cmd=(nix run --print-build-logs ".#packages.x86_64-linux.$h-vm-test-driver")
         ;;
       transition)
         cmd=(nix run --print-build-logs ".#packages.x86_64-linux.$h-vm-test-transition")

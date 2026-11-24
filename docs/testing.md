@@ -60,6 +60,9 @@ tests/run-vm-tests.sh smoke transition         # just these modes
 
 # Smoke test (no host state) — safe for CI and any local user.
 nix build --no-link --print-build-logs .#checks.x86_64-linux.onion-vm-test
+# Note: `nix build` of an already-cached check is a silent no-op — the test
+# does not re-run. The runner (tests/run-vm-tests.sh) therefore executes the
+# driver directly (`nix run ...-driver`) for smoke, which always re-runs it.
 
 # Interactive smoke debugging (REPL).
 nix run .#packages.x86_64-linux.onion-vm-test-driver-interactive
@@ -88,13 +91,21 @@ it; CI executes PR code, so anything CI can read, any PR can read).
 
 ## What is asserted
 
-All modes: no failed units after boot and after each switch; the core units
+All modes: the VM boots through the real bootloader (EFI + systemd-boot, the
+loader every non-secureBoot host uses — asserted via the loader entry files
+and the `LoaderEntrySelected` EFI variable, which only systemd-boot itself
+writes); no failed units after boot and after each switch; the core units
 (sshd, fail2ban, avahi, node/process exporters) active before and after every
-switch; `switch-to-configuration test` exits 0; heavy services stay off
-(suppression guard); the switch step is run twice (idempotency).
+switch; `switch-to-configuration test` exits 0 with `/run/current-system`
+pointing at the expected toplevel after every switch; heavy services stay off
+(suppression guard); the guest cannot reach the internet (`restrictNetwork`
+asserted with a failing ping); the switch step is run twice (idempotency).
 
 Smoke additionally: no `/mnt/host`, no `/run/agenix`, no swap, home-manager
-links present for `daniel`, every core unit survives a `systemctl restart`.
+links present for `daniel` with the activation unit reporting `Result=success`,
+every core unit survives a `systemctl restart`, a baked-in OCI image loads and
+runs offline (podman plumbing), and `switch-to-configuration boot` installs a
+bootloader entry referencing the tested toplevel.
 
 State additionally: `/var/lib` is an overlay of the host share (ro 9p lower,
 `/sysroot` prefix tolerated in the options), `/var/lib/containers` is tmpfs,
@@ -103,12 +114,15 @@ appear in the host share, host probes exist (logrotate.status; melon also probes
 the forgejo postgres dir), `daniel` has a password hash, agenix secrets exist
 with the declared owners/modes, the state allowlist (adds NetworkManager,
 prometheus, traefik on melon) is active before and after the switch and survives
-a `systemctl restart`, and — since the driver runs on the host — the mtime of
-the host's `uid-map`, SSH host key, and (melon) `PG_VERSION` is asserted
-unchanged after the run.
+a `systemctl restart`, the podman check runs against the tmpfs-shadowed
+container store, the boot-mode switch installs a loader entry, and — since the
+driver runs on the host — the mtime of the host's `uid-map`, SSH host key, and
+(melon) `PG_VERSION` is asserted unchanged after the run.
 
-Transition additionally: after switching to the old generation, units are
-active and no units failed; the same after switching back.
+Transition additionally: after switching to the old generation,
+`/run/current-system` is the old toplevel, units are active and no units
+failed; the same after switching back (the current system is the booted
+toplevel again).
 
 ## Limitations
 
@@ -118,8 +132,11 @@ active and no units failed; the same after switching back.
   represented by the live state in the state modes instead.
 - The overlay lower is a snapshot at boot, not a live mirror (COW semantics;
   atime on host files may still be updated by 9p reads).
-- Containers/DBs do not start in phase 1 (suppressed; podman storage is
-  shadowed). Starting them against live DB state is future work.
+- Containers/DBs do not start (suppressed; podman storage is shadowed). The
+  podman stack itself is exercised with a baked-in busybox image
+  (`podman load` + `run --rm`, offline), including against the tmpfs-shadowed
+  store in state mode. Starting the real host containers against live DB
+  state is future work.
 - The unit suppression list in `tests/vm-test-module.nix` is broad
   (deny-by-default for heavy/secret-bearing/LAN services); new host services
   may start unexpectedly until a pattern is added.
