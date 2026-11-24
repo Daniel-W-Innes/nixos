@@ -39,6 +39,10 @@ let
     ".*(forgejo|gitea-runner).*"
     ".*(transmission|sonarr|radarr|prowlarr|lidarr|bazarr|readarr|flaresolverr|decluttarr|mixarr).*"
     ".*(proton|wireguard|gluetun).*"
+    # PIA VPN confinement namespace: the openvpn transport needs the VPN
+    # network, which does not exist in the restricted-network VM, so the
+    # namespace units fail with a dependency error.
+    ".*(pia-port-forward|vpn-confinement).*"
     ".*(immich|audiomuse|bookorbit|blunderbase|dawarich|searx|meilisearch|calibre|jellyfin|navidrome).*"
     ".*(grafana|loki|tempo|alloy|influxdb|gotify|alertmanager|uptime|kuma).*"
     ".*exportarr.*"
