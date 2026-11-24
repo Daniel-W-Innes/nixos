@@ -1,9 +1,17 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
   home.packages = with pkgs; [
     nh
   ];
+
+  home.sessionPath = [ "$HOME/.local/bin" ];
+
+  # VM test runner (tests/run-vm-tests.sh) linked into PATH. Assumes the
+  # repo clone lives at ~/repos/nixos on this host.
+  home.file.".local/bin/vm-test".source = config.lib.file.mkOutOfStoreSymlink (
+    "${config.home.homeDirectory}/repos/nixos/tests/run-vm-tests.sh"
+  );
 
   programs = {
     git = {

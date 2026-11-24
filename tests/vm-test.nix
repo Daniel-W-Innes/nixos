@@ -403,9 +403,11 @@ let
     in
     pkgs.writeShellScriptBin "${hostName}-vm-test-transition${optionalString withHostState "-state"}${optionalString interactive "-interactive"}" ''
       set -e
-      repo="${toString ../.}"
-      [ -d "$repo/.git" ] || {
-        echo "error: not a git checkout: $repo" >&2
+      # Resolve the checkout at runtime: ${toString ../.} bakes in the
+      # flake's store copy, which has no .git and was always rejected. The
+      # wrapper only ever runs from a human's shell inside their clone.
+      repo="$(git rev-parse --show-toplevel 2>/dev/null)" || {
+        echo "error: must be run from inside the repo git checkout" >&2
         exit 1
       }
       base_dir="$(mktemp -d /var/tmp/vm-transition-base.XXXXXX)"

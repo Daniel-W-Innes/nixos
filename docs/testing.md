@@ -53,7 +53,7 @@ framework modules the switch would stop the driver's own units
 # Everything at once: both hosts, every mode the current user may run.
 # Writes per-test logs + a SUMMARY.md index to ~/vm-test-logs/<timestamp>
 # (also reachable via ~/vm-test-logs/latest) — paste it into an AI with @<path>.
-tests/run-vm-tests.sh
+tests/run-vm-tests.sh          # from the repo; also on PATH as vm-test
 tests/run-vm-tests.sh --hosts onion            # just this host
 tests/run-vm-tests.sh --with-state             # include the root-only state tests (sudo)
 tests/run-vm-tests.sh smoke transition         # just these modes

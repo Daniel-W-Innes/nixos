@@ -5,6 +5,12 @@
 # SUMMARY.md index — share the summary (or any log) with an AI via @<path>.
 set -uo pipefail
 
+# Resolve through symlinks (the script is linked into ~/.local/bin/vm-test)
+# so the flake below is always the real repo checkout, then run from its
+# root so `vmtest` works from any directory.
+repo_root=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)
+cd "$repo_root"
+
 usage() {
   cat <<'EOF'
 Usage: tests/run-vm-tests.sh [options] [MODE ...]
