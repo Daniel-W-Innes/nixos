@@ -7,13 +7,13 @@
 let
   inherit (lib)
     attrByPath
+    filterAttrs
     mapAttrs'
     mapAttrsToList
     mkMerge
     mkIf
     nameValuePair
     optionalString
-    filterAttrs
     ;
   inherit (import ./context.nix { inherit config lib; })
     cfg
@@ -129,7 +129,10 @@ let
 
           proto="$(${pkgs.gawk}/bin/awk '$1 == "proto" { print $2; exit }' "$cfg_file")"
           proto="''${proto:-udp}"
-          first=""
+          # Write every resolved remote to the .remote file so the tunnel
+          # unit can fail over across the whole set (2026-11-25: a single
+          # pinned endpoint can never recover from PIA retiring a server).
+          : > /run/openvpn/${nsName}.remote
           while read -r remote_host remote_port remote_proto; do
             [ -n "$remote_host" ] || continue
             # pkgs.getent, not glibc.bin: nixpkgs moved getent out of the
@@ -143,10 +146,9 @@ let
             }
             ${pkgs.iproute2}/bin/ip netns exec ${nsName} ${pkgs.nftables}/bin/nft add rule inet vpnc output oifname "${ns.hostLink.nsIf}" ip daddr "$ip4" "$remote_proto" dport "$remote_port" accept
             ${pkgs.iproute2}/bin/ip netns exec ${nsName} ${pkgs.nftables}/bin/nft add rule inet vpnc input iifname "${ns.hostLink.nsIf}" ip saddr "$ip4" accept
-            [ -n "$first" ] || first="$ip4 $remote_port $remote_proto"
+            echo "$ip4 $remote_port $remote_proto" >> /run/openvpn/${nsName}.remote
           done < <(${pkgs.gawk}/bin/awk '$1 == "remote" { print $2, $3, $4 }' "$cfg_file")
-          [ -n "$first" ] || { echo "vpn-confinement: no remote directive in $cfg_file" >&2; exit 1; }
-          echo "$first" > /run/openvpn/${nsName}.remote
+          [ -s /run/openvpn/${nsName}.remote ] || { echo "vpn-confinement: no remote directive in $cfg_file" >&2; exit 1; }
 
           # Host-side source NAT for the exemption path. The namespace's
           # only pre-tunnel egress carries the link-local veth address as
@@ -236,25 +238,34 @@ let
           gnused
         ];
         text = ''
-          # The first remote of the .ovpn config, resolved to a literal IP by
-          # the namespace unit (openvpn itself cannot resolve before the
-          # tunnel exists). Extra remote lines get route + nftables
-          # exemptions but are not tried for failover.
-          read -r remote_ip remote_port remote_proto < /run/openvpn/${nsName}.remote
-
           # Drop directives that fight the unit lifecycle: reconnect and
-          # daemonization belong to systemd, auth and remote are supplied
-          # explicitly below, and privilege-dropping must not happen inside
-          # the kill-switch namespace. ncp-disable is openvpn-2.4-era and
+          # daemonization belong to systemd, auth is supplied explicitly
+          # below, and privilege-dropping must not happen inside the
+          # kill-switch namespace. ncp-disable is openvpn-2.4-era and
           # removed in 2.6 (PIA's .ovpn still ships it — parse error without
           # this).
           sed -E \
             -e '/^(ping|ping-exit|ping-restart|daemon|user|group|auth-user-pass|remote|up|down|ncp-disable)([[:space:]]|$)/d' \
             "${ns.openvpn.configFile}" > /run/openvpn/${nsName}.conf
 
+          # The namespace unit resolved every `remote` of the .ovpn to a
+          # literal IP at activation time (openvpn itself cannot resolve
+          # before the tunnel exists) and wrote them to .remote. Append them
+          # all: on connection failure — for UDP, defined by
+          # --ping/--ping-restart — openvpn advances to the next remote, and
+          # --connect-retry-max 0 cycles forever, so a retired server costs
+          # minutes of failover instead of an outage (2026-11-25:
+          # montreal429 was retired by PIA and a single pinned remote could
+          # never recover). --remote-random spreads the initial pick across
+          # the set.
+          while read -r remote_ip remote_port remote_proto; do
+            [ -n "$remote_ip" ] || continue
+            echo "remote $remote_ip $remote_port $remote_proto" >> /run/openvpn/${nsName}.conf
+          done < /run/openvpn/${nsName}.remote
+
           exec openvpn \
             --config "/run/openvpn/${nsName}.conf" \
-            --remote "$remote_ip" "$remote_port" "$remote_proto" \
+            --remote-random \
             --auth-user-pass "${ns.openvpn.credentialsFile}" \
             --dev "${ns.openvpn.interface}" --dev-type tun \
             --status "${ns.openvpn.statusFile}" 10 \
@@ -280,6 +291,14 @@ let
           for _ in $(seq 1 60); do
             if ip addr show dev "${ns.openvpn.interface}" 2>/dev/null | grep -q 'inet ' \
               && ip route show dev "${ns.openvpn.interface}" 2>/dev/null | grep -q ' via '; then
+              # openvpn creates the --status file 0600, and the exporter
+              # reads it as an unprivileged DynamicUser — without this
+              # openvpn-exporter-down fires forever (it has since the
+              # 2026-11-22 PIA move) and pia-tunnel-stalled has no input.
+              # openvpn rewrites the same inode each 10 s cycle, so one
+              # chmod per start holds, and the loop above guarantees the
+              # file exists by now.
+              chmod 0644 "${ns.openvpn.statusFile}"
               exit 0
             fi
             sleep 1
@@ -323,6 +342,99 @@ let
       };
     }
   ) (filterAttrs (_: ns: ns.openvpn.enable) enabledNamespaces);
+
+  # Watchdog: PIA rotates/retires servers behind its region hostnames. The
+  # netns unit pins one resolved IP per `remote` at activation time, so
+  # without this the tunnel can die permanently when a server disappears
+  # (2026-11-25: montreal429 retired; openvpn's Restart=always loop can
+  # never reconnect to a dead endpoint). When the status file goes stale
+  # AND fresh resolution differs from the pinned set, restart the netns
+  # unit: it re-resolves, re-punches the endpoint exemptions and reconnects
+  # (transmission reloads — the price of a real rotation event). If the
+  # resolution is unchanged the server is merely down; restarting would pin
+  # the same dead IPs, so it does nothing. Literal-IP .ovpn configs always
+  # compare equal, making the watchdog a no-op.
+  openvpnWatchdog =
+    nsName: ns:
+    let
+      script = pkgs.writeShellApplication {
+        name = "vpn-confinement-openvpn-${nsName}-watchdog";
+        runtimeInputs = with pkgs; [
+          getent
+          gawk
+          coreutils
+          systemd
+        ];
+        text = ''
+          set -eu
+          pinned=/run/openvpn/${nsName}.remote
+          status=${ns.openvpn.statusFile}
+          cfg=${ns.openvpn.configFile}
+
+          # Only act when the tunnel is actually down: openvpn rewrites the
+          # status file every 10 s, so a 5-minute-old mtime means the daemon
+          # is wedged or endlessly reconnecting to a dead endpoint (the same
+          # window as the pia-tunnel-stalled alert).
+          [ -f "$pinned" ] || exit 0
+          [ -f "$status" ] || exit 0
+          now=$(date +%s)
+          [ $(( now - $(stat -c %Y "$status") )) -ge 300 ] || exit 0
+
+          # Re-resolve every remote of the .ovpn with host-side DNS (the
+          # namespace resolves through the dead tunnel). Mirror the netns
+          # unit's per-line proto defaulting so equal sets compare equal.
+          proto=$(awk '$1 == "proto" { print $2; exit }' "$cfg")
+          proto="''${proto:-udp}"
+          fresh=$(
+            while read -r host port line_proto; do
+              [ -n "$host" ] || continue
+              line_proto="''${line_proto:-$proto}"
+              ip4=$(getent ahostsv4 "$host" | awk 'NR == 1 { print $1 }')
+              [ -n "$ip4" ] || continue
+              echo "$ip4 $port $line_proto"
+            done < <(awk '$1 == "remote" { print $2, $3, $4 }' "$cfg")
+          )
+          [ -n "$fresh" ] || exit 0
+          # All remotes must resolve — a partial resolution is a DNS
+          # hiccup, and restarting the netns then would just fail its own
+          # getent and tear the namespace down for nothing.
+          [ "$(echo "$fresh" | wc -l)" = "$(wc -l < "$pinned")" ] || exit 0
+          [ "$fresh" = "$(cat "$pinned")" ] && exit 0
+
+          echo "vpn-confinement: ${nsName} endpoint set rotated (pinned: $(tr '\n' ';' < "$pinned") -> fresh: $(echo "$fresh" | tr '\n' ';')) — restarting netns to re-resolve and reconnect"
+          systemctl restart "vpn-confinement-netns@${nsName}.service"
+        '';
+      };
+    in
+    {
+      service = nameValuePair "vpn-confinement-openvpn-watchdog@${nsName}" {
+        description = "Re-pin rotated OpenVPN endpoints in namespace ${nsName}";
+        serviceConfig = helperUnitHardeningBase // {
+          Type = "oneshot";
+          ExecStart = "${script}/bin/vpn-confinement-openvpn-${nsName}-watchdog";
+        };
+      };
+      timer = nameValuePair "vpn-confinement-openvpn-watchdog@${nsName}" {
+        description = "Watch for rotated OpenVPN endpoints in namespace ${nsName}";
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          OnBootSec = "10min";
+          OnUnitActiveSec = "10min";
+          AccuracySec = "1min";
+        };
+      };
+    };
+
+  openvpnWatchdogUnits =
+    let
+      pairs = mapAttrsToList (nsName: ns: openvpnWatchdog nsName ns) (
+        filterAttrs (_: ns: ns.openvpn.enable) enabledNamespaces
+      );
+    in
+    {
+      services = builtins.listToAttrs (map (p: p.service) pairs);
+      timers = builtins.listToAttrs (map (p: p.timer) pairs);
+    };
 
   endpointPinningUnits =
     mapAttrs'
@@ -386,7 +498,9 @@ in
         endpointPinningUnits
         wgDependencyUnits
         openvpnUnits
+        openvpnWatchdogUnits.services
       ];
+      inherit (openvpnWatchdogUnits) timers;
       network.networks = lib.listToAttrs (
         map (name: {
           name = "09-vpn-confinement-${name}";

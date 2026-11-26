@@ -17,6 +17,18 @@ Local modifications (2026-11-22, PIA migration):
   through the hostLink; WireGuard assignments/units are skipped for OpenVPN
   namespaces; the OpenVPN tunnel unit runs openvpn in the foreground with
   systemd-managed restarts and waits for the tun address before activating.
+- `lifecycle.nix` (2026-11-25, endpoint resilience): every resolved remote
+  is written to `/run/openvpn/<ns>.remote` (was: first only) and appended to
+  the generated openvpn config with `--remote-random`, so the tunnel fails
+  over across the whole endpoint set when a server dies or is retired.
+  The tunnel unit's post-start wait chmods the `--status` file 0644 (openvpn
+  creates it 0600; the unprivileged `openvpn-exporter` could never read it).
+  New `vpn-confinement-openvpn-watchdog@<ns>.service` + `.timer` (every 10
+  min, host-side): when the status file is stale AND fresh DNS resolution of
+  the .ovpn remotes differs from the pinned set (PIA rotated the servers),
+  it restarts the netns unit to re-resolve, re-punch the exemptions and
+  reconnect — with literal-IP configs the sets always compare equal and the
+  watchdog is a no-op.
 - `service-extension.nix` / `socket-extension.nix`: confined units bind to
   the OpenVPN tunnel unit for OpenVPN namespaces.
 - `firewall.nix`: policy rules key on the effective tunnel interface.

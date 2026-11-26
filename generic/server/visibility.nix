@@ -661,11 +661,19 @@
                       };
                     }
                   ];
-                  noDataState = "OK";
+                  # Alerting, not OK: when the exporter has no data the
+                  # stall expression evaluates to NoData, and an unknown
+                  # tunnel state is itself the emergency — the 2026-11-25
+                  # outage was silent because the exporter had been up=0
+                  # for 7 days (openvpn writes the status file 0600 and
+                  # the exporter reads it unprivileged; the perms fix lives
+                  # in the openvpn unit's start script). With the input
+                  # healthy this rule behaves exactly as before.
+                  noDataState = "Alerting";
                   execErrState = "KeepLast";
                   for = "3m";
                   annotations.summary = "PIA tunnel (pia0) status file has not updated for 5+ minutes";
-                  annotations.description = "openvpn stopped writing /run/openvpn/pia.status: the tunnel is down and transmission will freeze.";
+                  annotations.description = "openvpn stopped writing /run/openvpn/pia.status: the tunnel is down and transmission will freeze. Also fires when the exporter is down (tunnel state unknown).";
                   labels.severity = "critical";
                 }
                 {
