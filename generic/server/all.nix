@@ -19,5 +19,9 @@ _:
     ./forgejo.nix
     ./uptime.nix
     ./mixarr.nix
+    ./stalwart.nix
+    ./rspamd.nix
+    ./clamav.nix
+    ./crowdsec.nix
   ];
 }

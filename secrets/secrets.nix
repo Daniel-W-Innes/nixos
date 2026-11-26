@@ -201,4 +201,8 @@ in
     publicKeys = users ++ systems;
     armor = true;
   };
+  "stalwart-admin-password.age" = {
+    publicKeys = users ++ systems;
+    armor = true;
+  };
 }

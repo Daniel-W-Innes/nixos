@@ -65,12 +65,20 @@
       preCommitCheck = pre-commit-hooks.lib.${system}.run {
         src = self;
         hooks = {
-          deadnix.enable = true;
+          deadnix = {
+            enable = true;
+            settings.exclude = [
+              # Vendored unmerged nixpkgs PR #552103 module
+              # (see modules/stalwart/VENDORED.md).
+              "modules/stalwart/**"
+            ];
+          };
           nil.enable = true;
           statix = {
             enable = true;
             settings.ignore = [
               "**/hardware-configuration.nix"
+              "modules/stalwart/**"
             ];
           };
 
@@ -155,6 +163,13 @@
             # Vendored from github:nix-forge/vpn-confinement with an OpenVPN
             # transport added (see modules/vpn-confinement/VENDORED.md).
             ./modules/vpn-confinement
+            {
+              # Stalwart 1.x package backports for the vendored post-26.11
+              # module (see modules/stalwart/VENDORED.md).
+              nixpkgs.overlays = [
+                (import ./overlays/stalwart.nix nixpkgs-unstable.legacyPackages.${system})
+              ];
+            }
           ];
         };
         onion = {

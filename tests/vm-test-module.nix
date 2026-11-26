@@ -55,6 +55,7 @@ let
     "^(display-manager|greetd|sddm|lightdm|gdm).*"
     ".*(zsa|ckb).*"
     ".*(speech|whisper).*"
+    ".*(stalwart|rspamd|clamav|crowdsec).*"
   ]
   ++ lib.optionals (!withHostState) [
     # Smoke mode has no agenix secrets; traefik hard-fails on its missing

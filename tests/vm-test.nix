@@ -72,6 +72,7 @@ let
         "forgejo-admin-password"
         "forgejo-db-password"
         "user-daniel"
+        "stalwart-admin-password"
       ];
       # Files the driver stats on the host before and after the run (the
       # driver executes on the host — see stateScript). Must never be
@@ -153,7 +154,7 @@ let
     machine.fail(
         "systemctl list-units --type=service --state=running --plain --no-legend | "
         + "grep -qE 'forgejo|gitea|sonarr|radarr|prowlarr|lidarr|bazarr|readarr|transmission|"
-        + "postgres|audiomuse|immich|searx|jellyfin|navidrome|meilisearch|blunderbase|dawarich"
+        + "postgres|audiomuse|immich|searx|jellyfin|navidrome|meilisearch|blunderbase|dawarich|stalwart|rspamd|clamav|crowdsec"
         + "${lib.optionalString (!withHostState) "|traefik"}'"
     )
   '';

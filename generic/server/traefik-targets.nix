@@ -169,5 +169,14 @@ in
     enable = config.services.uptime-kuma.enable;
     port = 3001;
   };
+  stalwart = {
+    inherit (config.services.stalwart) enable;
+    # Provisioned NetworkListener "http" (127.0.0.1), see ./stalwart.nix.
+    port = 8088;
+    healthCheck = {
+      path = "/healthz/live";
+      interval = "10s";
+    };
+  };
 }
 // arrTargetData

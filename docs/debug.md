@@ -20,6 +20,7 @@ This file is the index — always read in full. Load a topic file only when the 
 | exporter green but data frozen, konnected, `entity_state_timestamp` missing/stale, `unknown event type`, `scrape_ok` dips, upstream SSE/API payload changed (`id` vs `name_id`), Influx bucket stopped receiving writes with zero failed writes | `docs/debug/schema-drift.md` | — |
 | open gaps, expected/pending failures, MTU permanence, broken exporters | `docs/debug/planned-fixes.md` | "Planned fixes (gaps future sessions should expect, not be surprised by)" |
 | `pia-port-forward` failures, PIA PF API, forwarded port missing from transmission, `vpn-confinement-*` units, `pia0`/`vh-`/`vn-` interfaces | `docs/debug/transmission.md` | — |
+| stalwart down/not provisioning, `stalwart-provision`, mail rejected or 451-tempfailed, rspamd/clamav-milter, EICAR/GTUBE tests, crowdsec stalwart bans | `docs/debug/mail.md` | — |
 | how a session should go, worked walkthrough, 2026-09-03 timeline | `docs/debug/worked-example.md` | "Worked example (abridged)" |
 
 The sections that stay here (old citations still resolve): **Topology cheat sheet** (hosts table), **Datasource UIDs**, **Time and anchors**, **Workflow rules**.
@@ -28,7 +29,7 @@ The sections that stay here (old citations still resolve): **Topology cheat shee
 
 | Host | Role | Notes |
 |------|------|-------|
-| `melon` | server | Observability stack (Prometheus, Grafana, Loki, Tempo, InfluxDB), traefik, arr stack + transmission, jellyfin, immich, forgejo, navidrome + AudioMuse-AI, mixarr |
+| `melon` | server | Observability stack (Prometheus, Grafana, Loki, Tempo, InfluxDB), traefik, arr stack + transmission, jellyfin, immich, forgejo, navidrome + AudioMuse-AI, mixarr, stalwart mail (SMTP 25/587, IMAP 143 — LAN-only, no TLS yet; rspamd + clamav milters; crowdsec + nftables bouncer) |
 | `onion` | desktop | This Claude session runs here; `mcp-grafana` MCP server runs here as an oci-container; one AudioMuse worker replica (worker-only role, pulls from melon's postgres over the LAN) |
 | `cucamelon` | laptop | Often offline (its exporters show up=0) |
 | `pumpkin` | NAS | SMB target for melon's `/mnt/media` (CIFS mount), copyparty |
