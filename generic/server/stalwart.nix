@@ -47,7 +47,7 @@ in
     # whole plan below. Once it reports success, set this back to false and
     # switch again.
     recovery = {
-      enable = false;
+      enable = true;
       port = 8088;
     };
 
