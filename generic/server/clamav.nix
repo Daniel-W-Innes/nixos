@@ -12,9 +12,9 @@ let
     ClamdSocket unix:/run/clamav/clamd.ctl
     OnInfected Reject
     OnClean Accept
-    OnError Defer
+    # Temp-fail (451) when clamd is unreachable.
+    OnFail Defer
     AddHeader Replace
-    LogSyslog yes
   '';
 in
 {

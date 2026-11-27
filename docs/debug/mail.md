@@ -26,8 +26,11 @@ plaintext and LAN-only (see `generic/server/stalwart.nix`).
 | mail temp-failed `451 4.3.5` | a milter is down (`systemctl status rspamd clamav-milter clamav-daemon`); milters fail closed (`tempFailOnError` defaults true). Deliberate. |
 | spam not rejected | rspamd_proxy must bind 127.0.0.1:11332 with `milter = true`; test with a GTUBE body (see docs/testing.md-style swaks one-liner below). |
 | virus not rejected | clamav-milter uses `OnInfected Reject` (not Quarantine — stalwart milters cannot stop delivery on a quarantine action, they only add an X-Quarantine header). Test with an EICAR attachment. |
-| banned IPs not enforced | `sudo cscli decisions list`; `sudo nft list set ip crowdsec crowdsec-blacklists` (bouncer update_frequency is 10s). |
+| banned IPs not enforced | `sudo cscli decisions list`; `sudo nft list set ip crowdsec crowdsec-blacklists` (bouncer update_frequency is 10s, api_url `http://127.0.0.1:8083/`). |
 | stalwart logs missing from crowdsec | the parser is a deliberate no-match scaffold (`generic/server/crowdsec.nix`) — see TODO below. |
+| `crowdsec.service` crash-loop: `mkdir /var/lib/crowdsec: permission denied` | the 26.05 bouncer register unit stole the state dir (its `StateDirectory=crowdsec` + `DynamicUser=true` triggers systemd's private-dir migration). One-time repair before re-switching: `sudo bash /tmp/crowdsec-state-cleanup.sh`; `generic/server/crowdsec.nix` overrides the unit (root-run, no DynamicUser) so it can't recur. |
+| bouncer register: `open /etc/crowdsec/config.yaml: no such file or directory` | the 26.05 register unit ran the bare cscli without `-c` (the crowdsec module only ever passes its config as a store path). Overridden in `generic/server/crowdsec.nix` — same logic, config passed explicitly. |
+| clamav-milter `Parse error ... Unknown option` | config must use clamav 1.x keywords: `OnFail` (not `OnError`), and `LogSyslog` no longer exists. |
 
 Test one-liners (swaks not installed on hosts: `nix shell nixpkgs#swaks -c swaks ...`):
 
@@ -56,8 +59,9 @@ nothing (fail-safe: no events, no bans) until real samples replace it:
 
 - Rotating `stalwart-admin-password.age` does not restart services: run
   `systemctl restart stalwart stalwart-provision` afterwards.
-- 8088 (stalwart HTTP) and 8081 (crowdsec LAPI) were chosen because 8080 is
-  traefik's metrics listener on melon.
+- Port map on melon: 8080 = traefik metrics, 8081/8082 = immich metrics
+  (`generic/server/visibility.nix`), 8083 = crowdsec LAPI, 8088 = stalwart
+  HTTP/admin. Don't reuse any of them.
 - No internet mail until: DNS-01 certs, 465/993, MX/rDNS, public firewall.
   Current listeners are LAN-only; stalwart's built-in auto-ban stays on
   alongside CrowdSec.
