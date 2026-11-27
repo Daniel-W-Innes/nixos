@@ -132,9 +132,20 @@ in
   # Static user instead of DynamicUser: the register unit must share the
   # daemon's uid to write the LAPI sqlite db (see the let comment), and the
   # static crowdsec user is in systemd-journal (which a dynamic uid would not
-  # be — journal acquisition would break). /var/lib/crowdsec is created by
-  # crowdsec-setup's mkdir as this user.
+  # be — journal acquisition would break).
   systemd.services.crowdsec.serviceConfig.DynamicUser = lib.mkForce false;
+
+  # The module keeps ProtectSystem=strict + ReadWritePaths=/var/lib/crowdsec
+  # and has no StateDirectory — crowdsec-setup is supposed to mkdir the dir in
+  # ExecStartPre. But on systemd 260.5 a missing ReadWritePaths path fails
+  # mount-namespace setup with 226/NAMESPACE ("No such file or directory")
+  # *before* ExecStartPre runs, so a missing dir is unrecoverable (and the
+  # register unit cascades — cscli can't mkdir /var/lib/crowdsec as the static
+  # user either). Pre-create it via tmpfiles, which runs at boot/switch before
+  # units start.
+  systemd.tmpfiles.rules = [
+    "d /var/lib/crowdsec 0750 crowdsec crowdsec -"
+  ];
 
   services.crowdsec-firewall-bouncer = {
     enable = true;
