@@ -41,13 +41,12 @@ in
     };
     credentials."stalwart-admin" = config.age.secrets.stalwart-admin-password.path;
 
-    # First bootstrap runs with recovery.enable = true (see
-    # docs/debug/mail.md): stalwart starts with no mail listeners, serving
-    # the management API on this port, and stalwart-provision applies the
-    # whole plan below. Once it reports success, set this back to false and
-    # switch again.
+    # Bootstrap (see docs/debug/mail.md): phase 1 ran with recovery.enable =
+    # true — no mail listeners, management API on this port, and
+    # stalwart-provision applying the plan below (verified success on melon,
+    # 2026-11-27). With false, the provisioned listeners 25/587/143 come up.
     recovery = {
-      enable = true;
+      enable = false;
       port = 8088;
     };
 

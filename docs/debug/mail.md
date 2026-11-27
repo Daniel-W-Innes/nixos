@@ -10,7 +10,8 @@ plaintext and LAN-only (see `generic/server/stalwart.nix`).
    (`generic/server/stalwart.nix`): stalwart starts without mail listeners,
    serving the management API on 127.0.0.1:8088, and
    `stalwart-provision.service` applies the whole provision plan (the plan is
-   validated against the 1.x OSS schema at **build** time).
+   validated against the 1.x OSS schema at **build** time). Done on melon
+   2026-11-27 — the repo now has `recovery.enable = false`.
 2. Verify: `systemctl show -p Result --value stalwart-provision` = success;
    `curl -fsS http://127.0.0.1:8088/healthz/live`.
 3. Set `recovery.enable = false`, switch again: listeners 25/587/143 and the
