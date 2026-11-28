@@ -42,15 +42,11 @@ in
     credentials."stalwart-admin" = config.age.secrets.stalwart-admin-password.path;
 
     # Bootstrap (see docs/debug/mail.md): phase 1 ran with recovery.enable =
-    # true (verified success on melon, 2026-11-27). The phase-2 switch then
-    # failed because proxyTrustedNetworks made stalwart expect the PROXY
-    # protocol from loopback, dropping all plain HTTP — and the bad setting
-    # lives in the DB, so normal mode can't be repaired over HTTP. One-time
-    # repair: temporarily enable recovery again (its API ignores those
-    # settings), let stalwart-provision apply the fixed plan, then set this
-    # back to false and switch once more.
+    # true, and a second recovery pass repaired the proxyTrustedNetworks
+    # PROXY-protocol mistake (both verified success on melon, 2026-11-27).
+    # With false, the provisioned listeners 25/587/143 serve normal mode.
     recovery = {
-      enable = true;
+      enable = false;
       port = 8088;
     };
 
