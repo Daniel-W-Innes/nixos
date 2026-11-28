@@ -18,6 +18,8 @@ plaintext and LAN-only (see `generic/server/stalwart.nix`).
    traefik route come up.
 4. Set daniel@brotherwolf.ca's password once (webadmin at
    https://stalwart.lc.brotherwolf.ca as `stalwart-admin`, or `stalwart-cli`).
+   NB: stalwart-cli 2.0.0 has no `account` subcommand — it only does generic
+   object CRUD (`create AccountPassword`, etc.); the webadmin is simpler.
 
 ## Symptoms
 
@@ -41,16 +43,21 @@ Port 25 requires an FQDN in EHLO (`MtaStageEhlo.rejectNonFqdn` defaults on for
 port 25 — deliberate), hence `--ehlo`:
 
 ```bash
-# Round trip: submit on 587 (AUTH advertised via MtaStageAuth override)
+# Round trip: submit on 587 (AUTH advertised via MtaStageAuth override).
+# --from is required: mustMatchSender rejects senders that don't match the
+# authenticated account (501 5.5.4 You are not allowed to send from this address).
 swaks --server 127.0.0.1:587 --ehlo melon.brotherwolf.ca \
+  --from daniel@brotherwolf.ca \
   --auth LOGIN --auth-user daniel@brotherwolf.ca --auth-password '<pw>' \
   --to daniel@brotherwolf.ca --body 'hello world'
 # GTUBE must be rejected by rspamd
 swaks --server 127.0.0.1:25 --ehlo melon.brotherwolf.ca --to daniel@brotherwolf.ca \
   --body 'XJS*C4JDBQADN1.NSBN3*2IDNEN*GTUBE-STANDARD-ANTI-UBE-TEST-EMAIL*C.34X'
-# EICAR attachment must be rejected by clamav-milter
+# EICAR attachment must be rejected by clamav-milter.
+# --attach needs the @ prefix: swaks 20240103 removed the deprecated
+# auto-file-detection, so without @ the path itself is attached as text.
 printf 'X5O!P%%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*' > /tmp/eicar.txt
-swaks --server 127.0.0.1:25 --ehlo melon.brotherwolf.ca --to daniel@brotherwolf.ca --attach /tmp/eicar.txt
+swaks --server 127.0.0.1:25 --ehlo melon.brotherwolf.ca --to daniel@brotherwolf.ca --attach @/tmp/eicar.txt
 ```
 
 ## CrowdSec parser TODO
