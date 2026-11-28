@@ -27,7 +27,7 @@ plaintext and LAN-only (see `generic/server/stalwart.nix`).
 |---|---|
 | `stalwart-provision` failed | `journalctl -u stalwart-provision -b`; schema errors would have failed the nix build instead. Wrong admin password → the credential key must match `admin.username` in `generic/server/stalwart.nix`. |
 | mail temp-failed `451 4.3.5` | a milter is down (`systemctl status rspamd clamav-milter clamav-daemon`); milters fail closed (`tempFailOnError` defaults true). Deliberate. |
-| `stalwart-queue-backlog` firing | delivery is broken — most likely a down milter (451 above) or, once internet mail exists, MX/DNS trouble. Check the queue in webadmin (Manage › Queue) for per-message errors; `stalwart_queue_messages` in Grafana for the shape. |
+| `stalwart-delivery-failing` firing | outbound delivery is failing or retrying. Inbound 451 (down milter) does *not* queue, so this is outbound-only: once internet mail exists, check the queue in webadmin (Manage › Queue) for per-message errors and the recipient's MX health. |
 | `stalwart-auth-failures` firing | credential attack (or a misconfigured client). Check `cscli alerts list`/`cscli decisions list` and webadmin's security/blocked IPs; the event log shows what's failing (`journalctl -u stalwart | grep -i auth`). |
 | 587 `Host did not advertise authentication` | stalwart 1.x offers SASL only when `is_tls` (`MtaStageAuth.saslMechanisms` default) — our submission listener is plaintext. Fixed in `generic/server/stalwart.nix` (offer plain+login on all ports except 25); `require` defaults to `local_port != 25`, so 587 still demands AUTH. |
 | spam not rejected | rspamd_proxy must bind 127.0.0.1:11332 with `milter = true`; test with a GTUBE body (see docs/testing.md-style swaks one-liner below). |
@@ -79,14 +79,21 @@ nothing (fail-safe: no events, no bans) until real samples replace it:
 - Metrics: `Metrics.prometheus = Enabled` (`generic/server/stalwart.nix`)
   serves `/metrics/prometheus` on the loopback HTTP listener, scraped by the
   `stalwart` Prometheus job (`generic/server/visibility.nix`). Useful series:
-  `stalwart_queue_messages` (gauge, delivery backlog), `stalwart_auth_failed_total`,
-  `stalwart_smtp_active_connections`, `stalwart_imap_active_connections`,
-  `stalwart_store_rocksdb_error_total`, `stalwart_smtp_error_total`.
+  `stalwart_auth_failed_total`, `stalwart_smtp_active_connections`,
+  `stalwart_imap_active_connections`, `stalwart_store_rocksdb_error_total`,
+  `stalwart_smtp_error_total`, `stalwart_queue_rescheduled_total`,
+  `stalwart_delivery_*_failed_total`. **Gauge caveat (1.2.0):**
+  `stalwart_queue_messages` is enterprise-only — the OSS build exports just
+  `server_memory_bytes`/`users`/`domains` gauges plus per-protocol
+  `active_connections`, so queue *size* is not visible until a newer version
+  (it moved to the OSS gauge list upstream after 1.2.0). Counters appear only
+  once non-zero, so absent series = zero events.
 - Alerts (all severity critical, gotify via the shared contact point):
-  `stalwart-down` (scrape fails), `stalwart-queue-backlog` (>20 messages for
-  30m — delivery is broken, see symptoms below), `stalwart-auth-failures`
-  (>0.1 auth failures/s sustained — credential attack; auto-ban + CrowdSec
-  are the mitigations).
+  `stalwart-down` (scrape fails), `stalwart-delivery-failing` (delivery
+  failure/rejection counters or reschedules climbing for 15m — see symptoms
+  below; window ages out past ~1h of retry backoff, a 1.2.0 limitation),
+  `stalwart-auth-failures` (>0.1 auth failures/s sustained — credential
+  attack; auto-ban + CrowdSec are the mitigations).
 - Logs: the `Tracer` journal object ships everything to journald, which alloy
   forwards to Loki (`{unit="stalwart.service"}`) — no extra config.
 - Traces: a second `Tracer` object (`OtelGrpc`, log export off so Loki isn't
@@ -102,6 +109,11 @@ nothing (fail-safe: no events, no bans) until real samples replace it:
 
 - Rotating `stalwart-admin-password.age` does not restart services: run
   `systemctl restart stalwart stalwart-provision` afterwards.
+- **Tracer changes are not hot-applied** — stalwart builds its tracer
+  subscribers at startup, so provisioning a new `Tracer` object (e.g. the
+  OtelGrpc spans tracer) takes effect only after `systemctl restart stalwart`
+  (verified 2026-11-27: provision reconciled Tracer at 20:34, zero spans until
+  restart; the provision `--reload` covers settings, not subscribers).
 - Port map on melon: 8080 = traefik metrics, 8081/8082 = immich metrics
   (`generic/server/visibility.nix`), 8083 = crowdsec LAPI, 8088 = stalwart
   HTTP/admin/metrics. Don't reuse any of them.

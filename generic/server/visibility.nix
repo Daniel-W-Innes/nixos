@@ -758,20 +758,27 @@
                   labels.severity = "critical";
                 }
                 {
-                  uid = "stalwart-queue-backlog";
-                  title = "Stalwart queue backlog";
+                  uid = "stalwart-delivery-failing";
+                  title = "Stalwart delivery failing";
                   condition = "A";
                   data = [
                     {
                       refId = "A";
                       datasourceUid = "PBFA97CFB590B2093";
                       model = {
-                        # stalwart_queue_messages counts everything in the
-                        # delivery queue; for a single-user server it should
-                        # sit at 0. 20+ for 30m means delivery is genuinely
-                        # broken (outbound retries happen on the order of
-                        # minutes), not a burst of mail.
-                        expr = "stalwart_queue_messages > 20";
+                        # The queue-size gauge (stalwart_queue_messages) is
+                        # enterprise-only in 1.2.0 (OSS exports server_memory/
+                        # users/domains gauges) — verified live 2026-11-27, so
+                        # a queue-stock alert cannot exist on this version.
+                        # Instead: outbound delivery failure/rejection counters
+                        # or a queued message being rescheduled (temp-fail
+                        # retry) mean delivery is not completing. Counters only
+                        # exist once non-zero, so `or vector(0)` keeps the sum
+                        # defined; NoData (never failed) stays OK. The 15m
+                        # window covers stalwart's first retry backoffs — a
+                        # message stuck past ~1h of exponential backoff ages
+                        # out and the rule resolves (known 1.2.0 limitation).
+                        expr = "sum(rate(stalwart_queue_rescheduled_total[15m]) or vector(0)) + sum(rate({__name__=~\"stalwart_delivery_.*_(failed|rejected)_total\"}[15m]) or vector(0)) > 0";
                         instant = true;
                         range = false;
                         refId = "A";
@@ -781,16 +788,16 @@
                         };
                       };
                       relativeTimeRange = {
-                        from = 300;
+                        from = 600;
                         to = 0;
                       };
                     }
                   ];
                   noDataState = "OK";
                   execErrState = "KeepLast";
-                  for = "30m";
-                  annotations.summary = "{{ $value }} messages are stuck in stalwart's queue";
-                  annotations.description = "Delivery is not completing. Decoder: docs/debug/mail.md (451 4.3.5 = milter down, otherwise check the queue in webadmin).";
+                  for = "15m";
+                  annotations.summary = "stalwart is failing to deliver mail";
+                  annotations.description = "Outbound delivery is failing or messages are being retried. Decoder: docs/debug/mail.md.";
                   labels.severity = "critical";
                 }
                 {
