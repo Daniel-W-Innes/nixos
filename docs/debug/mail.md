@@ -99,11 +99,20 @@ nothing (fail-safe: no events, no bans) until real samples replace it:
 - Traces: a second `Tracer` object (`OtelGrpc`, log export off so Loki isn't
   double-fed) ships spans to alloy's `otelcol.receiver.otlp` (4319), which
   batches them to Tempo's OTLP-HTTP endpoint (4318). Query in Grafana Tempo
-  as `service.name = "stalwart"`; spans cover each SMTP/IMAP/HTTP transaction
-  (spans are held up to `throttle`=1s before flush, so very short transactions
-  may be absent). Metrics deliberately stay on the Prometheus scrape — the
-  OTel metrics exporter would just duplicate them into Prometheus and
-  double-count rate() rules.
+  as `service.name = "stalwart"`. **Dormant on 1.2.0**: the wiring is correct
+  end-to-end (verified 2026-11-27: tracer object active after restart, alloy
+  traces pipeline live, stalwart's OTLP sender connects lazily on first span)
+  but 1.2.0 never emits one — the span framework exists upstream but the
+  SMTP/IMAP/HTTP session code barely attaches span ids in this version (SMTP
+  only on error events, IMAP not at all; upstream `main` has grown IMAP span
+  support since). Expect spans to appear with a newer stalwart. Metrics
+  deliberately stay on the Prometheus scrape — the OTel metrics exporter
+  would just duplicate them into Prometheus and double-count rate() rules.
+- Grafana artifact: `stalwart-queue-backlog` (the pre-1.2.0-gauge-finding
+  rule) still lingers in Grafana after being removed from the file — Grafana
+  does not delete file-provisioned rules that vanish from the provisioned
+  rules.yaml. Harmless (evaluates NoData forever); delete it in the UI or via
+  the API if it bothers you.
 
 ## Gotchas
 
