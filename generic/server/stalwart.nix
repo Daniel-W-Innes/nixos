@@ -190,6 +190,15 @@ in
         # OTel logs would double them. Spans (per SMTP/IMAP/HTTP transaction)
         # go to alloy's otelcol.receiver.otlp (127.0.0.1:4319) and on to
         # Tempo (see generic/server/visibility.nix).
+        #
+        # The console tracer exists for CrowdSec: the Journal tracer puts
+        # only the event description in MESSAGE and the useful fields
+        # (remoteIp etc.) in structured journald fields, which CrowdSec's
+        # journalctl acquisition never reads. The console tracer instead
+        # serializes the whole event (description, event name, all fields)
+        # into one line on stderr, which journald captures into MESSAGE.
+        # It is restricted to auth.failed so logs are not doubled for
+        # every event (see generic/server/crowdsec.nix for the grok).
         Tracer = {
           reconcile = true;
           match = [ "@type" ];
@@ -198,10 +207,31 @@ in
               enable = true;
               level = "info";
             };
+            console = variant "Stdout" {
+              enable = true;
+              level = "info";
+              ansi = false;
+              multiline = false;
+              eventsPolicy = "include";
+              events = [ "auth.failed" ];
+            };
             otel = variant "OtelGrpc" {
               url = "http://127.0.0.1:4319";
               enableLogExporter = false;
             };
+          };
+        };
+
+        # auth.failed logs at debug by default (EventType::level has no arm
+        # for it, falls to `_ => Level::Debug`), so the info-level tracers
+        # above would never ship it. Raise it globally; the journal tracer
+        # then also ships the structured entry to Loki.
+        EventTracingLevel = {
+          reconcile = true;
+          match = [ "event" ];
+          objects.authFailed = {
+            event = "auth.failed";
+            level = "info";
           };
         };
       };

@@ -33,7 +33,7 @@ plaintext and LAN-only (see `generic/server/stalwart.nix`).
 | spam not rejected | rspamd_proxy must bind 127.0.0.1:11332 with `milter = true`; test with a GTUBE body (see docs/testing.md-style swaks one-liner below). |
 | virus not rejected | clamav-milter uses `OnInfected Reject` (not Quarantine — stalwart milters cannot stop delivery on a quarantine action, they only add an X-Quarantine header). Test with an EICAR attachment. |
 | banned IPs not enforced | `sudo cscli decisions list`; `sudo nft list set ip crowdsec crowdsec-blacklists` (bouncer update_frequency is 10s, api_url `http://127.0.0.1:8083/`). |
-| stalwart logs missing from crowdsec | the parser is a deliberate no-match scaffold (`generic/server/crowdsec.nix`) — see TODO below. |
+| stalwart auth failures missing from crowdsec | auth.failed is a debug-level event and the Journal tracer only puts the event description in MESSAGE, so crowdsec's journalctl acquisition never saw the IP. Fixed 2026-11-27: `EventTracingLevel` raises auth.failed to info and a console tracer (restricted to auth.failed) serializes the full line into MESSAGE — see "CrowdSec parser" below. |
 | `crowdsec.service` crash-loop: `mkdir /var/lib/crowdsec: permission denied` | the 26.05 bouncer register unit stole the state dir (its `StateDirectory=crowdsec` + `DynamicUser=true` triggers systemd's private-dir migration). One-time repair before re-switching: `sudo bash /tmp/crowdsec-state-cleanup.sh` (re-runnable — removes /var/lib/crowdsec, its private-dir copy, and the bouncer-register dirs); `generic/server/crowdsec.nix` fixes it (DynamicUser off on both units, static `crowdsec` user). |
 | `crowdsec.service` fails with `226/NAMESPACE: /var/lib/crowdsec: No such file or directory` | systemd 260.5 can't set up `ProtectSystem=strict` mount namespacing when a `ReadWritePaths` path is missing — and that happens before `crowdsec-setup`'s ExecStartPre mkdir, so the daemon can never create it (register unit then cascades: cscli can't mkdir the trace dir as the static user). Fix without a switch: `sudo mkdir -p /var/lib/crowdsec && sudo chown crowdsec:crowdsec /var/lib/crowdsec && sudo systemctl reset-failed crowdsec.service crowdsec-firewall-bouncer-register.service crowdsec-firewall-bouncer.service && sudo systemctl start crowdsec.service crowdsec-firewall-bouncer-register.service crowdsec-firewall-bouncer.service`. Permanent fix: the tmpfiles rule in `generic/server/crowdsec.nix` pre-creates the dir. |
 | bouncer register: `open /etc/crowdsec/config.yaml: no such file or directory` | the 26.05 register unit ran the bare cscli without `-c` (the crowdsec module only ever passes its config as a store path). Overridden in `generic/server/crowdsec.nix` — same logic, config passed explicitly. Registration is db-direct (cscli writes the LAPI sqlite, no HTTP — verified with crowdsec 1.7.8), so the unit runs as the static `crowdsec` user to write the LAPI db. |
@@ -62,17 +62,36 @@ printf 'X5O!P%%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*' 
 swaks --server 127.0.0.1:25 --ehlo melon.brotherwolf.ca --to daniel@brotherwolf.ca --attach @/tmp/eicar.txt
 ```
 
-## CrowdSec parser TODO
+## CrowdSec parser
 
-The parser grok in `generic/server/crowdsec.nix` is a placeholder that matches
-nothing (fail-safe: no events, no bans) until real samples replace it:
+How stalwart auth failures reach CrowdSec (wired 2026-11-27, all verified in
+1.2.0 source and with `cscli explain` against the real parser pipeline):
 
-1. Fail SMTP AUTH / IMAP LOGIN on purpose from a LAN client.
-2. `journalctl -u stalwart -o cat --since '5 min ago' | grep -iE 'auth|login'`
-   → sample lines.
-3. `sudo cscli explain --log '<line>' --type stalwart -v`, iterate the grok
-   until events carry `log_type=stalwart_auth_failure` + `source_ip`; then
-   trigger a burst and confirm `sudo cscli alerts list` fires.
+1. `auth.failed` logs at **debug** level by default (`EventType::level` falls
+   through to `_ => Level::Debug`), so an `EventTracingLevel` object in
+   `generic/server/stalwart.nix` raises it to info.
+2. The **Journal** tracer puts only the event description in MESSAGE and the
+   useful fields (remoteIp etc.) in structured journald fields — CrowdSec's
+   journalctl acquisition reads only the short-format line, never those
+   fields. A **console tracer** (`Tracer.objects.console`, `eventsPolicy =
+   include` + `events = ["auth.failed"]` so nothing else is doubled) instead
+   serializes the whole event onto stderr, which journald captures into
+   MESSAGE as:
+   `Nov 27 23:44:16 melon stalwart[1234]: 2026-11-27T23:44:16Z INFO Authentication failed (auth.failed) listenerId = "submission", localPort = 587, remoteIp = 192.168.1.5, ...`
+3. The grok in `generic/server/crowdsec.nix` matches that line unanchored
+   (CrowdSec does not strip the journalctl prefix for non-syslog types) and
+   the statics map `remoteIp` → `evt.Meta.source_ip`. Validated with
+   `cscli explain`: SMTP line matches, structured-Journal line does not
+   (no duplicate events), IMAP + IPv6 variants match.
+
+Stalwart's built-in auto-ban is **off** unless `Security.authBanRate` is
+provisioned (schema has no default) — the repo does not set it, so CrowdSec is
+currently the only IP-based mitigation; consider enabling it as a second layer.
+
+Pending live verification after the next switch: burst ~6 failed AUTHs from
+onion's LAN IP (bouncer stopped first so the SSH IP can't be banned), confirm
+`sudo cscli alerts list` shows `local/stalwart-auth-bf`, delete the decision,
+restart the bouncer.
 
 ## Visibility
 
@@ -93,9 +112,14 @@ nothing (fail-safe: no events, no bans) until real samples replace it:
   failure/rejection counters or reschedules climbing for 15m — see symptoms
   below; window ages out past ~1h of retry backoff, a 1.2.0 limitation),
   `stalwart-auth-failures` (>0.1 auth failures/s sustained — credential
-  attack; auto-ban + CrowdSec are the mitigations).
+  attack; CrowdSec is the mitigation — stalwart's auto-ban is off unless
+  `Security.authBanRate` is provisioned).
 - Logs: the `Tracer` journal object ships everything to journald, which alloy
-  forwards to Loki (`{unit="stalwart.service"}`) — no extra config.
+  forwards to Loki (`{unit="stalwart.service"}`) — no extra config. A second
+  `Stdout` tracer restricted to `auth.failed` (ansi off) writes the
+  CrowdSec-consumable lines to stderr (see "CrowdSec parser" above), so
+  `auth.failed` appears in the journal twice (structured + console) — the only
+  intentional duplication.
 - Traces: a second `Tracer` object (`OtelGrpc`, log export off so Loki isn't
   double-fed) ships spans to alloy's `otelcol.receiver.otlp` (4319), which
   batches them to Tempo's OTLP-HTTP endpoint (4318). Query in Grafana Tempo

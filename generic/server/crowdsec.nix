@@ -1,11 +1,19 @@
 # CrowdSec watches stalwart's journal for auth failures and bans via the
-# nftables bouncer. Stalwart has no native CrowdSec integration; its built-in
-# auto-ban (server.auto-ban) stays on as a second layer.
+# nftables bouncer. Stalwart has no native CrowdSec integration, and its
+# built-in auto-ban is off unless Security.authBanRate is provisioned (no
+# schema default in 1.x) — so CrowdSec is the only IP-based mitigation.
 #
-# The parser below is a defensive scaffold: the grok matches nothing yet, so
-# no stalwart event (and therefore no ban) is produced until a real pattern
-# from captured journal samples replaces the placeholder — see
-# docs/debug/mail.md for the cscli explain loop.
+# Stalwart logging facts that shaped the parser (verified in 1.2.0 source
+# and on melon's journal):
+# - auth.failed is a debug-level event, so an EventTracingLevel object in
+#   generic/server/stalwart.nix raises it to info.
+# - The Journal tracer writes only the event description ("Authentication
+#   failed") to MESSAGE; remoteIp etc. go to structured journald fields that
+#   CrowdSec's journalctl acquisition does not read. A console tracer
+#   (Tracer.objects.console, restricted to auth.failed) serializes the full
+#   event onto stderr, which journald captures into MESSAGE — the line the
+#   grok below matches. CrowdSec does not strip the journalctl prefix for
+#   non-syslog types, so the pattern starts after it, unanchored.
 #
 # Ports on melon: 8080 = traefik metrics, 8081/8082 = immich metrics
 # (generic/server/visibility.nix), so the LAPI lives on 8083.
@@ -85,8 +93,16 @@ in
         filter = "evt.Line.Labels.type == 'stalwart'";
         onsuccess = "next_stage";
         grok = {
-          # TODO: replace with a real pattern once journal samples exist.
-          pattern = "^__REPLACE_WITH_REAL_GROK__ %{DATA:raw}";
+          # Matches the console tracer line, e.g.:
+          #   Nov 27 23:44:16 melon stalwart[1234]:
+          #   2026-11-27T23:44:16Z INFO Authentication failed (auth.failed)
+          #   listenerId = "submission", localPort = 587,
+          #   remoteIp = 192.168.1.5, remotePort = 41234,
+          #   accountName = "daniel"
+          # Unanchored: the journalctl prefix before the RFC3339 timestamp
+          # is left to its own devices, and the Journal tracer's bare
+          # "Authentication failed" MESSAGE does not match.
+          pattern = "%{TIMESTAMP_ISO8601:timestamp} %{LOGLEVEL:loglevel} Authentication failed \\(auth\\.failed\\) .*remoteIp = %{IP:remoteIp}";
           apply_on = "message";
         };
         statics = [
@@ -97,6 +113,10 @@ in
           {
             meta = "service";
             value = "stalwart";
+          }
+          {
+            meta = "source_ip";
+            expression = "evt.Parsed.remoteIp";
           }
         ];
       }
