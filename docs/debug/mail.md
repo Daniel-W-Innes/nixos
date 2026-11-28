@@ -25,6 +25,7 @@ plaintext and LAN-only (see `generic/server/stalwart.nix`).
 |---|---|
 | `stalwart-provision` failed | `journalctl -u stalwart-provision -b`; schema errors would have failed the nix build instead. Wrong admin password → the credential key must match `admin.username` in `generic/server/stalwart.nix`. |
 | mail temp-failed `451 4.3.5` | a milter is down (`systemctl status rspamd clamav-milter clamav-daemon`); milters fail closed (`tempFailOnError` defaults true). Deliberate. |
+| 587 `Host did not advertise authentication` | stalwart 1.x offers SASL only when `is_tls` (`MtaStageAuth.saslMechanisms` default) — our submission listener is plaintext. Fixed in `generic/server/stalwart.nix` (offer plain+login on all ports except 25); `require` defaults to `local_port != 25`, so 587 still demands AUTH. |
 | spam not rejected | rspamd_proxy must bind 127.0.0.1:11332 with `milter = true`; test with a GTUBE body (see docs/testing.md-style swaks one-liner below). |
 | virus not rejected | clamav-milter uses `OnInfected Reject` (not Quarantine — stalwart milters cannot stop delivery on a quarantine action, they only add an X-Quarantine header). Test with an EICAR attachment. |
 | banned IPs not enforced | `sudo cscli decisions list`; `sudo nft list set ip crowdsec crowdsec-blacklists` (bouncer update_frequency is 10s, api_url `http://127.0.0.1:8083/`). |
@@ -35,15 +36,21 @@ plaintext and LAN-only (see `generic/server/stalwart.nix`).
 | clamav-milter `Parse error ... Unknown option` | config must use clamav 1.x keywords: `OnFail` (not `OnError`), and `LogSyslog` no longer exists. |
 | `stalwart-provision` times out; curl to 8088 gives empty reply; stalwart logs `Proxy protocol error` | `SystemSettings.proxyTrustedNetworks` makes stalwart 1.x *expect* the PROXY protocol from those networks — traefik speaks plain HTTP, so every connection is dropped, and normal mode can't be provisioned (chicken-and-egg: the bad setting lives in the DB). Fix: `proxyTrustedNetworks = []`, temporarily set `recovery.enable = true`, switch (the recovery API ignores those settings, provision applies the fix), then set recovery false and switch again. |
 
-Test one-liners (swaks not installed on hosts: `nix shell nixpkgs#swaks -c swaks ...`):
+Test one-liners (swaks not installed on hosts: `nix shell nixpkgs#swaks -c swaks ...`).
+Port 25 requires an FQDN in EHLO (`MtaStageEhlo.rejectNonFqdn` defaults on for
+port 25 — deliberate), hence `--ehlo`:
 
 ```bash
+# Round trip: submit on 587 (AUTH advertised via MtaStageAuth override)
+swaks --server 127.0.0.1:587 --ehlo melon.brotherwolf.ca \
+  --auth LOGIN --auth-user daniel@brotherwolf.ca --auth-password '<pw>' \
+  --to daniel@brotherwolf.ca --body 'hello world'
 # GTUBE must be rejected by rspamd
-swaks --server 127.0.0.1:25 --to daniel@brotherwolf.ca \
+swaks --server 127.0.0.1:25 --ehlo melon.brotherwolf.ca --to daniel@brotherwolf.ca \
   --body 'XJS*C4JDBQADN1.NSBN3*2IDNEN*GTUBE-STANDARD-ANTI-UBE-TEST-EMAIL*C.34X'
 # EICAR attachment must be rejected by clamav-milter
 printf 'X5O!P%%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*' > /tmp/eicar.txt
-swaks --server 127.0.0.1:25 --to daniel@brotherwolf.ca --attach /tmp/eicar.txt
+swaks --server 127.0.0.1:25 --ehlo melon.brotherwolf.ca --to daniel@brotherwolf.ca --attach /tmp/eicar.txt
 ```
 
 ## CrowdSec parser TODO

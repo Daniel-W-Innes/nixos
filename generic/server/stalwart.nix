@@ -71,6 +71,22 @@ in
         # Client IPs come from traefik's X-Forwarded-For; one trusted hop
         # (forwardedHops defaults to 1) and the HTTP listener is loopback.
         Http.clientIpSource = "xForwardedFor";
+        # Upstream defaults offer SASL only when is_tls — the submission
+        # listener is plaintext (LAN-only for now), so AUTH would never be
+        # advertised. Offer plain+login on every port except 25 (inbound
+        # stays auth-less; `require` already defaults to local_port != 25).
+        MtaStageAuth.saslMechanisms = {
+          "else" = "false";
+          match = [
+            {
+              if = "local_port != 25";
+              then = "[plain, login]";
+            }
+          ];
+        };
+        # IMAP LOGIN on the plaintext 143 listener (upstream refuses
+        # plaintext AUTH on unencrypted connections by default).
+        Imap.allowPlainTextAuth = true;
       };
 
       objects = {
