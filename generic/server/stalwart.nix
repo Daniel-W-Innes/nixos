@@ -184,13 +184,24 @@ in
           };
         };
 
-        # Journal tracer so CrowdSec can tail stalwart's own auth events.
+        # Journal tracer so CrowdSec can tail stalwart's own auth events,
+        # and an OpenTelemetry tracer for spans. Log export stays off: the
+        # journal tracer already ships every event to Loki via alloy, and
+        # OTel logs would double them. Spans (per SMTP/IMAP/HTTP transaction)
+        # go to alloy's otelcol.receiver.otlp (127.0.0.1:4319) and on to
+        # Tempo (see generic/server/visibility.nix).
         Tracer = {
           reconcile = true;
           match = [ "@type" ];
-          objects.journal = variant "Journal" {
-            enable = true;
-            level = "info";
+          objects = {
+            journal = variant "Journal" {
+              enable = true;
+              level = "info";
+            };
+            otel = variant "OtelGrpc" {
+              url = "http://127.0.0.1:4319";
+              enableLogExporter = false;
+            };
           };
         };
       };

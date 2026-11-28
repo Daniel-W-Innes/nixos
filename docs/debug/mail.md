@@ -89,6 +89,14 @@ nothing (fail-safe: no events, no bans) until real samples replace it:
   are the mitigations).
 - Logs: the `Tracer` journal object ships everything to journald, which alloy
   forwards to Loki (`{unit="stalwart.service"}`) — no extra config.
+- Traces: a second `Tracer` object (`OtelGrpc`, log export off so Loki isn't
+  double-fed) ships spans to alloy's `otelcol.receiver.otlp` (4319), which
+  batches them to Tempo's OTLP-HTTP endpoint (4318). Query in Grafana Tempo
+  as `service.name = "stalwart"`; spans cover each SMTP/IMAP/HTTP transaction
+  (spans are held up to `throttle`=1s before flush, so very short transactions
+  may be absent). Metrics deliberately stay on the Prometheus scrape — the
+  OTel metrics exporter would just duplicate them into Prometheus and
+  double-count rate() rules.
 
 ## Gotchas
 

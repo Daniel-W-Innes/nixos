@@ -237,18 +237,29 @@
             }
 
             output {
-              logs = [otelcol.processor.batch.default.input]
+              logs   = [otelcol.processor.batch.default.input]
+              traces = [otelcol.processor.batch.default.input]
             }
           }
 
           otelcol.processor.batch "default" {
             output {
-              logs = [otelcol.exporter.loki.default.input]
+              logs   = [otelcol.exporter.loki.default.input]
+              traces = [otelcol.exporter.otlphttp.tempo.input]
             }
           }
 
           otelcol.exporter.loki "default" {
             forward_to = [loki.process.traefik_parse.receiver]
+          }
+
+          otelcol.exporter.otlphttp "tempo" {
+            client {
+              endpoint = "http://localhost:4318"
+              tls {
+                insecure = true
+              }
+            }
           }
 
           loki.process "traefik_parse" {
