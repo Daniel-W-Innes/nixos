@@ -87,6 +87,11 @@ in
         # IMAP LOGIN on the plaintext 143 listener (upstream refuses
         # plaintext AUTH on unencrypted connections by default).
         Imap.allowPlainTextAuth = true;
+        # Prometheus exporter, served on every HTTP listener at
+        # /metrics/prometheus (here: 127.0.0.1:8088, scraped by the
+        # `stalwart` job in generic/server/visibility.nix). Disabled by
+        # default upstream. No auth: the HTTP listener is loopback-only.
+        Metrics.prometheus = variant "Enabled" { };
       };
 
       objects = {

@@ -27,6 +27,8 @@ plaintext and LAN-only (see `generic/server/stalwart.nix`).
 |---|---|
 | `stalwart-provision` failed | `journalctl -u stalwart-provision -b`; schema errors would have failed the nix build instead. Wrong admin password → the credential key must match `admin.username` in `generic/server/stalwart.nix`. |
 | mail temp-failed `451 4.3.5` | a milter is down (`systemctl status rspamd clamav-milter clamav-daemon`); milters fail closed (`tempFailOnError` defaults true). Deliberate. |
+| `stalwart-queue-backlog` firing | delivery is broken — most likely a down milter (451 above) or, once internet mail exists, MX/DNS trouble. Check the queue in webadmin (Manage › Queue) for per-message errors; `stalwart_queue_messages` in Grafana for the shape. |
+| `stalwart-auth-failures` firing | credential attack (or a misconfigured client). Check `cscli alerts list`/`cscli decisions list` and webadmin's security/blocked IPs; the event log shows what's failing (`journalctl -u stalwart | grep -i auth`). |
 | 587 `Host did not advertise authentication` | stalwart 1.x offers SASL only when `is_tls` (`MtaStageAuth.saslMechanisms` default) — our submission listener is plaintext. Fixed in `generic/server/stalwart.nix` (offer plain+login on all ports except 25); `require` defaults to `local_port != 25`, so 587 still demands AUTH. |
 | spam not rejected | rspamd_proxy must bind 127.0.0.1:11332 with `milter = true`; test with a GTUBE body (see docs/testing.md-style swaks one-liner below). |
 | virus not rejected | clamav-milter uses `OnInfected Reject` (not Quarantine — stalwart milters cannot stop delivery on a quarantine action, they only add an X-Quarantine header). Test with an EICAR attachment. |
@@ -72,13 +74,29 @@ nothing (fail-safe: no events, no bans) until real samples replace it:
    until events carry `log_type=stalwart_auth_failure` + `source_ip`; then
    trigger a burst and confirm `sudo cscli alerts list` fires.
 
+## Visibility
+
+- Metrics: `Metrics.prometheus = Enabled` (`generic/server/stalwart.nix`)
+  serves `/metrics/prometheus` on the loopback HTTP listener, scraped by the
+  `stalwart` Prometheus job (`generic/server/visibility.nix`). Useful series:
+  `stalwart_queue_messages` (gauge, delivery backlog), `stalwart_auth_failed_total`,
+  `stalwart_smtp_active_connections`, `stalwart_imap_active_connections`,
+  `stalwart_store_rocksdb_error_total`, `stalwart_smtp_error_total`.
+- Alerts (all severity critical, gotify via the shared contact point):
+  `stalwart-down` (scrape fails), `stalwart-queue-backlog` (>20 messages for
+  30m — delivery is broken, see symptoms below), `stalwart-auth-failures`
+  (>0.1 auth failures/s sustained — credential attack; auto-ban + CrowdSec
+  are the mitigations).
+- Logs: the `Tracer` journal object ships everything to journald, which alloy
+  forwards to Loki (`{unit="stalwart.service"}`) — no extra config.
+
 ## Gotchas
 
 - Rotating `stalwart-admin-password.age` does not restart services: run
   `systemctl restart stalwart stalwart-provision` afterwards.
 - Port map on melon: 8080 = traefik metrics, 8081/8082 = immich metrics
   (`generic/server/visibility.nix`), 8083 = crowdsec LAPI, 8088 = stalwart
-  HTTP/admin. Don't reuse any of them.
+  HTTP/admin/metrics. Don't reuse any of them.
 - No internet mail until: DNS-01 certs, 465/993, MX/rDNS, public firewall.
   Current listeners are LAN-only; stalwart's built-in auto-ban stays on
   alongside CrowdSec.

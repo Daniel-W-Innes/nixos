@@ -716,6 +716,108 @@
                   annotations.description = "The arr API behind this exporter is starved or the exporter is down. Decoder: docs/debug/lidarr.md.";
                   labels.severity = "critical";
                 }
+                {
+                  uid = "stalwart-down";
+                  title = "Stalwart down";
+                  condition = "A";
+                  data = [
+                    {
+                      refId = "A";
+                      datasourceUid = "PBFA97CFB590B2093";
+                      model = {
+                        expr = "up{job=\"stalwart\"} == bool 0";
+                        instant = true;
+                        range = false;
+                        refId = "A";
+                        datasource = {
+                          type = "prometheus";
+                          uid = "PBFA97CFB590B2093";
+                        };
+                      };
+                      relativeTimeRange = {
+                        from = 300;
+                        to = 0;
+                      };
+                    }
+                  ];
+                  noDataState = "OK";
+                  execErrState = "KeepLast";
+                  for = "3m";
+                  annotations.summary = "stalwart on {{ $labels.instance }} is down";
+                  labels.severity = "critical";
+                }
+                {
+                  uid = "stalwart-queue-backlog";
+                  title = "Stalwart queue backlog";
+                  condition = "A";
+                  data = [
+                    {
+                      refId = "A";
+                      datasourceUid = "PBFA97CFB590B2093";
+                      model = {
+                        # stalwart_queue_messages counts everything in the
+                        # delivery queue; for a single-user server it should
+                        # sit at 0. 20+ for 30m means delivery is genuinely
+                        # broken (outbound retries happen on the order of
+                        # minutes), not a burst of mail.
+                        expr = "stalwart_queue_messages > 20";
+                        instant = true;
+                        range = false;
+                        refId = "A";
+                        datasource = {
+                          type = "prometheus";
+                          uid = "PBFA97CFB590B2093";
+                        };
+                      };
+                      relativeTimeRange = {
+                        from = 300;
+                        to = 0;
+                      };
+                    }
+                  ];
+                  noDataState = "OK";
+                  execErrState = "KeepLast";
+                  for = "30m";
+                  annotations.summary = "{{ $value }} messages are stuck in stalwart's queue";
+                  annotations.description = "Delivery is not completing. Decoder: docs/debug/mail.md (451 4.3.5 = milter down, otherwise check the queue in webadmin).";
+                  labels.severity = "critical";
+                }
+                {
+                  uid = "stalwart-auth-failures";
+                  title = "Stalwart auth failures";
+                  condition = "A";
+                  data = [
+                    {
+                      refId = "A";
+                      datasourceUid = "PBFA97CFB590B2093";
+                      model = {
+                        # AuthFailed counts every SMTP AUTH / IMAP LOGIN
+                        # failure. A human typo is 1-2 events; 0.1/s sustained
+                        # for 5m (~30 failures in the window) is a credential
+                        # attack. Auto-ban (stalwart) + CrowdSec are the
+                        # mitigations, this is the alarm.
+                        expr = "sum(rate(stalwart_auth_failed_total[5m])) > 0.1";
+                        instant = true;
+                        range = false;
+                        refId = "A";
+                        datasource = {
+                          type = "prometheus";
+                          uid = "PBFA97CFB590B2093";
+                        };
+                      };
+                      relativeTimeRange = {
+                        from = 600;
+                        to = 0;
+                      };
+                    }
+                  ];
+                  noDataState = "OK";
+                  execErrState = "KeepLast";
+                  for = "5m";
+                  annotations.summary = "repeated auth failures on stalwart ({{ $value }}/s)";
+                  annotations.description = "Possible credential attack on SMTP AUTH / IMAP LOGIN. Decoder: docs/debug/mail.md.";
+                  labels.severity = "critical";
+                }
               ];
             }
           ];
@@ -1094,6 +1196,19 @@
           static_configs = [
             {
               targets = [ "127.0.0.1:9176" ];
+            }
+          ];
+        }
+        {
+          job_name = "stalwart";
+          # Served on stalwart's loopback HTTP listener
+          # (generic/server/stalwart.nix enables Metrics.prometheus).
+          # Loopback, not traefik: no reason to expose the metrics route.
+          # Anonymous rate limit is 100 req/min, a 10s scrape is 6.
+          metrics_path = "/metrics/prometheus";
+          static_configs = [
+            {
+              targets = [ "localhost:8088" ];
             }
           ];
         }
