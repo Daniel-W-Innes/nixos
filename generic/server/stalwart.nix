@@ -79,8 +79,8 @@ in
           "else" = "false";
           match = [
             {
-              if = "local_port != 25";
-              then = "[plain, login]";
+              "if" = "local_port != 25";
+              "then" = "[plain, login]";
             }
           ];
         };
