@@ -42,11 +42,15 @@ in
     credentials."stalwart-admin" = config.age.secrets.stalwart-admin-password.path;
 
     # Bootstrap (see docs/debug/mail.md): phase 1 ran with recovery.enable =
-    # true — no mail listeners, management API on this port, and
-    # stalwart-provision applying the plan below (verified success on melon,
-    # 2026-11-27). With false, the provisioned listeners 25/587/143 come up.
+    # true (verified success on melon, 2026-11-27). The phase-2 switch then
+    # failed because proxyTrustedNetworks made stalwart expect the PROXY
+    # protocol from loopback, dropping all plain HTTP — and the bad setting
+    # lives in the DB, so normal mode can't be repaired over HTTP. One-time
+    # repair: temporarily enable recovery again (its API ignores those
+    # settings), let stalwart-provision apply the fixed plan, then set this
+    # back to false and switch once more.
     recovery = {
-      enable = false;
+      enable = true;
       port = 8088;
     };
 
@@ -61,11 +65,12 @@ in
         SystemSettings = {
           defaultHostname = "mail.brotherwolf.ca";
           defaultDomainId = "#brotherwolf";
-          # Only traefik (loopback) may influence client-IP handling.
-          proxyTrustedNetworks = [
-            "127.0.0.1/32"
-            "::1/128"
-          ];
+          # Do NOT put networks here: in 1.x proxyTrustedNetworks makes
+          # stalwart *expect* the PROXY protocol from those networks (not
+          # merely trust forwarding headers) — traefik speaks plain HTTP, so
+          # every request gets dropped ("Proxy protocol error", empty reply).
+          # Real client IPs come from X-Forwarded-For instead.
+          proxyTrustedNetworks = [ ];
         };
         # Client IPs come from traefik's X-Forwarded-For; one trusted hop
         # (forwardedHops defaults to 1) and the HTTP listener is loopback.
